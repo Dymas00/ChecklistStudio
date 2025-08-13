@@ -32,33 +32,20 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
       
-      <div className="ml-64 p-6">
+      <div className="lg:ml-64 p-4 sm:p-6">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600 mt-1">
-                Visão geral do sistema de checklists
-              </p>
-            </div>
-            
-            {(user?.role === 'tecnico' || isAdmin) && (
-              <Link to="/checklists">
-                <Button className="font-medium">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Novo Checklist
-                </Button>
-              </Link>
-            )}
-          </div>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">
+            Visão geral do sistema de checklists
+          </p>
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {[...Array(4)].map((_, i) => (
               <Card key={i} className="animate-pulse">
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
                   <div className="h-8 bg-gray-200 rounded w-16 mb-4"></div>
                   <div className="h-3 bg-gray-200 rounded w-32"></div>
@@ -69,28 +56,28 @@ export default function Dashboard() {
         ) : (
           <>
             {/* Metrics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <Card className="border-0 shadow-sm">
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">
                         Total de Checklists
                       </p>
-                      <p className="text-2xl font-bold text-gray-900 mt-1">
+                      <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">
                         {(metrics as any)?.total || 0}
                       </p>
                     </div>
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <ClipboardList className="w-6 h-6 text-blue-600" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <ClipboardList className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                   </div>
-                  <div className="mt-4 flex items-center">
+                  <div className="mt-3 sm:mt-4 flex items-center">
                     <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
                     <span className="text-green-600 text-sm font-medium">
                       +12%
                     </span>
-                    <span className="text-gray-600 text-sm ml-2">
+                    <span className="text-gray-600 text-xs sm:text-sm ml-2">
                       vs. mês anterior
                     </span>
                   </div>
@@ -98,26 +85,26 @@ export default function Dashboard() {
               </Card>
 
               <Card className="border-0 shadow-sm">
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">
                         Pendentes
                       </p>
-                      <p className="text-2xl font-bold text-gray-900 mt-1">
+                      <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">
                         {(metrics as any)?.pending || 0}
                       </p>
                     </div>
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <Clock className="w-6 h-6 text-orange-600" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                     </div>
                   </div>
-                  <div className="mt-4 flex items-center">
+                  <div className="mt-3 sm:mt-4 flex items-center">
                     <AlertTriangle className="w-4 h-4 text-orange-600 mr-1" />
                     <span className="text-orange-600 text-sm font-medium">
                       Atenção
                     </span>
-                    <span className="text-gray-600 text-sm ml-2">
+                    <span className="text-gray-600 text-xs sm:text-sm ml-2">
                       requer aprovação
                     </span>
                   </div>
@@ -180,13 +167,13 @@ export default function Dashboard() {
             </div>
 
             {/* Recent Checklists and Ranking */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Recent Checklists */}
               <Card className="border-0 shadow-sm">
-                <CardHeader className="border-b border-gray-100">
-                  <CardTitle className="text-lg">Checklists Recentes</CardTitle>
+                <CardHeader className="border-b border-gray-100 p-4 sm:p-6">
+                  <CardTitle className="text-base sm:text-lg">Checklists Recentes</CardTitle>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="space-y-4">
                     {((metrics as any)?.recentChecklists || [])?.map((checklist: any) => (
                       <div key={checklist.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">

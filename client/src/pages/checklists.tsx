@@ -126,12 +126,12 @@ export default function Checklists() {
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
       
-      <div className="ml-64 p-6">
+      <div className="lg:ml-64 p-4 sm:p-6">
         {/* Header with New Checklist Button */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Checklists</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Checklists</h1>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
               Gerencie todos os checklists do sistema
             </p>
           </div>
@@ -139,22 +139,22 @@ export default function Checklists() {
           {(user?.role === 'tecnico' || user?.role === 'administrador') && (
             <Dialog open={isNewChecklistDialogOpen} onOpenChange={setIsNewChecklistDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-primary hover:bg-primary/90">
+                <Button className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
                   <Plus className="w-4 h-4 mr-2" />
                   Novo Checklist
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+              <DialogContent className="max-w-full sm:max-w-4xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto mx-4">
                 <DialogHeader>
-                  <DialogTitle className="text-xl">Selecionar Template</DialogTitle>
+                  <DialogTitle className="text-lg sm:text-xl">Selecionar Template</DialogTitle>
                 </DialogHeader>
                 
                 <div className="space-y-4">
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-sm sm:text-base">
                     Escolha o tipo de checklist que deseja preencher:
                   </p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {(templates as any)?.filter((template: any) => template.active).map((template: any) => {
                       const sectionsCount = Array.isArray(template.sections) ? template.sections.length : 0;
                       const Icon = templateIcons[template.type as keyof typeof templateIcons] || Settings;
@@ -162,14 +162,14 @@ export default function Checklists() {
                       
                       return (
                         <Card key={template.id} className={`hover:shadow-md transition-shadow cursor-pointer border-2 hover:${colors.border}`}>
-                          <CardContent className="p-6">
-                            <div className="flex items-start justify-between mb-4">
-                              <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center`}>
-                                <Icon className={`w-6 h-6 ${colors.text}`} />
+                          <CardContent className="p-4 sm:p-6">
+                            <div className="flex items-start justify-between mb-3 sm:mb-4">
+                              <div className={`w-10 h-10 sm:w-12 sm:h-12 ${colors.bg} rounded-lg flex items-center justify-center`}>
+                                <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${colors.text}`} />
                               </div>
                             </div>
                             
-                            <CardTitle className="text-lg mb-2">
+                            <CardTitle className="text-base sm:text-lg mb-2">
                               {template.name}
                             </CardTitle>
                             <p className="text-sm text-gray-600 mb-4 line-clamp-2">

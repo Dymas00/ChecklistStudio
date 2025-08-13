@@ -88,7 +88,7 @@ export default function Templates() {
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
       
-      <div className="ml-64 p-6">
+      <div className="lg:ml-64 p-4 sm:p-6">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">

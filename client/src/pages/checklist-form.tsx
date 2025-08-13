@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Sidebar } from '@/components/layout/sidebar';
 import { useRoute } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -306,103 +307,107 @@ export default function ChecklistForm() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
-            <Link to={user.role === 'tecnico' ? '/technician' : '/dashboard'}>
-              <Button variant="ghost" size="sm" className="mr-4">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar
+      <Sidebar />
+      
+      <div className="lg:ml-64 p-4 sm:p-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+              <Link to={user.role === 'tecnico' ? '/technician' : '/dashboard'}>
+                <Button variant="ghost" size="sm" className="w-full sm:w-auto">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Voltar
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                  Checklist de {(template as any)?.name}
+                </h1>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base">
+                  Preencha todos os campos obrigatórios (*) para concluir o checklist.
+                </p>
+              </div>
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={saveAsDraft}
+              disabled={isSaving}
+              className="flex items-center w-full sm:w-auto"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {isSaving ? "Salvando..." : "Salvar"}
+            </Button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+            {sections.map((section) => (
+              <Card key={section.id} className="border-0 shadow-sm">
+                <CardHeader className="border-b border-gray-100 p-4 sm:p-6">
+                  <CardTitle className="flex items-center text-lg sm:text-xl text-primary">
+                    <i className={`${section.icon} mr-3`}></i>
+                    SEÇÃO {section.id} | {section.title}
+                  </CardTitle>
+                </CardHeader>
+              
+                <CardContent className="p-4 sm:p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    {section.fields.map((field) => (
+                      <ConditionalField
+                        key={field.id}
+                        field={field}
+                        responses={responses}
+                        className={
+                          field.type === 'textarea' || 
+                          field.type === 'signature' || 
+                          field.type === 'evidence' 
+                          ? 'md:col-span-2' 
+                          : ''
+                        }
+                      >
+                        <div className="form-field">
+                          <Label className="block text-sm font-medium text-gray-700 mb-2">
+                            {field.label}
+                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                          </Label>
+                          {renderField(field)}
+                        </div>
+                      </ConditionalField>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {/* Submit Button */}
+            <div className="text-center pb-8">
+              <Button
+                type="submit"
+                size="lg"
+                disabled={isSubmitting}
+                className="font-semibold px-6 sm:px-8 w-full sm:w-auto"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Enviando...
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-5 h-5 mr-2" />
+                    Enviar Checklist
+                  </>
+                )}
               </Button>
-            </Link>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Checklist de {(template as any)?.name}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Preencha todos os campos obrigatórios (*) para concluir o checklist.
+              
+              <p className="text-xs text-gray-500 mt-3">
+                Ao enviar, o checklist será submetido para aprovação
               </p>
             </div>
-          </div>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={saveAsDraft}
-            disabled={isSaving}
-            className="flex items-center"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {isSaving ? "Salvando..." : "Salvar"}
-          </Button>
+          </form>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {sections.map((section) => (
-            <Card key={section.id} className="border-0 shadow-sm">
-              <CardHeader className="border-b border-gray-100">
-                <CardTitle className="flex items-center text-xl text-primary">
-                  <i className={`${section.icon} mr-3`}></i>
-                  SEÇÃO {section.id} | {section.title}
-                </CardTitle>
-              </CardHeader>
-              
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {section.fields.map((field) => (
-                    <ConditionalField
-                      key={field.id}
-                      field={field}
-                      responses={responses}
-                      className={
-                        field.type === 'textarea' || 
-                        field.type === 'signature' || 
-                        field.type === 'evidence' 
-                        ? 'md:col-span-2' 
-                        : ''
-                      }
-                    >
-                      <div className="form-field">
-                        <Label className="block text-sm font-medium text-gray-700 mb-2">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </Label>
-                        {renderField(field)}
-                      </div>
-                    </ConditionalField>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-
-          {/* Submit Button */}
-          <div className="text-center pb-8">
-            <Button
-              type="submit"
-              size="lg"
-              disabled={isSubmitting}
-              className="font-semibold px-8"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Enviando...
-                </>
-              ) : (
-                <>
-                  <Check className="w-5 h-5 mr-2" />
-                  Enviar Checklist
-                </>
-              )}
-            </Button>
-            
-            <p className="text-xs text-gray-500 mt-3">
-              Ao enviar, o checklist será submetido para aprovação
-            </p>
-          </div>
-        </form>
       </div>
     </div>
   );
