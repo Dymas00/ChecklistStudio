@@ -43,8 +43,8 @@ export default function Dashboard() {
               </p>
             </div>
             
-            {isAdmin && (
-              <Link to="/templates">
+            {(user?.role === 'tecnico' || isAdmin) && (
+              <Link to="/checklists">
                 <Button className="font-medium">
                   <Plus className="w-4 h-4 mr-2" />
                   Novo Checklist

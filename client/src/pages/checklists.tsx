@@ -1,4 +1,5 @@
 
+import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,9 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sidebar } from '@/components/layout/sidebar';
-import { ClipboardList, Search, Filter, Eye, Edit, Star } from 'lucide-react';
-import { useState } from 'react';
+import { ClipboardList, Search, Filter, Eye, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw } from 'lucide-react';
 import { Link } from 'wouter';
 
 function getStatusBadgeClass(status: string) {
@@ -51,10 +52,27 @@ function formatTimeAgo(dateString: string) {
   }
 }
 
+// Template icons mapping
+const templateIcons = {
+  upgrade: ArrowUp,
+  ativacao: Power,
+  migracao: RefreshCw,
+  manutencao: Settings,
+};
+
+// Template colors mapping
+const templateColors = {
+  upgrade: { bg: 'bg-blue-100', text: 'text-blue-600', border: 'border-blue-200' },
+  ativacao: { bg: 'bg-green-100', text: 'text-green-600', border: 'border-green-200' },
+  migracao: { bg: 'bg-purple-100', text: 'text-purple-600', border: 'border-purple-200' },
+  manutencao: { bg: 'bg-orange-100', text: 'text-orange-600', border: 'border-orange-200' },
+};
+
 export default function Checklists() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [isNewChecklistDialogOpen, setIsNewChecklistDialogOpen] = useState(false);
 
   const { data: checklists, isLoading } = useQuery({
     queryKey: ['/api/checklists'],
@@ -63,6 +81,11 @@ export default function Checklists() {
   const { data: users } = useQuery({
     queryKey: ['/api/users'],
     enabled: user?.role === 'administrador',
+  });
+
+  const { data: templates } = useQuery({
+    queryKey: ['/api/templates'],
+    enabled: isNewChecklistDialogOpen,
   });
 
   const filteredChecklists = checklists?.filter((checklist: any) => {
@@ -104,12 +127,93 @@ export default function Checklists() {
       <Sidebar />
       
       <div className="ml-64 p-6">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Checklists</h1>
-          <p className="text-gray-600 mt-1">
-            Gerencie todos os checklists do sistema
-          </p>
+        {/* Header with New Checklist Button */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Checklists</h1>
+            <p className="text-gray-600 mt-1">
+              Gerencie todos os checklists do sistema
+            </p>
+          </div>
+          
+          {(user?.role === 'tecnico' || user?.role === 'administrador') && (
+            <Dialog open={isNewChecklistDialogOpen} onOpenChange={setIsNewChecklistDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-primary hover:bg-primary/90">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Novo Checklist
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="text-xl">Selecionar Template</DialogTitle>
+                </DialogHeader>
+                
+                <div className="space-y-4">
+                  <p className="text-gray-600">
+                    Escolha o tipo de checklist que deseja preencher:
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(templates as any)?.filter((template: any) => template.active).map((template: any) => {
+                      const sectionsCount = Array.isArray(template.sections) ? template.sections.length : 0;
+                      const Icon = templateIcons[template.type as keyof typeof templateIcons] || Settings;
+                      const colors = templateColors[template.type as keyof typeof templateColors] || templateColors.upgrade;
+                      
+                      return (
+                        <Card key={template.id} className={`hover:shadow-md transition-shadow cursor-pointer border-2 hover:${colors.border}`}>
+                          <CardContent className="p-6">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center`}>
+                                <Icon className={`w-6 h-6 ${colors.text}`} />
+                              </div>
+                            </div>
+                            
+                            <CardTitle className="text-lg mb-2">
+                              {template.name}
+                            </CardTitle>
+                            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                              {template.description}
+                            </p>
+                            
+                            <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                              <span>{sectionsCount} seções</span>
+                              <Badge variant="default" className="bg-green-100 text-green-800">
+                                Ativo
+                              </Badge>
+                            </div>
+                            
+                            <Link to={`/checklist-form?template=${template.id}`}>
+                              <Button 
+                                className="w-full"
+                                onClick={() => setIsNewChecklistDialogOpen(false)}
+                              >
+                                Usar este Template
+                              </Button>
+                            </Link>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                  
+                  {(!templates || templates.length === 0) && (
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <ClipboardList className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        Nenhum template disponível
+                      </h3>
+                      <p className="text-gray-600">
+                        Aguarde enquanto carregamos os templates disponíveis
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
 
         {/* Filters */}
