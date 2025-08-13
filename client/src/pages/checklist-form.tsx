@@ -30,10 +30,12 @@ export default function ChecklistForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const { data: template, isLoading } = useQuery({
-    queryKey: ['/api/templates', templateId],
-    enabled: !!templateId,
+  const { data: templates, isLoading: templatesLoading } = useQuery({
+    queryKey: ['/api/templates']
   });
+  
+  const template = templates?.find((t: any) => t.id === templateId);
+  const isLoading = templatesLoading;
 
   const submitMutation = useMutation({
     mutationFn: async (formData: FormData) => {

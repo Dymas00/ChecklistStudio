@@ -183,7 +183,7 @@ export default function Checklists() {
                               </Badge>
                             </div>
                             
-                            <Link to={`/checklist-form?template=${template.id}`}>
+                            <Link to={`/checklist/${template.id}`}>
                               <Button 
                                 className="w-full"
                                 onClick={() => setIsNewChecklistDialogOpen(false)}
