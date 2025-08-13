@@ -10,6 +10,7 @@ import TechnicianDashboard from "@/pages/technician-dashboard";
 import ChecklistForm from "@/pages/checklist-form";
 import Templates from "@/pages/templates";
 import Users from "@/pages/users";
+import Checklists from "./pages/checklists";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/technician" component={TechnicianDashboard} />
+      <Route path="/checklists" component={Checklists} />
       <Route path="/checklist/:templateId" component={ChecklistForm} />
       <Route path="/templates" component={Templates} />
       <Route path="/users" component={Users} />

@@ -74,7 +74,7 @@ export default function Sidebar() {
             .map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
-              
+
               return (
                 <Link key={item.name} href={item.href}>
                   <Button
@@ -110,9 +110,9 @@ export default function Sidebar() {
               </p>
             </div>
           </div>
-          
+
           <Separator className="mb-3" />
-          
+
           <Button
             variant="ghost"
             size="sm"
