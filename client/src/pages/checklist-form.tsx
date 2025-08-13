@@ -105,7 +105,7 @@ export default function ChecklistForm() {
     setIsSubmitting(true);
 
     // Validate form
-    const errors = validateFormResponses(template, responses);
+    const errors = validateFormResponses((template as any), responses);
     if (errors.length > 0) {
       toast({
         title: "Campos obrigatórios",
@@ -119,7 +119,7 @@ export default function ChecklistForm() {
     // Create FormData for file uploads
     const formData = new FormData();
     const checklistData = {
-      templateId: template.id,
+      templateId: (template as any)?.id,
       storeCode: responses.storeCode,
       storeManager: responses.storeManager,
       storePhone: responses.storePhone,
@@ -284,7 +284,7 @@ export default function ChecklistForm() {
     );
   }
 
-  const sections = template.sections as TemplateSection[];
+  const sections = ((template as any)?.sections || []) as TemplateSection[];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -300,7 +300,7 @@ export default function ChecklistForm() {
             </Link>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Checklist de {template.name}
+                Checklist de {(template as any)?.name}
               </h1>
               <p className="text-gray-600 mt-1">
                 Preencha todos os campos obrigatórios (*) para concluir o checklist.

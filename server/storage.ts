@@ -650,9 +650,15 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
     const user: User = {
-      ...insertUser,
       id: randomUUID(),
+      name: insertUser.name,
+      role: insertUser.role,
+      email: insertUser.email,
       password: hashedPassword,
+      phone: insertUser.phone || null,
+      cpf: insertUser.cpf || null,
+      contractor: insertUser.contractor || null,
+      active: insertUser.active ?? true,
       createdAt: new Date(),
     };
     this.users.set(user.id, user);
@@ -713,9 +719,14 @@ export class MemStorage implements IStorage {
 
   async createTemplate(insertTemplate: InsertTemplate): Promise<Template> {
     const template: Template = {
-      ...insertTemplate,
       id: randomUUID(),
+      name: insertTemplate.name,
+      type: insertTemplate.type,
+      icon: insertTemplate.icon,
+      description: insertTemplate.description || null,
+      active: insertTemplate.active ?? true,
       createdAt: new Date(),
+      sections: insertTemplate.sections,
       updatedAt: new Date(),
     };
     this.templates.set(template.id, template);
@@ -750,10 +761,22 @@ export class MemStorage implements IStorage {
 
   async createChecklist(insertChecklist: InsertChecklist): Promise<Checklist> {
     const checklist: Checklist = {
-      ...insertChecklist,
       id: randomUUID(),
+      templateId: insertChecklist.templateId,
+      status: insertChecklist.status || 'pendente',
       createdAt: new Date(),
+      photos: insertChecklist.photos,
       updatedAt: new Date(),
+      technicianId: insertChecklist.technicianId,
+      analystId: insertChecklist.analystId || null,
+      storeCode: insertChecklist.storeCode,
+      storeManager: insertChecklist.storeManager,
+      storePhone: insertChecklist.storePhone,
+      responses: insertChecklist.responses,
+      signature: insertChecklist.signature || null,
+      validationCode: insertChecklist.validationCode || null,
+      rating: insertChecklist.rating || null,
+      feedback: insertChecklist.feedback || null,
     };
     this.checklists.set(checklist.id, checklist);
     return checklist;

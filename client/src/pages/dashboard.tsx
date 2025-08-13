@@ -1,6 +1,6 @@
 import { useAuth } from '@/lib/auth';
 import { useQuery } from '@tanstack/react-query';
-import Sidebar from '@/components/layout/sidebar';
+import { Sidebar } from '@/components/layout/sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -78,7 +78,7 @@ export default function Dashboard() {
                         Total de Checklists
                       </p>
                       <p className="text-2xl font-bold text-gray-900 mt-1">
-                        {metrics?.total || 0}
+                        {(metrics as any)?.total || 0}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -105,7 +105,7 @@ export default function Dashboard() {
                         Pendentes
                       </p>
                       <p className="text-2xl font-bold text-gray-900 mt-1">
-                        {metrics?.pending || 0}
+                        {(metrics as any)?.pending || 0}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -132,7 +132,7 @@ export default function Dashboard() {
                         Aprovados
                       </p>
                       <p className="text-2xl font-bold text-gray-900 mt-1">
-                        {metrics?.approved || 0}
+                        {(metrics as any)?.approved || 0}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -159,7 +159,7 @@ export default function Dashboard() {
                         Taxa de Aprovação
                       </p>
                       <p className="text-2xl font-bold text-gray-900 mt-1">
-                        {metrics?.approvalRate || "0.0"}%
+                        {((metrics as any)?.approvalRate || 0).toFixed(1)}%
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -188,7 +188,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent className="p-6">
                   <div className="space-y-4">
-                    {metrics?.recentChecklists?.map((checklist: any) => (
+                    {((metrics as any)?.recentChecklists || [])?.map((checklist: any) => (
                       <div key={checklist.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                         <div className="flex items-center">
                           <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
@@ -228,7 +228,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent className="p-6">
                   <div className="space-y-4">
-                    {metrics?.technicianRankings?.map((tech: any, index: number) => (
+                    {((metrics as any)?.technicianRankings || [])?.map((tech: any, index: number) => (
                       <div key={tech.id} className="flex items-center justify-between">
                         <div className="flex items-center">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${

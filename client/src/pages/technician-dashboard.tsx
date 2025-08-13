@@ -70,7 +70,7 @@ export default function TechnicianDashboard() {
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {templates?.map((template: any) => {
+              {((templates as any) || [])?.map((template: any) => {
                 const Icon = templateIcons[template.type as keyof typeof templateIcons] || ClipboardCheck;
                 const color = templateColors[template.type as keyof typeof templateColors] || 'gray';
                 
@@ -104,7 +104,7 @@ export default function TechnicianDashboard() {
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-4">
-              {myChecklists?.length > 0 ? myChecklists.map((checklist: any) => (
+              {((myChecklists as any) || [])?.length > 0 ? ((myChecklists as any) || []).map((checklist: any) => (
                 <div key={checklist.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-3">

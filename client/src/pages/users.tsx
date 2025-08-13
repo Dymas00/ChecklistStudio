@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import Sidebar from '@/components/layout/sidebar';
+import { Sidebar } from '@/components/layout/sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -268,7 +268,7 @@ export default function Users() {
           </div>
         ) : (
           <div className="space-y-4">
-            {users?.map((userData: any) => (
+            {((users as any) || [])?.map((userData: any) => (
               <Card key={userData.id} className="border-0 shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -338,7 +338,7 @@ export default function Users() {
           </div>
         )}
 
-        {!isLoading && (!users || users.length === 0) && (
+        {!isLoading && (!users || ((users as any) || []).length === 0) && (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
               <User className="w-8 h-8 text-gray-400" />

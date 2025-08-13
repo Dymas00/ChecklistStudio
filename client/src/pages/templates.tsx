@@ -1,6 +1,6 @@
 import { useAuth } from '@/lib/auth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import Sidebar from '@/components/layout/sidebar';
+import { Sidebar } from '@/components/layout/sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -117,7 +117,7 @@ export default function Templates() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {templates?.map((template: any) => {
+            {((templates as any) || [])?.map((template: any) => {
               const Icon = templateIcons[template.type as keyof typeof templateIcons] || Settings;
               const colors = templateColors[template.type as keyof typeof templateColors] || { bg: 'bg-gray-100', text: 'text-gray-600' };
               const sectionsCount = Array.isArray(template.sections) ? template.sections.length : 0;
@@ -192,7 +192,7 @@ export default function Templates() {
           </div>
         )}
 
-        {!isLoading && (!templates || templates.length === 0) && (
+        {!isLoading && (!templates || ((templates as any) || []).length === 0) && (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
               <Settings className="w-8 h-8 text-gray-400" />

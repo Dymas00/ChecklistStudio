@@ -116,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [token, queryClient]);
 
-  const user = authData?.user || null;
+  const user = (authData as any)?.user || null;
   const isAuthenticated = !!user;
   const isAdmin = user?.role === UserRole.ADMINISTRADOR;
   const isTechnician = user?.role === UserRole.TECNICO;
