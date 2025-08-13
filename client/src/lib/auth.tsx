@@ -1,8 +1,26 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from './queryClient';
-import { User, LoginData, UserRole } from '@shared/schema';
-import { useLocation } from 'wouter';
+import { UserRole } from '@shared/schema';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  phone?: string;
+  cpf?: string;
+  contractor?: string;
+  active: boolean;
+  createdAt: Date;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -135,4 +153,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+// Simple auth utility for token management
+export function getAuthToken(): string | null {
+  return localStorage.getItem('token');
+}
+
+export function setAuthToken(token: string): void {
+  localStorage.setItem('token', token);
+}
+
+export function removeAuthToken(): void {
+  localStorage.removeItem('token');
+}
+
+export function isAuthenticated(): boolean {
+  return !!getAuthToken();
 }
