@@ -93,7 +93,7 @@
 
 /* File upload styling */
 input[type="file"]::-webkit-file-upload-button {
-  @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  @apply bg-primary text-primary-foreground hover:bg-primary hover:opacity-90;
 }
 
 /* Loading animations */
