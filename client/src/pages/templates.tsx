@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   Plus,
   Upload,
@@ -13,7 +15,10 @@ import {
   Power,
   Settings,
   RefreshCw,
-  Eye
+  Eye,
+  X,
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -23,6 +28,8 @@ export default function Templates() {
   const { user, isAdmin } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   
   const { data: templates, isLoading } = useQuery({
     queryKey: ['/api/templates']
@@ -52,6 +59,11 @@ export default function Templates() {
     if (window.confirm(`Tem certeza que deseja remover o template "${templateName}"?`)) {
       deleteMutation.mutate(templateId);
     }
+  };
+
+  const handleViewTemplate = (template: any) => {
+    setSelectedTemplate(template);
+    setIsViewDialogOpen(true);
   };
 
   if (!user || user.role === 'tecnico') {
@@ -179,6 +191,7 @@ export default function Templates() {
                           variant="ghost" 
                           size="sm" 
                           className="text-primary hover:text-primary/80 font-medium p-0"
+                          onClick={() => handleViewTemplate(template)}
                         >
                           <Eye className="w-4 h-4 mr-1" />
                           Visualizar
@@ -211,6 +224,109 @@ export default function Templates() {
             )}
           </div>
         )}
+
+        {/* Template View Dialog */}
+        <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center text-xl">
+                {selectedTemplate && (
+                  <>
+                    <div className={`w-8 h-8 ${templateColors[selectedTemplate.type]?.bg || 'bg-gray-100'} rounded-lg flex items-center justify-center mr-3`}>
+                      {(() => {
+                        const Icon = templateIcons[selectedTemplate.type as keyof typeof templateIcons] || Settings;
+                        return <Icon className={`w-4 h-4 ${templateColors[selectedTemplate.type]?.text || 'text-gray-600'}`} />;
+                      })()}
+                    </div>
+                    {selectedTemplate.name}
+                    <Badge 
+                      variant={selectedTemplate.active ? "default" : "secondary"}
+                      className={`ml-3 ${selectedTemplate.active ? "bg-green-100 text-green-800" : ""}`}
+                    >
+                      {selectedTemplate.active ? "Ativo" : "Inativo"}
+                    </Badge>
+                  </>
+                )}
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedTemplate && (
+              <div className="space-y-6">
+                {/* Template Info */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="font-medium text-gray-900 mb-1">Tipo</h3>
+                      <p className="text-gray-600 capitalize">{selectedTemplate.type}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-900 mb-1">Última atualização</h3>
+                      <p className="text-gray-600">{formatTimeAgo(selectedTemplate.updatedAt)}</p>
+                    </div>
+                  </div>
+                  {selectedTemplate.description && (
+                    <div className="mt-4">
+                      <h3 className="font-medium text-gray-900 mb-1">Descrição</h3>
+                      <p className="text-gray-600">{selectedTemplate.description}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Template Sections */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Seções do Template ({Array.isArray(selectedTemplate.sections) ? selectedTemplate.sections.length : 0})
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    {Array.isArray(selectedTemplate.sections) && selectedTemplate.sections.map((section: any, index: number) => (
+                      <Card key={section.id || index} className="border-l-4 border-l-primary">
+                        <CardContent className="p-4">
+                          <div className="flex items-center mb-3">
+                            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                              <span className="text-primary font-semibold text-sm">{section.id}</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">
+                              SEÇÃO {section.id} | {section.title}
+                            </h4>
+                          </div>
+                          
+                          {Array.isArray(section.fields) && (
+                            <div className="space-y-2">
+                              <p className="text-sm text-gray-600 mb-2">
+                                {section.fields.length} campos configurados
+                              </p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                {section.fields.map((field: any, fieldIndex: number) => (
+                                  <div key={field.id || fieldIndex} className="flex items-center p-2 bg-gray-50 rounded">
+                                    <div className="flex items-center mr-2">
+                                      {field.required && (
+                                        <AlertCircle className="w-3 h-3 text-orange-500 mr-1" />
+                                      )}
+                                      <CheckCircle className="w-3 h-3 text-green-500" />
+                                    </div>
+                                    <div className="flex-1">
+                                      <p className="text-sm font-medium text-gray-900">
+                                        {field.label}
+                                      </p>
+                                      <p className="text-xs text-gray-600">
+                                        {field.type} {field.required ? "(obrigatório)" : "(opcional)"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

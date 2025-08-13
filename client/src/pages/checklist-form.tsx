@@ -146,6 +146,22 @@ export default function ChecklistForm() {
   const renderField = (field: any) => {
     const value = responses[field.id] || '';
 
+    // Check conditional logic
+    if (field.conditional) {
+      const conditionalField = field.conditional.field;
+      const conditionalValue = field.conditional.value;
+      const conditionalNotValue = field.conditional.notValue;
+      const currentValue = responses[conditionalField];
+      
+      if (conditionalValue && currentValue !== conditionalValue) {
+        return null; // Don't render if condition not met
+      }
+      
+      if (conditionalNotValue && currentValue === conditionalNotValue) {
+        return null; // Don't render if not condition is met
+      }
+    }
+
     switch (field.type) {
       case 'text':
       case 'email':

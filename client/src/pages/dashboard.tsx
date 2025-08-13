@@ -159,7 +159,7 @@ export default function Dashboard() {
                         Taxa de Aprovação
                       </p>
                       <p className="text-2xl font-bold text-gray-900 mt-1">
-                        {((metrics as any)?.approvalRate || 0).toFixed(1)}%
+                        {(typeof (metrics as any)?.approvalRate === 'number' ? (metrics as any)?.approvalRate.toFixed(1) : "0.0")}%
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
