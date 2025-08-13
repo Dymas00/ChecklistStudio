@@ -1,0 +1,74 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+10:59:22 PM [express] serving on port 5000
+Error:   Failed to scan for dependencies from entries:
+  /home/runner/workspace/client/index.html
+
+  ✘ [ERROR] No matching export in "client/src/lib/auth.ts" for import "AuthProvider"
+
+    client/src/App.tsx:6:9:
+      6 │ import { AuthProvider } from "./lib/auth";
+        ╵          ~~~~~~~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/components/layout/sidebar.tsx:1:9:
+      1 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/checklist-form.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/dashboard.tsx:1:9:
+      1 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/login.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/technician-dashboard.tsx:1:9:
+      1 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/templates.tsx:1:9:
+      1 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/users.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+    at failureErrorWithLog (/home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:945:25
+    at runOnEndCallbacks (/home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:1315:45)
+    at buildResponseToResult (/home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:943:7)
+    at /home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:955:9
+    at new Promise (<anonymous>)
+    at requestCallbacks.on-end (/home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:954:54)
+    at handleRequest (/home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:647:17)
+    at handleIncomingPacket (/home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:672:7)
+    at Socket.readFromStdout (/home/runner/workspace/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
