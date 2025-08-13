@@ -1,0 +1,185 @@
+SEÇÃO 1 | CADASTRO TÉCNICO
+
+Eu aceito que meu nome, fone, cpf, foto e outros dados sensíveis utilizados nesse checklist serão armazenados nos servidores da Checklist Virtual e da Claro.* [SIM/NÃO] {Preenchimento obrigatório}
+
+Qual é o seu nome completo?(Técnico)*  [Caixa de texto] {Preenchimento obrigatório}
+
+Qual o seu n. de telefone celular?* [Caixa de texto] {Preenchimento obrigatório}
+
+Qual o seu CPF?* [Caixa de texto] {Preenchimento obrigatório}
+
+Tire uma selfie do seu rosto. [Foto] {Preenchimento obrigatório}
+
+
+SEÇÃO 2 | CADASTRO UNIDADE
+
+Qual é o código da unidade que você está atendendo?(Exemplo: 21380, JC36)* [Caixa de texto] {Preenchimento obrigatório}
+
+Nome do Responsável da Loja* [Caixa de texto] {Preenchimento obrigatório}
+
+Telefone do Responsável Loja* [Caixa de texto] {Preenchimento obrigatório}
+
+
+SEÇÃO 3 | LIBERAÇÃO DA MIGRAÇÃO
+
+Conseguiu baixar e acessar o sistema da migração?* [SIM/NÃO] + [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+O check-in foi validado e a migração foi liberada?* [SIM/NÃO] + [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Foto do rack, com a porta aberta, antes do início das atividades.* [Foto] {Preenchimento obrigatório}
+
+Haverão equipamentos antigos (MR33, MX64, MX65) sendo recolhidos?* [Caixa de seleção: Apenas MX, Apenas MR, MX, MR, Nenhum] + [Foto] {Preenchimento obrigatório} - OBS: [Se seleção = "Nenhum": exibe Caixa de texto para inserir observações e campo anexar foto deve ser ocultado]
+
+
+SEÇÃO 4 | RACK
+
+A loja possui rack?* [SIM/NÃO] + [FOTO] + [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Se a resposta do item  "A loja possui rack?" for "NÃO", então exiba as perguntas:
+	
+	Em que local estão os equipamentos?* [Caixa de texto] + [Foto] {Preenchimento obrigatório}
+
+	A tensão da rede está correta(foto do multímetro)?*  [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+Se a resposta do item  "A loja possui rack?" for "SIM", então exiba as perguntas:
+
+	O rack está livre de qualquer objeto em cima dele?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+	O rack tem chave?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+	O acrílico/vidro estão inteiros e em bom estado?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+	O rack está livre de ferrugem?* [SIM/NÃO] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações + Campo para inserir Foto]
+
+	Cooler / Ventoinha do Rack está funcionando?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório}
+
+	A porta do rack está íntegra e fechando corretamente?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+	Os modems/roteadores de LINK estão na prateleira de cima?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+	O MX está na prateleira do meio?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+	O Nobreak ou Estabilizador está na prateleira debaixo?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+	A temperatura do rack está adequada(foto do termômetro)?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+	A tensão da rede está correta(foto do multímetro)?* [SIM/NÃO] + [Foto] {Preenchimento obrigatório} - OBS: [Se escolha = "NÃO": exibe Caixa de texto para inserir observações]
+
+
+SEÇÃO 5 | NOBREAKS
+
+Tem Nobreak ou Estabilizador Claro? (foto da etiqueta)* [Caixa de seleção: Nobreak, Estabilizador, Nenhum] + [Foto] {Preenchimento obrigatório}
+
+Se a resposta do item  "Tem Nobreak ou Estabilizador Claro? (foto da etiqueta)" for "Nobreak", então exiba as perguntas:
+
+	A bateria está segurando carga e o no-break funcionando?* [SIM/NÃO] + [Se escolha = "NÃO": exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+	Possui outro Nobreak no local, de propriedade da loja?* [SIM/NÃO] + [Se SIM: FOTO] {Preenchimento obrigatório}
+
+Se a resposta do item  "Tem Nobreak ou Estabilizador Claro? (foto da etiqueta)" for "Estabilizador" ou "Nenhum", então exiba somente a pergunta:
+
+	Possui outro Nobreak no local, de propriedade da loja?* [SIM/NÃO] + [Se SIM: FOTO] {Preenchimento obrigatório}
+
+
+SEÇÃO 6 | CABEAMENTO
+
+Os cabos estão organizados e passando pelos dutos/tubulações corretas?* [SIM/NÃO] + [Foto] + [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Todos os cabos estão funcionais?* [SIM/NÃO] +  [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Todas as portas estão negociando em 1Gb(exceto Vitrine)? (solicitar ao analista remoto)* [SIM/NÃO] + [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Os cabos foram ETIQUETADOS corretamente?* [SIM/NÃO] + [Foto] + [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+
+SEÇÃO 7 | LINKS
+
+Quantos links a loja tem?* [Caixa de seleção: 1, 2, 3]  {Preenchimento obrigatório}
+
+Link 1 (foto do modem/roteador com número de série e, se for 4G, do sim card com o código):* [Caixa de seleção: BLC Claro 600Mbps, BLD Claro 50Mbps, Conectividade da Franquia, BLM Claro (4G), BLC Claro - antigo (outra velocidade), BLD Claro - antigo (outra velocidade), BLC Terceiro - antigo, MPLS Claro - antigo, Satélite Claro - antigo] + [Foto] {Preenchimento obrigatório}
+
+Designação Link 1 (solicite ao analista):* [Caixa de texto] + {Preenchimento obrigatório}
+
+MAC Address Link 1:* [Caixa de texto] + {Preenchimento obrigatório}
+
+O IP do Link 1 está no range correto? (verificar com analista e pegar print com ele)* [SIM/NÃO] + [Foto] + [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Observação 1: Se a resposta no item "Quantos links a loja tem?" for maior que 1, adicione para preenchimento mais os itens mais itens para preenchimento (ex: Link 2, Designação Link 2, MAC Address Link 2, etc), conforme a quantidade (2 ou 3). 
+
+Observação 2: Se a resposta do item  "Link X*" for "Conectividade da Franquia", então oculte as perguntas as perguntas: "Designação Link X" e "MAC Address Link X". (Seja no link 1, ou 2/3 caso o usuário selecione mais de 1 link na quantidade).
+
+
+SEÇÃO 8 | MX
+
+O MX instalado é do modelo MX68?* [SIM/NÃO] + [Se SIM: FOTO] {Preenchimento obrigatório}
+
+Qual o número de série?* [Caixa de texto] + [Foto] {Preenchimento obrigatório}
+
+
+SEÇÃO 9 | ACCESS POINT
+
+A loja possui AP?* [SIM/NÃO] + [Se SIM: FOTO] {Preenchimento obrigatório}
+
+Se a resposta do item  "A loja possui AP?" for "SIM", então exiba as perguntas:
+
+	O(s) AP(s) é do modelo MR36?* [SIM/NÃO] + [Foto] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+	Todos os AP estão ativos e funcionais?* [SIM/NÃO] + [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+	Onde o AP está instalado?* [Caixa de seleção: No teto, No balcão do PDV, Outro lugar] + [Se "Outro lugar": exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+	OS Mobshops estão funcionando? (Verificar com responsável da loja)* [SIM/NÃO] +  [Se não: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+
+SEÇÃO 10 | VITRINE DIGITAL
+
+A loja possui Vitrine Digital (consultar gerente)?* [SIM/NÃO] + [Se Sim: Foto, Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Se a resposta do item  "A loja possui Vitrine Digital (consultar gerente)?" for "SIM", então exiba a pergunta:
+
+	A Vitrine Digital está CABEADA e funcional?* [SIM/NÃO] + [Se Sim: Foto, Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+
+SEÇÃO 11 | EQUIPAMENTOS NÃO-COMPLIANCE
+
+Todos os equipamentos conectados são os corretos (nenhum video-game, AP ou switch de outras marcas, etc)?* [SIM/NÃO] + [Se não: FOTO + Exibe Caixa de texto para inserir observações]  {Preenchimento obrigatório}
+
+Não existe nada irregular(rádio fm, cafeteira, carregador, etc) dentro do rack ou conectado ao nobreak/estabilizador?* [SIM/NÃO] + [Se não: FOTO + Exibe Caixa de texto para inserir observações]  {Preenchimento obrigatório}
+
+
+SEÇÃO 12 | SCRIPT DE MIGRAÇÃO
+
+Print do Script de Migração (solicite ao analista Claro): [FOTO] {Preenchimento obrigatório}
+
+
+SEÇÃO 13 | EVIDÊNCIAS DA MIGRAÇÃO
+
+Após a loja subir na GBTech, coletar as evidências fotográficas e pedir os prints ao analista GBTech [Título]
+
+A loja subiu corretamente na nova Organização?* [SIM/NÃO] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+O PDV está conectado? (foto para evidência)*  [SIM/NÃO] + [Foto] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Os Mobshops estão conectados? (fotos para evidência)* [SIM/NÃO] + [Foto] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+A Vitrine Digital está conectada? (foto para evidência)* [SIM/NÃO] + [Foto] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+A VPN está fechada e com clientes? (peça print ao analista)* [SIM/NÃO] + [Foto] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+A(s) porta(s) WAN está píngando? (peça print ao analista)* [SIM/NÃO] + [Foto] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+Todas as portas estão em 1Gb(exceto vitrine)? (peça print ao analista)* [SIM/NÃO] + [Foto] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+O AP está conectado? (foto com o led aceso)* [SIM/NÃO] + [Foto] + [Se NÃO: exibe Caixa de texto para inserir observações] {Preenchimento obrigatório}
+
+A loja tem switch e está conectado? (Se sim, foto)* [SIM/NÃO] + [Se Sim: Foto] {Preenchimento obrigatório}
+
+
+Assinatura - Técnico:
+
+[CAIXA ASSINATURA]
+
+Assinatura - Loja:
+
+[CAIXA ASSINATURA]
+
