@@ -71,6 +71,12 @@ Preferred communication style: Simple, everyday language.
 - ✅ Sistema compila perfeitamente sem warnings LSP
 - ✅ Build de produção otimizado (65.2kb)
 - ✅ Código 100% tipado e validado
+- ✅ **Bugs do sistema de avaliação de técnicos corrigidos (Janeiro 14, 2025)**
+- ✅ Validação de rating melhorada com parseInt() para evitar NaN
+- ✅ Cálculo de média de avaliações considera apenas checklists aprovados
+- ✅ Exibição de estrelas corrigida para usar valores inteiros
+- ✅ Proteções contra valores null/undefined em ratings
+- ✅ Sistema de ranking de técnicos aprimorado com formatação decimal
 
 ## System Architecture
 

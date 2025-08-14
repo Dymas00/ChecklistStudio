@@ -246,7 +246,7 @@ export default function Dashboard() {
                               <Star
                                 key={i}
                                 className={`w-4 h-4 ${
-                                  i < Math.floor(parseFloat(tech.rating))
+                                  i < Math.floor(parseFloat(tech.rating) || 0)
                                     ? 'text-yellow-400 fill-current'
                                     : 'text-gray-300'
                                 }`}
@@ -254,7 +254,7 @@ export default function Dashboard() {
                             ))}
                           </div>
                           <span className="text-sm font-medium text-gray-900">
-                            {tech.rating}
+                            {parseFloat(tech.rating || 0).toFixed(1)}
                           </span>
                         </div>
                       </div>

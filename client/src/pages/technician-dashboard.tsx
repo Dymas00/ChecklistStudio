@@ -188,12 +188,13 @@ export default function TechnicianDashboard() {
                           <Star
                             key={i}
                             className={`w-3 h-3 ${
-                              i < checklist.rating
+                              i < parseInt(checklist.rating)
                                 ? 'text-yellow-400 fill-current'
                                 : 'text-gray-300'
                             }`}
                           />
                         ))}
+                        <span className="ml-1 text-xs text-gray-600">{checklist.rating}/5</span>
                       </div>
                     )}
                     

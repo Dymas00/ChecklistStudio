@@ -407,7 +407,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Comentário é obrigatório" });
       }
 
-      if (action === 'approve' && (!rating || rating < 1 || rating > 5)) {
+      if (action === 'approve' && (!rating || parseInt(rating) < 1 || parseInt(rating) > 5)) {
         return res.status(400).json({ message: "Avaliação é obrigatória para aprovação (1-5 estrelas)" });
       }
 

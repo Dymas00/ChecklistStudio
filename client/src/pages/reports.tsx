@@ -176,8 +176,13 @@ export default function Reports() {
       
       const stats = technicianStats.get(techId);
       stats.total++;
-      stats[checklist.status]++;
-      if (checklist.rating) stats.ratings.push(checklist.rating);
+      if (stats[checklist.status] !== undefined) {
+        stats[checklist.status]++;
+      }
+      // Only count ratings from approved checklists
+      if (checklist.rating && checklist.status === 'aprovado') {
+        stats.ratings.push(checklist.rating);
+      }
     });
 
     const technicianPerformance = Array.from(technicianStats.values()).map((stats: any) => ({
