@@ -30,22 +30,65 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
   const template = (templates as any[])?.find((t: any) => t.id === checklist.templateId);
 
   if (!template) {
-    // Fallback to simple display if template not found
+    // Create a form-like display even without template
     return (
       <div className="border-t pt-4">
-        <h4 className="font-medium text-gray-900 mb-3">Respostas do Formulário</h4>
-        <div className="space-y-3">
-          {Object.entries(checklist.responses || {}).map(([key, value]) => (
-            <div key={key} className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-sm font-medium text-gray-700 capitalize">{key}:</p>
-              <p className="text-sm text-gray-900 mt-1">
-                {typeof value === 'object' && value !== null 
-                  ? JSON.stringify(value, null, 2)
-                  : String(value)
-                }
-              </p>
-            </div>
-          ))}
+        <h4 className="font-medium text-gray-900 mb-4">Formulário Preenchido pelo Técnico</h4>
+        
+        <div className="space-y-6">
+          <Card className="shadow-sm">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 pb-3">
+              <CardTitle className="text-lg">Dados do Checklist</CardTitle>
+            </CardHeader>
+            
+            <CardContent className="pt-6 space-y-4">
+              {Object.entries(checklist.responses || {}).map(([key, value]) => (
+                <div key={key} className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700 capitalize">
+                    {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  </Label>
+                  <Input
+                    value={typeof value === 'object' && value !== null 
+                      ? JSON.stringify(value) 
+                      : String(value || '')
+                    }
+                    disabled
+                    className="bg-gray-50 cursor-not-allowed"
+                  />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+          
+          {/* Fotos Anexadas Section */}
+          {checklist.files && checklist.files.length > 0 && (
+            <Card className="shadow-sm">
+              <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="text-xl">📷</span>
+                  Fotos Anexadas
+                </CardTitle>
+              </CardHeader>
+              
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-2 gap-4">
+                  {checklist.files.map((file: any, index: number) => (
+                    <div key={index} className="space-y-2">
+                      <img
+                        src={`/uploads/${file.filename || file}`}
+                        alt={`Foto ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => window.open(`/uploads/${file.filename || file}`, '_blank')}
+                      />
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 w-full justify-center">
+                        📷 Foto {index + 1}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     );
@@ -131,25 +174,13 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                         {response ? (
                           <div className="space-y-2">
                             <img
-                              src={`/uploads/${response}`}
+                              src={`/uploads/${typeof response === 'object' && response !== null ? response.filename : response}`}
                               alt="Foto enviada pelo técnico"
                               className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                              onLoad={(e) => {
-                                console.log('Imagem carregada com sucesso:', `/uploads/${response}`);
-                              }}
-                              onError={(e) => {
-                                console.log('Erro ao carregar foto:', `/uploads/${response}`);
-                                const target = e.currentTarget as HTMLImageElement;
-                                target.style.display = 'none';
-                                const errorDiv = document.createElement('div');
-                                errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
-                                errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar: ${response}</p>`;
-                                target.parentNode?.insertBefore(errorDiv, target);
-                              }}
-                              onClick={() => window.open(`/uploads/${response}`, '_blank')}
+                              onClick={() => window.open(`/uploads/${typeof response === 'object' && response !== null ? response.filename : response}`, '_blank')}
                             />
                             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                              📷 Foto anexada: {typeof response === 'object' && response !== null ? response.filename || 'arquivo' : response}
+                              📷 Foto anexada
                             </Badge>
                           </div>
                         ) : (
