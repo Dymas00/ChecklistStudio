@@ -266,37 +266,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/checklists", requireAuth, upload.fields([
-    { name: 'data', maxCount: 1 }
-  ]), async (req: any, res) => {
+  app.post("/api/checklists", requireAuth, upload.any(), async (req: any, res) => {
     try {
       console.log('Received checklist data:', req.body);
       console.log('Received files:', req.files);
       
       let checklistData;
+      
+      // Handle different content types
       if (req.body.data) {
+        // FormData with files
         checklistData = JSON.parse(req.body.data);
-      } else {
-        // Handle case where data is sent as JSON body (without files)
+      } else if (req.headers['content-type']?.includes('application/json')) {
+        // Pure JSON (no files)
         checklistData = req.body;
+      } else {
+        return res.status(400).json({ message: "Formato de dados inválido" });
       }
       
       // Process file uploads from FormData
       const processedResponses = { ...checklistData.responses };
       
-      // Handle file fields in the responses
-      Object.entries(processedResponses).forEach(([key, value]) => {
-        if (req.files && req.files[key] && req.files[key][0]) {
-          const file = req.files[key][0];
-          processedResponses[key] = {
+      // Handle file uploads
+      if (req.files && Array.isArray(req.files)) {
+        req.files.forEach((file: any) => {
+          processedResponses[file.fieldname] = {
             filename: file.filename,
             originalName: file.originalname,
             path: file.path,
             mimetype: file.mimetype,
             size: file.size
           };
-        }
-      });
+        });
+      }
 
       const checklist = await storage.createChecklist({
         ...checklistData,
@@ -314,7 +316,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/checklists/:id", requireAuth, upload.array('photos'), async (req: any, res) => {
+  app.put("/api/checklists/:id", requireAuth, upload.any(), async (req: any, res) => {
     try {
       const existingChecklist = await storage.getChecklist(req.params.id);
       if (!existingChecklist) {
@@ -326,23 +328,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Acesso negado" });
       }
 
-      // If updating a rejected checklist, reset status to pending
+      // Handle different content types for update
       let updateData;
+      let processedResponses;
+      
       if (req.body.data) {
-        // Handle multipart form data (with files)
+        // FormData with potential files
         const checklistData = JSON.parse(req.body.data);
+        processedResponses = { ...checklistData.responses };
         
-        // Process uploaded files
-        const photos = req.files?.map((file: any) => ({
-          fieldId: file.fieldname,
-          filename: file.filename,
-          originalName: file.originalname,
-          path: file.path
-        })) || [];
-
+        // Process file uploads
+        if (req.files && Array.isArray(req.files)) {
+          req.files.forEach((file: any) => {
+            processedResponses[file.fieldname] = {
+              filename: file.filename,
+              originalName: file.originalname,
+              path: file.path,
+              mimetype: file.mimetype,
+              size: file.size
+            };
+          });
+        }
+        
         updateData = {
           ...checklistData,
-          photos: photos.length > 0 ? photos : existingChecklist.photos,
+          responses: processedResponses,
           status: existingChecklist.status === 'rejeitado' ? 'pendente' : existingChecklist.status,
           // Clear approval fields when resubmitting rejected checklist
           ...(existingChecklist.status === 'rejeitado' && {
@@ -417,7 +427,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         status: action === 'approve' ? 'aprovado' : 'rejeitado',
         approvalComment: approvalComment.trim(),
         approvedBy: req.user.id,
-        approvedAt: new Date().toISOString(),
+        approvedAt: new Date(),
         ...(action === 'approve' && {
           rating: parseInt(rating),
           feedback: feedback?.trim() || null

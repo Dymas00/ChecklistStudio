@@ -172,7 +172,6 @@ export default function ChecklistForm() {
 
     if (hasFiles) {
       // Use FormData for file uploads
-      formData.append('data', JSON.stringify(checklistData));
       
       // Handle file uploads - append files with their field names
       Object.entries(responses).forEach(([key, value]) => {
@@ -183,8 +182,8 @@ export default function ChecklistForm() {
         }
       });
       
-      // Update data with cleaned responses
-      formData.set('data', JSON.stringify({
+      // Append cleaned data
+      formData.append('data', JSON.stringify({
         ...checklistData,
         responses: responsesCopy
       }));
