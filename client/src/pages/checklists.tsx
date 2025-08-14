@@ -1,16 +1,18 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Sidebar } from '@/components/layout/sidebar';
 import Footer from '@/components/layout/footer';
-import { ClipboardList, Search, Filter, FileText, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown, CheckCircle, XCircle } from 'lucide-react';
+import { ClipboardList, Search, Filter, FileText, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import { Link } from 'wouter';
 import { exportChecklistToPDF } from '@/lib/pdf-export';
 import { useToast } from '@/hooks/use-toast';
@@ -81,7 +83,9 @@ export default function Checklists() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [isNewChecklistDialogOpen, setIsNewChecklistDialogOpen] = useState(false);
   const [exportingId, setExportingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [selectedChecklistForDetails, setSelectedChecklistForDetails] = useState<any>(null);
+  const queryClient = useQueryClient();
 
   const { data: checklists, isLoading } = useQuery({
     queryKey: ['/api/checklists'],
@@ -184,6 +188,36 @@ export default function Checklists() {
     } finally {
       setExportingId(null);
     }
+  };
+
+  // Delete checklist mutation
+  const deleteChecklistMutation = useMutation({
+    mutationFn: async (checklistId: string) => {
+      const response = await apiRequest('DELETE', `/api/checklists/${checklistId}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/checklists'] });
+      toast({
+        title: 'Sucesso',
+        description: 'Checklist excluído com sucesso!',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Erro',
+        description: error.message || 'Erro ao excluir checklist',
+        variant: 'destructive',
+      });
+    },
+    onSettled: () => {
+      setDeletingId(null);
+    }
+  });
+
+  const handleDeleteChecklist = (checklistId: string) => {
+    setDeletingId(checklistId);
+    deleteChecklistMutation.mutate(checklistId);
   };
 
   if (isLoading) {
@@ -449,6 +483,42 @@ export default function Checklists() {
                                 <Edit className="w-4 h-4" />
                               </Button>
                             </Link>
+                          )}
+
+                          {user?.role === 'administrador' && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  disabled={deletingId === checklist.id}
+                                >
+                                  {deletingId === checklist.id ? (
+                                    <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                                  ) : (
+                                    <Trash2 className="w-4 h-4" />
+                                  )}
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Tem certeza que deseja excluir o checklist da Loja {checklist.storeCode}? Esta ação não pode ser desfeita.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDeleteChecklist(checklist.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Excluir
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           )}
                         </div>
                       </div>

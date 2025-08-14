@@ -415,12 +415,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/checklists/:id", requireAuth, async (req, res) => {
-    const deleted = await storage.deleteChecklist(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ message: "Checklist não encontrado" });
+  app.delete("/api/checklists/:id", requireAuth, async (req: any, res) => {
+    try {
+      // Verificar se é administrador
+      if (req.user.role !== 'administrador') {
+        return res.status(403).json({ message: "Acesso negado - apenas administradores podem excluir checklists" });
+      }
+
+      const deleted = await storage.deleteChecklist(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Checklist não encontrado" });
+      }
+      
+      res.json({ message: "Checklist removido com sucesso" });
+    } catch (error) {
+      console.error('Erro ao excluir checklist:', error);
+      res.status(500).json({ message: "Erro interno do servidor" });
     }
-    res.json({ message: "Checklist removido com sucesso" });
   });
 
   // Approve or reject checklist
