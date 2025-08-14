@@ -385,32 +385,123 @@ export class SQLiteStorage implements IStorage {
             },
             {
               id: 3,
-              title: "Equipamentos Instalados",
-              icon: "fas fa-router",
+              title: "Checkin com a Central",
+              icon: "fas fa-phone",
               fields: [
-                { id: "equipmentList", label: "Liste os equipamentos instalados", type: "textarea", required: true },
-                { id: "equipmentPhoto", label: "Foto dos equipamentos instalados", type: "photo", required: true },
-                { id: "serialNumbers", label: "Números de série dos equipamentos", type: "textarea", required: true }
+                { id: "centralContact", label: "Entrou em contato com a central para liberação?", type: "evidence", required: true },
+                { id: "authorizationCode", label: "Código de autorização recebido", type: "text", required: true },
+                { id: "centralAgent", label: "Nome do atendente da central", type: "text", required: true }
               ]
             },
             {
               id: 4,
-              title: "Teste de Conectividade",
-              icon: "fas fa-wifi",
+              title: "Avaliação do Local",
+              icon: "fas fa-map-marker-alt",
               fields: [
-                { id: "speedTest", label: "Velocidade do Speed Test (Mbps)", type: "number", required: true },
-                { id: "speedTestPhoto", label: "Foto do Speed Test", type: "photo", required: true },
-                { id: "connectivityOk", label: "Todos os dispositivos estão conectados e funcionando?", type: "evidence", required: true }
+                { id: "locationAccess", label: "Acesso ao local está liberado?", type: "evidence", required: true },
+                { id: "safetyConditions", label: "Condições de segurança adequadas?", type: "evidence", required: true },
+                { id: "locationPhoto", label: "Foto geral do local de instalação", type: "photo", required: true }
               ]
             },
             {
               id: 5,
+              title: "Preparação para Instalação",
+              icon: "fas fa-tools",
+              fields: [
+                { id: "toolsReady", label: "Todas as ferramentas necessárias estão disponíveis?", type: "evidence", required: true },
+                { id: "equipmentReceived", label: "Todos os equipamentos foram recebidos?", type: "evidence", required: true },
+                { id: "equipmentList", label: "Lista dos equipamentos a serem instalados", type: "textarea", required: true }
+              ]
+            },
+            {
+              id: 6,
+              title: "Instalação Física",
+              icon: "fas fa-hammer",
+              fields: [
+                { id: "rackInstallation", label: "Rack instalado e fixado adequadamente?", type: "evidence", required: true },
+                { id: "cabling", label: "Cabeamento estruturado executado?", type: "evidence", required: true },
+                { id: "rackPhoto", label: "Foto do rack com equipamentos instalados", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 7,
+              title: "Configuração de Rede",
+              icon: "fas fa-network-wired",
+              fields: [
+                { id: "networkConfig", label: "Configuração de rede executada?", type: "evidence", required: true },
+                { id: "ipConfiguration", label: "Configuração de IP válida?", type: "evidence", required: true },
+                { id: "routingTest", label: "Teste de roteamento aprovado?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 8,
+              title: "Configuração WiFi",
+              icon: "fas fa-wifi",
+              fields: [
+                { id: "wifiConfig", label: "WiFi configurado adequadamente?", type: "evidence", required: true },
+                { id: "ssidConfig", label: "SSID configurado conforme padrão?", type: "evidence", required: true },
+                { id: "wifiTest", label: "Teste de conectividade WiFi aprovado?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 9,
+              title: "Equipamentos Instalados",
+              icon: "fas fa-router",
+              fields: [
+                { id: "equipmentPhoto", label: "Foto dos equipamentos instalados", type: "photo", required: true },
+                { id: "serialNumbers", label: "Números de série dos equipamentos", type: "textarea", required: true },
+                { id: "equipmentTest", label: "Todos os equipamentos funcionando?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 10,
+              title: "Teste de Velocidade",
+              icon: "fas fa-tachometer-alt",
+              fields: [
+                { id: "speedTest", label: "Velocidade do Speed Test (Mbps)", type: "number", required: true },
+                { id: "speedTestPhoto", label: "Foto do Speed Test", type: "photo", required: true },
+                { id: "speedApproved", label: "Velocidade dentro do esperado?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 11,
+              title: "Teste de Conectividade",
+              icon: "fas fa-plug",
+              fields: [
+                { id: "connectivityOk", label: "Todos os dispositivos estão conectados e funcionando?", type: "evidence", required: true },
+                { id: "internetAccess", label: "Acesso à internet funcionando?", type: "evidence", required: true },
+                { id: "internalNetworkTest", label: "Rede interna funcionando adequadamente?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 12,
+              title: "Configuração de Segurança",
+              icon: "fas fa-shield-alt",
+              fields: [
+                { id: "firewallConfig", label: "Firewall configurado adequadamente?", type: "evidence", required: true },
+                { id: "securityTest", label: "Teste de segurança aprovado?", type: "evidence", required: true },
+                { id: "accessControl", label: "Controle de acesso configurado?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 13,
+              title: "Treinamento do Usuário",
+              icon: "fas fa-chalkboard-teacher",
+              fields: [
+                { id: "userTraining", label: "Usuário foi treinado adequadamente?", type: "evidence", required: true },
+                { id: "documentationDelivered", label: "Documentação entregue ao usuário?", type: "evidence", required: true },
+                { id: "userSatisfaction", label: "Usuário demonstrou satisfação com o serviço?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 14,
               title: "Finalização",
               icon: "fas fa-check-circle",
               fields: [
                 { id: "validationCode", label: "Código de validação", type: "text", required: true },
                 { id: "techSignature", label: "Assinatura do Técnico", type: "signature", required: true },
-                { id: "observations", label: "Observações finais", type: "textarea" }
+                { id: "observations", label: "Observações finais", type: "textarea" },
+                { id: "clientSignature", label: "Assinatura do Cliente/Responsável", type: "signature", required: true }
               ]
             }
           ]),
@@ -449,6 +540,26 @@ export class SQLiteStorage implements IStorage {
             },
             {
               id: 3,
+              title: "Checkin com a Central",
+              icon: "fas fa-phone",
+              fields: [
+                { id: "centralContact", label: "Entrou em contato com a central?", type: "evidence", required: true },
+                { id: "authorizationCode", label: "Código de autorização para migração", type: "text", required: true },
+                { id: "migrationSchedule", label: "Horário agendado para migração", type: "text", required: true }
+              ]
+            },
+            {
+              id: 4,
+              title: "Avaliação Pré-Migração",
+              icon: "fas fa-search",
+              fields: [
+                { id: "currentSystemAssessment", label: "Sistema atual foi avaliado?", type: "evidence", required: true },
+                { id: "backupVerification", label: "Backup dos dados verificado?", type: "evidence", required: true },
+                { id: "preAssessmentPhoto", label: "Foto do estado atual do sistema", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 5,
               title: "Liberação da Migração",
               icon: "fas fa-unlock",
               fields: [
@@ -458,35 +569,84 @@ export class SQLiteStorage implements IStorage {
               ]
             },
             {
-              id: 4,
-              title: "Equipamentos e Configuração",
-              icon: "fas fa-cogs",
+              id: 6,
+              title: "Remoção de Equipamentos Antigos",
+              icon: "fas fa-trash-alt",
               fields: [
                 { id: "oldEquipments", label: "Haverão equipamentos antigos sendo recolhidos?", type: "select", required: true, options: ["Apenas MX", "Apenas MR", "MX + MR", "Nenhum"] },
                 { id: "oldEquipmentsPhoto", label: "Foto dos equipamentos antigos", type: "photo", conditional: { field: "oldEquipments", notValue: "Nenhum" } },
-                { id: "newEquipmentsPhoto", label: "Foto dos novos equipamentos instalados", type: "photo", required: true },
-                { id: "cablingOk", label: "Os cabos estão organizados e funcionais?", type: "evidence", required: true }
+                { id: "removalConfirmation", label: "Remoção dos equipamentos antigos concluída?", type: "evidence", required: true }
               ]
             },
             {
-              id: 5,
-              title: "Teste Final",
-              icon: "fas fa-check-double",
+              id: 7,
+              title: "Instalação de Novos Equipamentos",
+              icon: "fas fa-plus-circle",
+              fields: [
+                { id: "newEquipmentsPhoto", label: "Foto dos novos equipamentos instalados", type: "photo", required: true },
+                { id: "equipmentConfiguration", label: "Configuração dos novos equipamentos realizada?", type: "evidence", required: true },
+                { id: "serialNumbers", label: "Números de série dos novos equipamentos", type: "textarea", required: true }
+              ]
+            },
+            {
+              id: 8,
+              title: "Configuração de Rede",
+              icon: "fas fa-network-wired",
+              fields: [
+                { id: "networkMigration", label: "Migração da configuração de rede realizada?", type: "evidence", required: true },
+                { id: "ipConfiguration", label: "Configuração de IPs migrada adequadamente?", type: "evidence", required: true },
+                { id: "vlanConfiguration", label: "VLANs configuradas conforme especificação?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 9,
+              title: "Teste de Conectividade",
+              icon: "fas fa-wifi",
+              fields: [
+                { id: "connectivityTest", label: "Teste de conectividade aprovado?", type: "evidence", required: true },
+                { id: "internetAccess", label: "Acesso à internet funcionando?", type: "evidence", required: true },
+                { id: "internalNetworkTest", label: "Rede interna funcionando adequadamente?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 10,
+              title: "Cabeamento e Organização",
+              icon: "fas fa-sitemap",
+              fields: [
+                { id: "cablingOk", label: "Os cabos estão organizados e funcionais?", type: "evidence", required: true },
+                { id: "rackOrganization", label: "Rack organizado adequadamente?", type: "evidence", required: true },
+                { id: "cablingPhoto", label: "Foto do cabeamento organizado", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 11,
+              title: "Teste de Performance",
+              icon: "fas fa-tachometer-alt",
               fields: [
                 { id: "speedTest", label: "Velocidade final do Speed Test (Mbps)", type: "number", required: true },
                 { id: "speedTestPhoto", label: "Foto do Speed Test final", type: "photo", required: true },
+                { id: "performanceComparison", label: "Performance melhorou em relação ao sistema anterior?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 12,
+              title: "Verificação Final dos Sistemas",
+              icon: "fas fa-check-double",
+              fields: [
                 { id: "allSystemsOk", label: "Todos os sistemas estão funcionando corretamente?", type: "evidence", required: true },
+                { id: "servicesVerification", label: "Todos os serviços foram migrados e estão ativos?", type: "evidence", required: true },
                 { id: "rackPhotoAfter", label: "Foto final do rack organizado", type: "photo", required: true }
               ]
             },
             {
-              id: 6,
-              title: "Finalização",
+              id: 13,
+              title: "Finalização e Documentação",
               icon: "fas fa-signature",
               fields: [
                 { id: "validationCode", label: "Código de validação", type: "text", required: true },
                 { id: "techSignature", label: "Assinatura do Técnico", type: "signature", required: true },
-                { id: "observations", label: "Observações da migração", type: "textarea" }
+                { id: "observations", label: "Observações da migração", type: "textarea" },
+                { id: "clientSignature", label: "Assinatura do Cliente/Responsável", type: "signature", required: true }
               ]
             }
           ]),
