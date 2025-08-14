@@ -233,6 +233,47 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
             </CardContent>
           </Card>
         ))}
+        
+        {/* Fotos Anexadas Section */}
+        {checklist.files && checklist.files.length > 0 && (
+          <Card className="shadow-sm">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="text-xl">📷</span>
+                Fotos Anexadas
+              </CardTitle>
+              <p className="text-sm text-gray-600 mt-1">
+                Imagens enviadas pelo técnico
+              </p>
+            </CardHeader>
+            
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-2 gap-4">
+                {checklist.files.map((file: any, index: number) => (
+                  <div key={index} className="space-y-2">
+                    <img
+                      src={`/uploads/${file.filename || file}`}
+                      alt={`Foto ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => window.open(`/uploads/${file.filename || file}`, '_blank')}
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement;
+                        target.style.display = 'none';
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center h-32 flex items-center justify-center';
+                        errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar foto</p>`;
+                        target.parentNode?.insertBefore(errorDiv, target);
+                      }}
+                    />
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 w-full justify-center">
+                      📷 Foto {index + 1}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
