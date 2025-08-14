@@ -103,7 +103,7 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
           <Card key={section.id || sectionIndex} className="shadow-sm">
             <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
-                {section.icon && <span className="text-xl">{section.icon}</span>}
+                {section.icon && <i className={section.icon}></i>}
                 {section.title}
               </CardTitle>
               {section.description && (
