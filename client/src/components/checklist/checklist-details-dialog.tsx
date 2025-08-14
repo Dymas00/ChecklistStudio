@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -8,6 +9,7 @@ import { Star, User, Phone, Clock, CheckCircle, XCircle, MessageSquare } from 'l
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import ApprovalDialog from './approval-dialog';
+import ChecklistFormView from '@/components/checklist/checklist-form-view';
 
 interface ChecklistDetailsDialogProps {
   checklist: any;
@@ -177,22 +179,8 @@ export default function ChecklistDetailsDialog({
                 </div>
               )}
 
-              {/* Form Responses */}
-              {checklist.responses && Object.keys(checklist.responses).length > 0 && (
-                <div className="border-t pt-4">
-                  <h4 className="font-medium text-gray-900 mb-3">Respostas do Formulário</h4>
-                  <div className="space-y-3">
-                    {Object.entries(checklist.responses).map(([key, value]) => (
-                      <div key={key} className="bg-gray-50 p-3 rounded-lg">
-                        <p className="text-sm font-medium text-gray-700 capitalize">{key}:</p>
-                        <p className="text-sm text-gray-900 mt-1">
-                          {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Form Responses with Template Structure */}
+              <ChecklistFormView checklist={checklist} />
 
               {/* Validation Code */}
               {checklist.validationCode && (

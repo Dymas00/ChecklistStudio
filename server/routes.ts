@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { loginSchema, UserRole } from "@shared/schema";
@@ -506,10 +507,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Serve uploaded files
+  // Serve uploaded files with proper headers
   app.get("/api/uploads/:filename", (req, res) => {
     const filename = req.params.filename;
     const filepath = path.join(uploadDir, filename);
+    
+    // Add CORS headers
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Cache-Control', 'public, max-age=86400'); // 24 hours cache
     
     if (fs.existsSync(filepath)) {
       res.sendFile(path.resolve(filepath));
@@ -517,6 +522,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(404).json({ message: "Arquivo não encontrado" });
     }
   });
+  
+  // Also serve static files from uploads directory
+  app.use('/uploads', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Cache-Control', 'public, max-age=86400');
+    next();
+  }, express.static('uploads'));
 
   const httpServer = createServer(app);
   return httpServer;
