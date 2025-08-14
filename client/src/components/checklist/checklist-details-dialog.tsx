@@ -9,7 +9,7 @@ import { Star, User, Phone, Clock, CheckCircle, XCircle, MessageSquare } from 'l
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import ApprovalDialog from './approval-dialog';
-import ChecklistFormView from '@/components/checklist/checklist-form-view';
+import ChecklistFilledForm from '@/components/checklist/checklist-filled-form';
 
 interface ChecklistDetailsDialogProps {
   checklist: any;
@@ -179,8 +179,8 @@ export default function ChecklistDetailsDialog({
                 </div>
               )}
 
-              {/* Form Responses with Template Structure */}
-              <ChecklistFormView checklist={checklist} />
+              {/* Form Responses with Original Form Structure */}
+              <ChecklistFilledForm checklist={checklist} />
 
               {/* Validation Code */}
               {checklist.validationCode && (
