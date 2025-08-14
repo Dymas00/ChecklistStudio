@@ -28,7 +28,7 @@ import { useToast } from '@/hooks/use-toast';
 import { formatTimeAgo } from '@/lib/templates';
 
 export default function Templates() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, canEditTemplates } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
@@ -163,7 +163,7 @@ export default function Templates() {
               </p>
             </div>
             
-            {isAdmin && (
+            {canEditTemplates && (
               <div className="flex space-x-3">
                 <Button variant="outline" className="font-medium">
                   <Upload className="w-4 h-4 mr-2" />
@@ -206,7 +206,7 @@ export default function Templates() {
                         <Icon className={`w-6 h-6 ${colors.text}`} />
                       </div>
                       
-                      {isAdmin && (
+                      {canEditTemplates && (
                         <div className="flex space-x-1">
                           <Button
                             variant="ghost"
@@ -217,15 +217,17 @@ export default function Templates() {
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="w-8 h-8 p-0 text-gray-400 hover:text-red-600"
-                            onClick={() => handleDelete(template.id, template.name)}
-                            disabled={deleteMutation.isPending}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                          {isAdmin && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-8 h-8 p-0 text-gray-400 hover:text-red-600"
+                              onClick={() => handleDelete(template.id, template.name)}
+                              disabled={deleteMutation.isPending}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
                       )}
                     </div>

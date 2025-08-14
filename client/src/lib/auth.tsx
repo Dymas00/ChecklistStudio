@@ -30,6 +30,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isTechnician: boolean;
+  isCoordinator: boolean;
+  canEditTemplates: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -104,6 +106,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAuthenticated = !!user;
   const isAdmin = user?.role === UserRole.ADMINISTRADOR;
   const isTechnician = user?.role === UserRole.TECNICO;
+  const isCoordinator = user?.role === UserRole.COORDENADOR;
+  const canEditTemplates = isAdmin || isCoordinator;
 
   // Redirect logic
   useEffect(() => {
@@ -129,6 +133,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isAuthenticated,
     isAdmin,
     isTechnician,
+    isCoordinator,
+    canEditTemplates,
   };
 
   return (

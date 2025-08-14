@@ -56,6 +56,14 @@ function requireAdmin(req: any, res: any, next: any) {
   next();
 }
 
+// Middleware to check admin or coordinator role (for template editing)
+function requireAdminOrCoordinator(req: any, res: any, next: any) {
+  if (req.user.role !== UserRole.ADMINISTRADOR && req.user.role !== UserRole.COORDENADOR) {
+    return res.status(403).json({ message: "Acesso negado - apenas administradores e coordenadores" });
+  }
+  next();
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Authentication routes
@@ -229,7 +237,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(template);
   });
 
-  app.post("/api/templates", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/templates", requireAuth, requireAdminOrCoordinator, async (req, res) => {
     try {
       const template = await storage.createTemplate(req.body);
       res.status(201).json(template);
@@ -238,7 +246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/templates/:id", requireAuth, requireAdmin, async (req, res) => {
+  app.put("/api/templates/:id", requireAuth, requireAdminOrCoordinator, async (req, res) => {
     try {
       const template = await storage.updateTemplate(req.params.id, req.body);
       if (!template) {
