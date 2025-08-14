@@ -139,15 +139,13 @@ export class PDFExporter {
   }
 
   async exportChecklist(data: ChecklistData): Promise<void> {
-    // Header
-    this.addTitle('RELATÓRIO DE CHECKLIST', 18);
+    // Header with template layout styling
+    this.addTitle(`CHECKLIST - ${data.templateName.toUpperCase()}`, 18);
     this.addLine();
     
-    // Debug: Log all response keys to understand data structure
-    console.log(`[PDF-DEBUG] Todas as chaves em responses:`, Object.keys(data.responses || {}));
-    
-    // Basic Info
+    // Basic Info in template style
     this.addText(`Técnico: ${data.technicianName}`, 12, true);
+    this.addText(`Template: ${data.templateName}`, 10);
     this.addText(`Criado em: ${new Date(data.createdAt).toLocaleString('pt-BR')}`, 10);
     
     if (data.completedAt) {
@@ -163,17 +161,136 @@ export class PDFExporter {
     this.currentY += 10;
     this.addLine();
 
-    // Store Information Section
-    this.addTitle('INFORMAÇÕES DA LOJA', 14);
-    const storeFields = ['storeCode', 'storeManager', 'storePhone', 'contractor'];
-    storeFields.forEach(fieldId => {
-      const value = data.responses[fieldId];
-      if (value) {
-        const label = this.getFieldLabel(fieldId);
-        this.addText(`${label}: ${value}`, 10);
+    // Template-based sections rendering
+    if (data.sections && Array.isArray(data.sections)) {
+      await this.renderTemplateSections(data.sections, data.responses);
+    } else {
+      // Fallback to original method if sections are not available
+      await this.renderLegacySections(data);
+    }
+
+    // Footer
+    this.currentY += 10;
+    this.addText(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, 8);
+    this.addText('Checklist Virtual - Claro Empresas', 8);
+  }
+
+  // New method to render sections following template structure
+  private async renderTemplateSections(sections: any[], responses: Record<string, any>): Promise<void> {
+    for (const section of sections) {
+      // Add section title with icon styling similar to the template
+      this.addTitle(`${section.title.toUpperCase()}`, 14);
+      
+      if (section.fields && Array.isArray(section.fields)) {
+        // Render each field in the section
+        for (const field of section.fields) {
+          await this.renderTemplateField(field, responses);
+        }
       }
-    });
-    this.addLine();
+      
+      this.addLine();
+    }
+  }
+
+  // New method to render individual fields maintaining template layout
+  private async renderTemplateField(field: any, responses: Record<string, any>): Promise<void> {
+    const fieldId = field.id;
+    const response = responses[fieldId];
+    const photoResponse = responses[`${fieldId}_photo`] || responses[`${fieldId}Photo`];
+    
+    // Field label in bold (similar to template)
+    this.addText(`${field.label}${field.required ? ' *' : ''}:`, 11, true);
+    
+    // Handle different field types
+    switch (field.type) {
+      case 'text':
+      case 'textarea':
+        if (response) {
+          this.addText(response, 10);
+        } else {
+          this.addText('Não preenchido', 10);
+        }
+        break;
+        
+      case 'radio':
+        if (response) {
+          this.addText(`☑ ${response}`, 10);
+        } else {
+          this.addText('Nenhuma opção selecionada', 10);
+        }
+        
+        // Show options for context (similar to template)
+        if (field.options && Array.isArray(field.options)) {
+          field.options.forEach((option: string) => {
+            if (option !== response) {
+              this.addText(`☐ ${option}`, 9);
+            }
+          });
+        }
+        break;
+        
+      case 'evidence':
+      case 'photo':
+        if (photoResponse || response) {
+          let photoFilename = null;
+          const photoData = photoResponse || response;
+          
+          if (typeof photoData === 'string') {
+            photoFilename = photoData;
+          } else if (photoData && photoData.filename) {
+            photoFilename = photoData.filename;
+          } else if (photoData && photoData.path) {
+            photoFilename = photoData.path.replace('uploads/', '');
+          }
+          
+          if (photoFilename) {
+            this.addText('Evidência anexada:', 9, true);
+            const cleanFilename = photoFilename.replace(/^uploads\//, '');
+            await this.addImage(`/uploads/${cleanFilename}`, 100, 75);
+          } else {
+            this.addText('Nenhuma evidência anexada', 10);
+          }
+        } else {
+          this.addText('Nenhuma evidência anexada', 10);
+        }
+        break;
+        
+      case 'signature':
+        if (response || photoResponse) {
+          this.addText('Assinatura capturada:', 9, true);
+          let signatureFilename = null;
+          const signatureData = photoResponse || response;
+          
+          if (typeof signatureData === 'string') {
+            signatureFilename = signatureData;
+          } else if (signatureData && signatureData.filename) {
+            signatureFilename = signatureData.filename;
+          }
+          
+          if (signatureFilename) {
+            const cleanFilename = signatureFilename.replace(/^uploads\//, '');
+            await this.addImage(`/uploads/${cleanFilename}`, 120, 60);
+          }
+        } else {
+          this.addText('Não assinado', 10);
+        }
+        break;
+        
+      default:
+        if (response) {
+          this.addText(String(response), 10);
+        } else {
+          this.addText('Não preenchido', 10);
+        }
+        break;
+    }
+    
+    // Add some spacing between fields
+    this.currentY += 3;
+  }
+
+  // Legacy method for backward compatibility
+  private async renderLegacySections(data: ChecklistData): Promise<void> {
 
     // Technical Information Section  
     this.addTitle('INFORMAÇÕES TÉCNICAS', 14);
@@ -439,11 +556,6 @@ export class PDFExporter {
     }
     
     this.addLine();
-
-    // Footer
-    this.currentY += 10;
-    this.addText(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, 8);
-    this.addText('Checklist Virtual - Claro Empresas - Desenvolvido por Dymas Gomes', 8);
   }
 
   private getFieldLabel(fieldId: string): string {
