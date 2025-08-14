@@ -79,15 +79,15 @@ export default function TechnicianDashboard() {
                   <Link key={template.id} to={`/checklist/${template.id}`}>
                     <Button
                       variant="outline"
-                      className="h-auto p-4 sm:p-6 border-2 hover:border-primary hover:bg-primary/5 transition-all group w-full min-h-[120px] sm:min-h-[140px]"
+                      className="h-auto p-3 sm:p-6 border-2 hover:border-primary hover:bg-primary/5 transition-all group w-full min-h-[130px] sm:min-h-[140px]"
                     >
-                      <div className="flex flex-col items-center text-center w-full max-w-full overflow-hidden">
-                        <Icon className={`w-6 h-6 sm:w-8 sm:h-8 mb-2 sm:mb-3 text-${color}-600 group-hover:text-primary transition-colors flex-shrink-0`} />
-                        <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base line-clamp-1 w-full">
+                      <div className="flex flex-col items-center text-center w-full max-w-full overflow-hidden space-y-1 sm:space-y-2">
+                        <Icon className={`w-5 h-5 sm:w-8 sm:h-8 mb-1 sm:mb-2 text-${color}-600 group-hover:text-primary transition-colors flex-shrink-0`} />
+                        <h3 className="font-medium text-gray-900 text-xs sm:text-base line-clamp-1 w-full leading-tight">
                           {template.name}
                         </h3>
-                        <div className="w-full overflow-hidden flex-1 template-card-content">
-                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
+                        <div className="w-full overflow-hidden flex-1 template-card-content px-1 sm:px-0">
+                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 leading-snug">
                             {template.description}
                           </p>
                         </div>

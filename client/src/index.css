@@ -175,12 +175,23 @@ input[type="file"]::-webkit-file-upload-button {
 @media (max-width: 640px) {
   .template-card-content {
     font-size: 0.75rem;
-    line-height: 1rem;
+    line-height: 1.1rem;
   }
   
   .template-card-content .line-clamp-2 {
-    max-height: 2rem;
-    line-height: 1rem;
+    max-height: 2.2rem;
+    line-height: 1.1rem;
+    word-spacing: -0.1em;
+    letter-spacing: -0.02em;
+  }
+  
+  .template-card-content p {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
 }
 
