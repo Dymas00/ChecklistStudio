@@ -280,3 +280,47 @@ O SQLite é rápido para desenvolvimento, mas para **produção com muitos usuá
 1. Verifique se existe `client/src/lib/auth.tsx` (não .ts)
 2. Se estiver como .ts, renomeie para .tsx
 3. Reinicie o servidor com `npm run dev`
+
+## 🌐 Acessar de Outras Máquinas
+
+Para permitir acesso de outros computadores/celulares na mesma rede:
+
+### 1. Configurar o arquivo .env
+```env
+# Permitir acesso externo
+HOST=0.0.0.0
+PORT=5000
+
+# Seu IP local (descobrir com ipconfig/ifconfig)
+DOMAIN=192.168.1.100:5000  # Substitua pelo seu IP
+```
+
+### 2. Descobrir seu IP local
+```bash
+# Windows
+ipconfig
+
+# Linux/macOS  
+ifconfig
+
+# Procure por algo como: 192.168.1.100 ou 192.168.0.100
+```
+
+### 3. Liberar no Firewall (Windows)
+```
+1. Painel de Controle → Sistema e Segurança → Firewall do Windows
+2. Configurações Avançadas → Regras de Entrada → Nova Regra
+3. Porta → TCP → 5000 → Permitir conexão
+4. Nome: "ChecklistVirtual"
+```
+
+### 4. Acessar de outros dispositivos
+```
+# No navegador dos outros dispositivos:
+http://192.168.1.100:5000  # Use seu IP real
+
+# Exemplo de IPs comuns:
+http://192.168.1.100:5000
+http://192.168.0.100:5000
+http://10.0.0.100:5000
+```
