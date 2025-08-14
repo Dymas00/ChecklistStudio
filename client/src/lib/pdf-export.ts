@@ -81,14 +81,19 @@ export class PDFExporter {
     try {
       this.checkPageBreak(maxHeight + 10);
       
+      console.log(`[PDF-DEBUG] Tentando carregar imagem: ${imageUrl}`);
+      
       // Fetch image and convert to base64
       const response = await fetch(imageUrl);
       if (!response.ok) {
+        console.log(`[PDF-DEBUG] Imagem não encontrada (${response.status}): ${imageUrl}`);
         this.addText(`Imagem não encontrada: ${imageUrl}`, 8);
         return false;
       }
       
       const blob = await response.blob();
+      console.log(`[PDF-DEBUG] Imagem carregada com sucesso, tamanho: ${blob.size} bytes`);
+      
       const base64 = await new Promise<string>((resolve) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
@@ -96,14 +101,19 @@ export class PDFExporter {
       });
       
       try {
-        this.pdf.addImage(base64, 'JPEG', this.margin, this.currentY, maxWidth, maxHeight);
+        // Detect image format from blob type
+        const format = blob.type.includes('png') ? 'PNG' : 'JPEG';
+        this.pdf.addImage(base64, format, this.margin, this.currentY, maxWidth, maxHeight);
         this.currentY += maxHeight + 10;
+        console.log(`[PDF-DEBUG] Imagem adicionada ao PDF com sucesso: ${imageUrl}`);
         return true;
       } catch (imgError) {
+        console.log(`[PDF-DEBUG] Erro ao adicionar imagem ao PDF:`, imgError);
         this.addText('Imagem anexada (não pôde ser exibida)', 8);
         return false;
       }
     } catch (error) {
+      console.log(`[PDF-DEBUG] Erro geral ao processar imagem:`, error);
       this.addText(`Erro ao processar imagem: ${imageUrl}`, 8);
       return false;
     }
@@ -182,9 +192,18 @@ export class PDFExporter {
         const label = this.getFieldLabel(baseFieldId);
         this.addText(`Evidência - ${label}:`, 10, true);
         
-        const photoFilename = typeof photoResponse === 'string' ? photoResponse : photoResponse.filename;
+        let photoFilename = null;
+        if (typeof photoResponse === 'string') {
+          photoFilename = photoResponse;
+        } else if (photoResponse.filename) {
+          photoFilename = photoResponse.filename;
+        } else if (photoResponse.path) {
+          photoFilename = photoResponse.path.replace('uploads/', '');
+        }
+        
         if (photoFilename) {
-          await this.addImage(`/uploads/${photoFilename}`, 80, 60);
+          const cleanFilename = photoFilename.replace(/^uploads\//, '');
+          await this.addImage(`/uploads/${cleanFilename}`, 80, 60);
         }
       }
     }
@@ -199,9 +218,19 @@ export class PDFExporter {
       const speedTestPhoto = data.responses.speedTest_photo;
       if (speedTestPhoto) {
         this.addText('Evidência do teste de velocidade:', 10, true);
-        const photoFilename = typeof speedTestPhoto === 'string' ? speedTestPhoto : speedTestPhoto.filename;
+        let photoFilename = null;
+        
+        if (typeof speedTestPhoto === 'string') {
+          photoFilename = speedTestPhoto;
+        } else if (speedTestPhoto.filename) {
+          photoFilename = speedTestPhoto.filename;
+        } else if (speedTestPhoto.path) {
+          photoFilename = speedTestPhoto.path.replace('uploads/', '');
+        }
+        
         if (photoFilename) {
-          await this.addImage(`/uploads/${photoFilename}`, 80, 60);
+          const cleanFilename = photoFilename.replace(/^uploads\//, '');
+          await this.addImage(`/uploads/${cleanFilename}`, 80, 60);
         }
       }
       this.addLine();
@@ -226,17 +255,30 @@ export class PDFExporter {
           this.addText(`Resposta: ${response}`, 10);
         }
         
-        // Show evidence photo
+        // Show evidence photo - Enhanced logic to handle multiple photo formats
         let photoFilename = null;
-        if (typeof response === 'object' && response.photo) {
-          photoFilename = response.photo;
-        } else if (photoResponse) {
-          photoFilename = typeof photoResponse === 'string' ? photoResponse : photoResponse.filename;
+        
+        // Check if response is an object with photo property
+        if (typeof response === 'object' && response && response.photo) {
+          photoFilename = typeof response.photo === 'string' ? response.photo : response.photo.filename;
+        }
+        // Check separate photo response field
+        else if (photoResponse) {
+          if (typeof photoResponse === 'string') {
+            photoFilename = photoResponse;
+          } else if (photoResponse.filename) {
+            photoFilename = photoResponse.filename;
+          } else if (photoResponse.path) {
+            // Extract filename from path if needed
+            photoFilename = photoResponse.path.replace('uploads/', '');
+          }
         }
         
         if (photoFilename) {
           this.addText('Evidência fotográfica:', 9, true);
-          await this.addImage(`/uploads/${photoFilename}`, 80, 60);
+          // Ensure clean filename without path prefixes
+          const cleanFilename = photoFilename.replace(/^uploads\//, '');
+          await this.addImage(`/uploads/${cleanFilename}`, 80, 60);
         } else {
           this.addText('Nenhuma evidência fotográfica anexada', 9);
         }
