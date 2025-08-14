@@ -304,8 +304,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                               className="max-w-full h-32 object-cover rounded cursor-pointer"
                               onClick={() => window.open(value, '_blank')}
                             />
+                          ) : typeof value === 'object' && value !== null ? (
+                            JSON.stringify(value)
                           ) : (
-                            String(value)
+                            String(value || '')
                           )}
                         </div>
                       </div>

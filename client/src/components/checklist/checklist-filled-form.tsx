@@ -213,30 +213,27 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                           <p className="text-sm">
                             <span className="font-medium text-gray-700">Resposta:</span>
                             <span className="ml-2 text-gray-900">
-                              {typeof response === 'object' && response !== null ? response?.answer || 'Não informado' : response || 'Não informado'}
+                              {typeof response === 'object' && response !== null 
+                                ? String(response?.answer || 'Não informado') 
+                                : String(response || 'Não informado')}
                             </span>
                           </p>
                         </div>
                         {/* Verificar múltiplas possibilidades de evidência */}
                         {(() => {
-                          console.log(`[DEBUG] Field: ${field.id}, Response:`, response, typeof response);
-                          
                           // Verificar se é um objeto com photo
                           if (typeof response === 'object' && response !== null && response?.photo) {
-                            console.log(`[DEBUG] Carregando imagem: /uploads/${response.photo}`);
                             return (
                               <div className="space-y-2">
                                 <img
                                   src={`/uploads/${response.photo}`}
                                   alt="Evidência fotográfica"
                                   className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                                  onLoad={() => console.log(`[SUCCESS] Imagem carregada: /uploads/${response.photo}`)}
                                   onError={(e) => {
-                                    console.error('[ERROR] Erro ao carregar imagem:', `/uploads/${response.photo}`);
                                     e.currentTarget.style.display = 'none';
                                     const errorDiv = document.createElement('div');
                                     errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
-                                    errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar: ${response.photo}</p>`;
+                                    errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar evidência</p>`;
                                     e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
                                   }}
                                   onClick={() => window.open(`/uploads/${response.photo}`, '_blank')}
@@ -251,27 +248,23 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                           // Verificar se há uma foto relacionada no responses (padrão fieldId_photo)
                           const photoField = `${field.id}_photo`;
                           const relatedPhoto = checklist.responses?.[photoField];
-                          console.log(`[DEBUG] PhotoField: ${photoField}, RelatedPhoto:`, relatedPhoto, typeof relatedPhoto);
                           
                           if (relatedPhoto) {
                             // Determinar o nome do arquivo baseado na estrutura
-                            const photoFilename = typeof relatedPhoto === 'string' ? relatedPhoto : relatedPhoto.filename;
+                            const photoFilename = typeof relatedPhoto === 'string' ? relatedPhoto : relatedPhoto?.filename;
                             
                             if (photoFilename) {
-                              console.log(`[DEBUG] Carregando imagem relacionada: /uploads/${photoFilename}`);
                               return (
                                 <div className="space-y-2">
                                   <img
                                     src={`/uploads/${photoFilename}`}
                                     alt="Evidência fotográfica"
                                     className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                                    onLoad={() => console.log(`[SUCCESS] Imagem relacionada carregada: /uploads/${photoFilename}`)}
                                     onError={(e) => {
-                                      console.error('[ERROR] Erro ao carregar imagem relacionada:', `/uploads/${photoFilename}`);
                                       e.currentTarget.style.display = 'none';
                                       const errorDiv = document.createElement('div');
                                       errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
-                                      errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar: ${photoFilename}</p>`;
+                                      errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar evidência</p>`;
                                       e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
                                     }}
                                     onClick={() => window.open(`/uploads/${photoFilename}`, '_blank')}
@@ -297,7 +290,7 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                           <div className="bg-gray-50 rounded-lg p-4 border">
                             <p className="text-sm">
                               <span className="font-medium text-gray-700">Comentário adicional:</span>
-                              <span className="ml-2 text-gray-900">{response.comment}</span>
+                              <span className="ml-2 text-gray-900">{String(response.comment)}</span>
                             </p>
                           </div>
                         )}
