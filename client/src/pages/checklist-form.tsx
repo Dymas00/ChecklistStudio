@@ -30,23 +30,50 @@ export default function ChecklistForm() {
   const [responses, setResponses] = useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Get edit ID from URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const editId = urlParams.get('edit');
+  const isEditing = !!editId;
 
   const { data: templates, isLoading: templatesLoading } = useQuery({
     queryKey: ['/api/templates']
   });
+
+  // Fetch existing checklist data when editing
+  const { data: existingChecklist, isLoading: checklistLoading } = useQuery({
+    queryKey: ['/api/checklists', editId],
+    queryFn: () => editId ? apiRequest('GET', `/api/checklists/${editId}`) : null,
+    enabled: !!editId
+  });
   
   const template = templates?.find((t: any) => t.id === templateId);
-  const isLoading = templatesLoading;
+  const isLoading = templatesLoading || (isEditing && checklistLoading);
+
+  // Load existing data when in edit mode
+  useEffect(() => {
+    if (isEditing && existingChecklist && !Object.keys(responses).length) {
+      setResponses(existingChecklist.responses || {});
+    }
+  }, [isEditing, existingChecklist, responses]);
 
   const submitMutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      return apiRequest('POST', '/api/checklists', formData);
+      if (isEditing) {
+        // Update existing checklist
+        return apiRequest('PUT', `/api/checklists/${editId}`, formData);
+      } else {
+        // Create new checklist
+        return apiRequest('POST', '/api/checklists', formData);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/checklists'] });
       toast({
         title: "Sucesso!",
-        description: "Checklist enviado com sucesso e está aguardando aprovação.",
+        description: isEditing 
+          ? "Checklist corrigido e reenviado para aprovação com sucesso!" 
+          : "Checklist enviado com sucesso e está aguardando aprovação.",
       });
       // Navigate back based on user role
       if (user?.role === 'tecnico') {
@@ -322,10 +349,13 @@ export default function ChecklistForm() {
               </Link>
               <div>
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                  Checklist de {(template as any)?.name}
+                  {isEditing ? 'Editar Checklist de' : 'Checklist de'} {(template as any)?.name}
                 </h1>
                 <p className="text-gray-600 mt-1 text-sm sm:text-base">
-                  Preencha todos os campos obrigatórios (*) para concluir o checklist.
+                  {isEditing 
+                    ? 'Faça as correções necessárias e reenvie para aprovação.' 
+                    : 'Preencha todos os campos obrigatórios (*) para concluir o checklist.'
+                  }
                 </p>
               </div>
             </div>
@@ -397,13 +427,16 @@ export default function ChecklistForm() {
                 ) : (
                   <>
                     <Check className="w-5 h-5 mr-2" />
-                    Enviar Checklist
+                    {isEditing ? 'Reenviar para Aprovação' : 'Enviar Checklist'}
                   </>
                 )}
               </Button>
               
               <p className="text-xs text-gray-500 mt-3">
-                Ao enviar, o checklist será submetido para aprovação
+                {isEditing 
+                  ? 'Ao reenviar, o checklist voltará ao status pendente para nova aprovação'
+                  : 'Ao enviar, o checklist será submetido para aprovação'
+                }
               </p>
             </div>
           </form>

@@ -190,12 +190,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(checklists);
   });
 
-  app.get("/api/checklists/:id", requireAuth, async (req, res) => {
-    const checklist = await storage.getChecklist(req.params.id);
-    if (!checklist) {
-      return res.status(404).json({ message: "Checklist não encontrado" });
+  app.get("/api/checklists/:id", requireAuth, async (req: any, res) => {
+    try {
+      const checklist = await storage.getChecklist(req.params.id);
+      if (!checklist) {
+        return res.status(404).json({ message: "Checklist não encontrado" });
+      }
+
+      // Check permissions: technicians can only access their own checklists
+      if (req.user.role === 'tecnico' && checklist.technicianId !== req.user.id) {
+        return res.status(403).json({ message: "Acesso negado" });
+      }
+
+      res.json(checklist);
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao buscar checklist" });
     }
-    res.json(checklist);
   });
 
   app.post("/api/checklists", requireAuth, upload.array('photos'), async (req: any, res) => {
@@ -222,14 +232,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/checklists/:id", requireAuth, async (req: any, res) => {
+  app.put("/api/checklists/:id", requireAuth, upload.array('photos'), async (req: any, res) => {
     try {
-      const checklist = await storage.updateChecklist(req.params.id, req.body);
-      if (!checklist) {
+      const existingChecklist = await storage.getChecklist(req.params.id);
+      if (!existingChecklist) {
         return res.status(404).json({ message: "Checklist não encontrado" });
       }
+
+      // Check if user owns this checklist (for technicians) or has permission to edit
+      if (req.user.role === 'tecnico' && existingChecklist.technicianId !== req.user.id) {
+        return res.status(403).json({ message: "Acesso negado" });
+      }
+
+      // If updating a rejected checklist, reset status to pending
+      let updateData;
+      if (req.body.data) {
+        // Handle multipart form data (with files)
+        const checklistData = JSON.parse(req.body.data);
+        
+        // Process uploaded files
+        const photos = req.files?.map((file: any) => ({
+          fieldId: file.fieldname,
+          filename: file.filename,
+          originalName: file.originalname,
+          path: file.path
+        })) || [];
+
+        updateData = {
+          ...checklistData,
+          photos: photos.length > 0 ? photos : existingChecklist.photos,
+          status: existingChecklist.status === 'rejeitado' ? 'pendente' : existingChecklist.status,
+          // Clear approval fields when resubmitting rejected checklist
+          ...(existingChecklist.status === 'rejeitado' && {
+            approvalComment: null,
+            approvedBy: null,
+            approvedAt: null,
+            rating: null,
+            feedback: null
+          })
+        };
+      } else {
+        // Handle regular JSON update
+        updateData = {
+          ...req.body,
+          status: existingChecklist.status === 'rejeitado' ? 'pendente' : req.body.status || existingChecklist.status
+        };
+      }
+
+      const checklist = await storage.updateChecklist(req.params.id, updateData);
       res.json(checklist);
     } catch (error) {
+      console.error('Error updating checklist:', error);
       res.status(400).json({ message: "Erro ao atualizar checklist" });
     }
   });

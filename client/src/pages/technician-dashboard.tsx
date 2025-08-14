@@ -139,10 +139,10 @@ export default function TechnicianDashboard() {
                       </div>
                     )}
                     
-                    {checklist.status === 'pendente' && (
+                    {(checklist.status === 'pendente' || checklist.status === 'rejeitado') && (
                       <Link to={`/checklist/${checklist.templateId}?edit=${checklist.id}`}>
                         <Button variant="ghost" size="sm" className="mt-1 h-auto py-1 px-2">
-                          Editar
+                          {checklist.status === 'rejeitado' ? 'Corrigir' : 'Editar'}
                         </Button>
                       </Link>
                     )}
