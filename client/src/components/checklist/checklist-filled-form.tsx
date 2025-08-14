@@ -251,15 +251,19 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                           // Verificar se há uma foto relacionada no responses (padrão fieldId_photo)
                           const photoField = `${field.id}_photo`;
                           const relatedPhoto = checklist.responses?.[photoField];
-                          if (relatedPhoto) {
+                          console.log(`[DEBUG] PhotoField: ${photoField}, RelatedPhoto:`, relatedPhoto, typeof relatedPhoto);
+                          
+                          if (relatedPhoto && typeof relatedPhoto === 'string') {
+                            console.log(`[DEBUG] Carregando imagem relacionada: /uploads/${relatedPhoto}`);
                             return (
                               <div className="space-y-2">
                                 <img
                                   src={`/uploads/${relatedPhoto}`}
                                   alt="Evidência fotográfica"
                                   className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                                  onLoad={() => console.log(`[SUCCESS] Imagem relacionada carregada: /uploads/${relatedPhoto}`)}
                                   onError={(e) => {
-                                    console.error('Erro ao carregar imagem relacionada:', `/uploads/${relatedPhoto}`);
+                                    console.error('[ERROR] Erro ao carregar imagem relacionada:', `/uploads/${relatedPhoto}`);
                                     e.currentTarget.style.display = 'none';
                                     const errorDiv = document.createElement('div');
                                     errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
