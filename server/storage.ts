@@ -1,6 +1,14 @@
-import { type User, type InsertUser, type Template, type InsertTemplate, type Checklist, type InsertChecklist, type Session, type InsertSession, UserRole } from "@shared/schema";
+import { type User, type InsertUser, type Template, type InsertTemplate, type Checklist, type InsertChecklist, type Session, type InsertSession, type ChecklistSequence, UserRole } from "@shared/schema";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
+
+// Interface para informações de auditoria
+export interface AuditInfo {
+  clientIp?: string;
+  userAgent?: string;
+  geoLocation?: string;
+  deviceInfo?: any;
+}
 
 export interface IStorage {
   // Users
@@ -26,10 +34,17 @@ export interface IStorage {
   // Checklists
   getChecklists(): Promise<Checklist[]>;
   getChecklist(id: string): Promise<Checklist | undefined>;
+  getChecklistByNumber(checklistNumber: string): Promise<Checklist | undefined>;
   getChecklistsByTechnician(technicianId: string): Promise<Checklist[]>;
-  createChecklist(checklist: InsertChecklist): Promise<Checklist>;
+  getChecklistsByStore(storeCode: string): Promise<Checklist[]>;
+  getChecklistsByStatus(status: string): Promise<Checklist[]>;
+  getChecklistsByDateRange(startDate: Date, endDate: Date): Promise<Checklist[]>;
+  createChecklist(checklist: InsertChecklist, auditInfo?: AuditInfo): Promise<Checklist>;
   updateChecklist(id: string, updates: Partial<Checklist>): Promise<Checklist | undefined>;
   deleteChecklist(id: string): Promise<boolean>;
+  
+  // Audit and tracking
+  generateChecklistNumber(): Promise<string>;
 }
 
 export class MemStorage implements IStorage {
@@ -37,6 +52,8 @@ export class MemStorage implements IStorage {
   private templates: Map<string, Template> = new Map();
   private checklists: Map<string, Checklist> = new Map();
   private sessions: Map<string, Session> = new Map();
+  private checklistSequences: Map<number, ChecklistSequence> = new Map();
+  private checklistCounter: number = 0; // Contador em memória para numeração única
 
   constructor() {
     this.initializeData();
