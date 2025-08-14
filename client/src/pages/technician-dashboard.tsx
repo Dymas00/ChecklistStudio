@@ -56,13 +56,15 @@ export default function TechnicianDashboard() {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img 
-              src={claroLogo} 
-              alt="Claro Empresas" 
-              className="h-12 w-auto" 
-            />
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">Sistema de Checklists</h1>
+            <div className="flex flex-col items-start">
+              <img 
+                src={claroLogo} 
+                alt="Claro Empresas" 
+                className="h-10 w-auto mb-1" 
+              />
+              <h1 className="text-sm font-medium text-gray-700">Checklist Virtual</h1>
+            </div>
+            <div className="ml-3">
               <p className="text-sm text-gray-600">Portal do Técnico</p>
             </div>
           </div>
