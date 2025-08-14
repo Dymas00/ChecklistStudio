@@ -77,13 +77,26 @@ export class PDFExporter {
     this.currentY += 10;
   }
 
-  private async addImage(imageData: string, maxWidth: number = 80, maxHeight: number = 60) {
+  private async addImage(imageUrl: string, maxWidth: number = 80, maxHeight: number = 60) {
     try {
       this.checkPageBreak(maxHeight + 10);
       
-      // Simple approach - try to add the image directly
+      // Fetch image and convert to base64
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        this.addText(`Imagem não encontrada: ${imageUrl}`, 8);
+        return false;
+      }
+      
+      const blob = await response.blob();
+      const base64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+      });
+      
       try {
-        this.pdf.addImage(imageData, 'JPEG', this.margin, this.currentY, maxWidth, maxHeight);
+        this.pdf.addImage(base64, 'JPEG', this.margin, this.currentY, maxWidth, maxHeight);
         this.currentY += maxHeight + 10;
         return true;
       } catch (imgError) {
@@ -91,7 +104,7 @@ export class PDFExporter {
         return false;
       }
     } catch (error) {
-      this.addText('Erro ao processar imagem', 8);
+      this.addText(`Erro ao processar imagem: ${imageUrl}`, 8);
       return false;
     }
   }
@@ -138,44 +151,131 @@ export class PDFExporter {
     this.currentY += 10;
     this.addLine();
 
-    // Sections and Fields
-    for (const section of data.sections) {
-      this.addTitle(`SEÇÃO ${section.id} - ${section.title}`, 14);
+    // Store Information Section
+    this.addTitle('INFORMAÇÕES DA LOJA', 14);
+    const storeFields = ['storeCode', 'storeManager', 'storePhone', 'contractor'];
+    storeFields.forEach(fieldId => {
+      const value = data.responses[fieldId];
+      if (value) {
+        const label = this.getFieldLabel(fieldId);
+        this.addText(`${label}: ${value}`, 10);
+      }
+    });
+    this.addLine();
+
+    // Technical Information Section  
+    this.addTitle('INFORMAÇÕES TÉCNICAS', 14);
+    const techFields = ['techName', 'techPhone', 'techCPF', 'connectivityType', 'designation'];
+    techFields.forEach(fieldId => {
+      const value = data.responses[fieldId];
+      if (value) {
+        const label = this.getFieldLabel(fieldId);
+        this.addText(`${label}: ${value}`, 10);
+      }
+    });
+    this.addLine();
+
+    // Speed Test Section
+    if (data.responses.speedTest) {
+      this.addTitle('TESTE DE VELOCIDADE', 14);
+      this.addText(`Velocidade medida: ${data.responses.speedTest} Mbps`, 10);
       
-      for (const field of section.fields) {
-        const value = data.responses[field.id];
+      // Speed test photo
+      const speedTestPhoto = data.responses.speedTest_photo;
+      if (speedTestPhoto) {
+        this.addText('Evidência do teste de velocidade:', 10, true);
+        const photoFilename = typeof speedTestPhoto === 'string' ? speedTestPhoto : speedTestPhoto.filename;
+        if (photoFilename) {
+          await this.addImage(`/uploads/${photoFilename}`, 80, 60);
+        }
+      }
+      this.addLine();
+    }
+
+    // Evidence Sections
+    this.addTitle('EVIDÊNCIAS DE CONFIGURAÇÃO', 14);
+    const evidenceFields = ['ipWan', 'vpn', 'aps', 'naming', 'notes'];
+    
+    for (const fieldId of evidenceFields) {
+      const response = data.responses[fieldId];
+      const photoResponse = data.responses[`${fieldId}_photo`];
+      
+      if (response || photoResponse) {
+        const label = this.getFieldLabel(fieldId);
+        this.addText(`${label}:`, 11, true);
         
-        this.addText(`${field.label}${field.required ? ' *' : ''}`, 10, true);
+        // Show answer
+        if (typeof response === 'object' && response.answer) {
+          this.addText(`Resposta: ${response.answer}`, 10);
+        } else if (typeof response === 'string') {
+          this.addText(`Resposta: ${response}`, 10);
+        }
         
-        // Handle different field types
-        if (field.type === 'evidence' && value) {
-          if (Array.isArray(value) && value.length > 0) {
-            this.addText(`Evidências: ${value.length} arquivo(s)`, 9);
-            for (let i = 0; i < Math.min(value.length, 3); i++) {
-              this.addText(`- ${value[i].name || `Arquivo ${i + 1}`}`, 8);
-            }
-            if (value.length > 3) {
-              this.addText(`... e mais ${value.length - 3} arquivo(s)`, 8);
-            }
-          } else {
-            this.addText('Nenhuma evidência', 9);
-          }
-        } else if (field.type === 'signature' && value) {
-          this.addText('✓ Assinatura Digital Capturada', 9);
+        // Show evidence photo
+        let photoFilename = null;
+        if (typeof response === 'object' && response.photo) {
+          photoFilename = response.photo;
+        } else if (photoResponse) {
+          photoFilename = typeof photoResponse === 'string' ? photoResponse : photoResponse.filename;
+        }
+        
+        if (photoFilename) {
+          this.addText('Evidência fotográfica:', 9, true);
+          await this.addImage(`/uploads/${photoFilename}`, 80, 60);
         } else {
-          this.addText(this.formatValue(field, value), 9);
+          this.addText('Nenhuma evidência fotográfica anexada', 9);
         }
         
         this.currentY += 5;
       }
-      
-      this.addLine();
     }
+    
+    this.addLine();
+
+    // Validation and Signatures
+    this.addTitle('VALIDAÇÃO E ASSINATURAS', 14);
+    
+    if (data.responses.validationCode) {
+      this.addText(`Código de validação: ${data.responses.validationCode}`, 10);
+    }
+    
+    if (data.responses.techSignature) {
+      this.addText('✓ Assinatura do técnico capturada', 10);
+    }
+    
+    if (data.responses.analystName) {
+      this.addText(`Analista responsável: ${data.responses.analystName}`, 10);
+    }
+    
+    this.addLine();
 
     // Footer
     this.currentY += 10;
     this.addText(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, 8);
-    this.addText('Sistema de Gerenciamento de Checklists', 8);
+    this.addText('Sistema Checklist Virtual - Desenvolvido por Dymas Gomes', 8);
+  }
+
+  private getFieldLabel(fieldId: string): string {
+    const labels: Record<string, string> = {
+      storeCode: 'Código da Loja',
+      storeManager: 'Gerente da Loja', 
+      storePhone: 'Telefone da Loja',
+      contractor: 'Contratada',
+      techName: 'Nome do Técnico',
+      techPhone: 'Telefone do Técnico',
+      techCPF: 'CPF do Técnico',
+      connectivityType: 'Tipo de Conectividade',
+      designation: 'Designação',
+      speedTest: 'Teste de Velocidade',
+      ipWan: 'Configuração IP WAN',
+      vpn: 'Configuração VPN',
+      aps: 'Configuração APs',
+      naming: 'Nomenclatura de Equipamentos',
+      notes: 'Anotações e Observações',
+      validationCode: 'Código de Validação'
+    };
+    
+    return labels[fieldId] || fieldId;
   }
 
   download(filename: string) {
