@@ -21,6 +21,11 @@ Preferred communication style: Simple, everyday language.
 - ✅ Added template editing functionality with visual interface
 - ✅ Created comprehensive VPS deployment guide and configuration files
 - ✅ Added deployment scripts and production configuration (PM2, Nginx, SSL)
+- ✅ Fixed all LSP TypeScript errors for clean production deployment
+- ✅ Removed Templates menu access for technicians (restricted to analyst+ roles)
+- ✅ Added "Desenvolvido por Dymas Gomes" footer throughout the application
+- ✅ Enhanced mobile responsiveness for template descriptions with improved text wrapping
+- ✅ Created complete VPS deployment guide with SSL certificate setup (DEPLOYMENT_VPS.md)
 
 ## System Architecture
 

@@ -126,7 +126,7 @@ export default function Reports() {
       dailyStats: []
     };
 
-    let filteredChecklists = checklists.filter((checklist: any) => {
+    let filteredChecklists = Array.isArray(checklists) ? checklists.filter((checklist: any) => {
       const checklistDate = new Date(checklist.createdAt);
       
       // Date filter
@@ -143,7 +143,7 @@ export default function Reports() {
       if (filters.technician !== 'all' && checklist.technicianId !== filters.technician) return false;
       
       return true;
-    });
+    }) : [];
 
     const totalChecklists = filteredChecklists.length;
     const approvedCount = filteredChecklists.filter((c: any) => c.status === 'aprovado').length;
@@ -164,7 +164,7 @@ export default function Reports() {
       if (!technicianStats.has(techId)) {
         technicianStats.set(techId, {
           technicianId: techId,
-          technicianName: users?.find((u: any) => u.id === techId)?.name || 'Técnico não encontrado',
+          technicianName: Array.isArray(users) ? users.find((u: any) => u.id === techId)?.name || 'Técnico não encontrado' : 'Técnico não encontrado',
           total: 0,
           approved: 0,
           rejected: 0,
@@ -191,7 +191,7 @@ export default function Reports() {
       if (!templateStats.has(templateId)) {
         templateStats.set(templateId, {
           templateType: templateId,
-          templateName: templates?.find((t: any) => t.id === templateId)?.name || templateId,
+          templateName: Array.isArray(templates) ? templates.find((t: any) => t.id === templateId)?.name || templateId : templateId,
           total: 0,
           approved: 0
         });
@@ -392,7 +392,7 @@ export default function Reports() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos os templates</SelectItem>
-                    {templates?.map((template: any) => (
+                    {Array.isArray(templates) && templates.map((template: any) => (
                       <SelectItem key={template.id} value={template.id}>
                         {template.name}
                       </SelectItem>
@@ -426,7 +426,7 @@ export default function Reports() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos os técnicos</SelectItem>
-                    {users?.filter((u: any) => u.role === 'tecnico').map((user: any) => (
+                    {Array.isArray(users) && users.filter((u: any) => u.role === 'tecnico').map((user: any) => (
                       <SelectItem key={user.id} value={user.id}>
                         {user.name}
                       </SelectItem>

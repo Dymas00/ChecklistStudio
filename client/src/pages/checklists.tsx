@@ -95,7 +95,7 @@ export default function Checklists() {
     enabled: isNewChecklistDialogOpen,
   });
 
-  const filteredChecklists = checklists?.filter((checklist: any) => {
+  const filteredChecklists = Array.isArray(checklists) ? checklists.filter((checklist: any) => {
     const matchesSearch = 
       checklist.storeCode?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       checklist.storeManager?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,10 +104,10 @@ export default function Checklists() {
     const matchesStatus = statusFilter === 'all' || checklist.status === statusFilter;
     
     return matchesSearch && matchesStatus;
-  }) || [];
+  }) : [];
 
   const getTechnicianName = (technicianId: string) => {
-    const technician = users?.find((u: any) => u.id === technicianId);
+    const technician = Array.isArray(users) ? users.find((u: any) => u.id === technicianId) : null;
     return technician?.name || 'Técnico não encontrado';
   };
 
@@ -316,7 +316,7 @@ export default function Checklists() {
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-4">
-              {filteredChecklists.length > 0 ? (
+              {Array.isArray(filteredChecklists) && filteredChecklists.length > 0 ? (
                 filteredChecklists.map((checklist: any) => (
                   <div key={checklist.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex items-center justify-between">
