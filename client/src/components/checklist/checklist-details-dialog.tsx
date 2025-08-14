@@ -53,6 +53,16 @@ export default function ChecklistDetailsDialog({
   const { user } = useAuth();
   const [approvalAction, setApprovalAction] = useState<'approve' | 'reject' | null>(null);
 
+  const { data: templates } = useQuery({
+    queryKey: ['/api/templates'],
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const getTemplateName = (templateId: string) => {
+    const template = Array.isArray(templates) ? templates.find((t: any) => t.id === templateId) : null;
+    return template?.name || 'Template não encontrado';
+  };
+
   const canApprove = user && ['analista', 'coordenador', 'administrador'].includes(user.role);
   const isPending = checklist?.status === 'pendente';
 
@@ -89,7 +99,7 @@ export default function ChecklistDetailsDialog({
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm font-medium text-gray-700">Template</p>
-                    <p className="text-sm text-gray-900">{checklist.templateId}</p>
+                    <p className="text-sm text-gray-900">{getTemplateName(checklist.templateId)}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-700">Código da Loja</p>

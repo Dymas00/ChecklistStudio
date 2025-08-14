@@ -142,7 +142,7 @@ export default function Checklists() {
       // Get analyst name if checklist is approved
       let analystName = 'Sistema';
       if (checklist.approvedBy && checklist.status === 'approved') {
-        const analyst = users?.find(u => u.id === checklist.approvedBy);
+        const analyst = Array.isArray(users) ? users.find((u: any) => u.id === checklist.approvedBy) : null;
         analystName = analyst ? analyst.name : checklist.approvedBy;
       }
 
