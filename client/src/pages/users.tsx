@@ -161,24 +161,62 @@ export default function Users() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Client-side validation
+    const errors: string[] = [];
+    
+    if (!formData.name.trim()) errors.push("Nome é obrigatório");
+    if (!formData.email.trim()) errors.push("Email é obrigatório");
+    if (!formData.email.includes('@')) errors.push("Email deve ter formato válido");
+    if (!formData.password) errors.push("Senha é obrigatória");
+    if (formData.password.length < 6) errors.push("Senha deve ter pelo menos 6 caracteres");
+    if (!formData.role) errors.push("Função é obrigatória");
+    
+    if (errors.length > 0) {
+      toast({
+        title: "Erro de Validação",
+        description: errors.join(", "),
+        variant: "destructive",
+      });
+      return;
+    }
+    
     createMutation.mutate(formData);
   };
 
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingUser) {
-      editMutation.mutate({ 
-        userId: editingUser.id, 
-        userData: {
-          name: formData.name,
-          email: formData.email,
-          role: formData.role,
-          phone: formData.phone,
-          cpf: formData.cpf,
-          contractor: formData.contractor,
-        }
+    
+    if (!editingUser) return;
+    
+    // Client-side validation for edit
+    const errors: string[] = [];
+    
+    if (!formData.name.trim()) errors.push("Nome é obrigatório");
+    if (!formData.email.trim()) errors.push("Email é obrigatório");
+    if (!formData.email.includes('@')) errors.push("Email deve ter formato válido");
+    if (!formData.role) errors.push("Função é obrigatória");
+    
+    if (errors.length > 0) {
+      toast({
+        title: "Erro de Validação",
+        description: errors.join(", "),
+        variant: "destructive",
       });
+      return;
     }
+    
+    editMutation.mutate({ 
+      userId: editingUser.id, 
+      userData: {
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        phone: formData.phone,
+        cpf: formData.cpf,
+        contractor: formData.contractor,
+      }
+    });
   };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {

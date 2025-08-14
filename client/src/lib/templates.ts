@@ -44,9 +44,40 @@ export function getTemplateColor(type: string): string {
 
 export function validateFormResponses(template: Template, responses: Record<string, any>): string[] {
   const errors: string[] = [];
+  
+  // Validate template structure
+  if (!template) {
+    errors.push('Template não encontrado');
+    return errors;
+  }
+
+  if (!template.sections || !Array.isArray(template.sections)) {
+    errors.push('Template inválido: seções não encontradas');
+    return errors;
+  }
+
   const sections = template.sections as TemplateSection[];
   
+  // Validate basic required fields first
+  const basicFields = [
+    { id: 'storeCode', label: 'Código da Loja', minLength: 1 },
+    { id: 'storeManager', label: 'Gerente da Loja', minLength: 2 }, 
+    { id: 'storePhone', label: 'Telefone da Loja', minLength: 10 }
+  ];
+  
+  basicFields.forEach(field => {
+    const value = responses[field.id];
+    if (!value || (typeof value === 'string' && value.trim().length < field.minLength)) {
+      if (field.id === 'storePhone' && value && !/^\(\d{2}\)\s?\d{4,5}-?\d{4}$/.test(value.replace(/\s/g, ''))) {
+        errors.push(`${field.label} deve ter formato válido: (XX) XXXXX-XXXX`);
+      } else {
+        errors.push(`${field.label} é obrigatório`);
+      }
+    }
+  });
+  
   sections.forEach(section => {
+    if (!section.fields || !Array.isArray(section.fields)) return;
     section.fields.forEach(field => {
       if (field.required) {
         // Check conditional fields

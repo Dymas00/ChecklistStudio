@@ -48,12 +48,31 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
+    console.error('Global error handler:', err);
+    
     const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    let message = "Erro interno do servidor";
+    
+    // More descriptive error messages for common issues
+    if (status === 401) {
+      message = "Não autorizado. Faça login novamente.";
+    } else if (status === 403) {
+      message = "Acesso negado. Permissões insuficientes.";
+    } else if (status === 404) {
+      message = "Recurso não encontrado.";
+    } else if (status === 400) {
+      message = err.message || "Dados inválidos.";
+    } else if (err.code === 'SQLITE_CONSTRAINT') {
+      message = "Erro de validação de dados.";
+    }
 
     res.status(status).json({ message });
-    throw err;
+    
+    // Only throw in development for debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Full error stack:', err);
+    }
   });
 
   // importantly only setup vite in development and after
