@@ -356,8 +356,82 @@ export class PDFExporter {
       this.addText(`Código de validação: ${data.responses.validationCode}`, 10);
     }
     
-    if (data.responses.techSignature) {
-      this.addText('✓ Assinatura do técnico capturada', 10);
+    // Add technician selfie - Enhanced search
+    const selfieSources = [
+      data.responses.techSelfie,
+      data.responses.technician_selfie,
+      data.responses.selfie,
+      data.responses.technicianSelfie,
+      data.responses.tech_selfie,
+      data.responses['tech-selfie']
+    ];
+    
+    let selfiePhoto = null;
+    for (const source of selfieSources) {
+      if (source) {
+        selfiePhoto = source;
+        break;
+      }
+    }
+    
+    if (selfiePhoto) {
+      this.addText('Selfie do Técnico:', 10, true);
+      let photoFilename = null;
+      
+      if (typeof selfiePhoto === 'string') {
+        photoFilename = selfiePhoto;
+      } else if (selfiePhoto.filename) {
+        photoFilename = selfiePhoto.filename;
+      } else if (selfiePhoto.path) {
+        photoFilename = selfiePhoto.path.replace('uploads/', '');
+      }
+      
+      if (photoFilename) {
+        const cleanFilename = photoFilename.replace(/^uploads\//, '');
+        console.log(`[PDF-DEBUG] Technician selfie: ${cleanFilename}`);
+        await this.addImage(`/uploads/${cleanFilename}`, 80, 60);
+      }
+    } else {
+      console.log(`[PDF-DEBUG] Nenhuma selfie encontrada nos responses:`, Object.keys(data.responses).filter(key => key.toLowerCase().includes('selfie')));
+    }
+    
+    // Add signature - Enhanced search
+    const signatureSources = [
+      data.responses.signature,
+      data.responses.techSignature,
+      data.responses.signaturePhoto,
+      data.responses.signature_photo,
+      data.responses['signature-photo'],
+      data.responses.tech_signature
+    ];
+    
+    let signaturePhoto = null;
+    for (const source of signatureSources) {
+      if (source) {
+        signaturePhoto = source;
+        break;
+      }
+    }
+    
+    if (signaturePhoto) {
+      this.addText('Assinatura do Técnico:', 10, true);
+      let photoFilename = null;
+      
+      if (typeof signaturePhoto === 'string') {
+        photoFilename = signaturePhoto;
+      } else if (signaturePhoto.filename) {
+        photoFilename = signaturePhoto.filename;
+      } else if (signaturePhoto.path) {
+        photoFilename = signaturePhoto.path.replace('uploads/', '');
+      }
+      
+      if (photoFilename) {
+        const cleanFilename = photoFilename.replace(/^uploads\//, '');
+        console.log(`[PDF-DEBUG] Technician signature: ${cleanFilename}`);
+        await this.addImage(`/uploads/${cleanFilename}`, 120, 60);
+      }
+    } else {
+      console.log(`[PDF-DEBUG] Nenhuma assinatura encontrada nos responses:`, Object.keys(data.responses).filter(key => key.toLowerCase().includes('signature')));
     }
     
     if (data.responses.analystName) {
