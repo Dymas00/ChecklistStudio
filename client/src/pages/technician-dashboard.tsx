@@ -79,24 +79,18 @@ export default function TechnicianDashboard() {
                   <Link key={template.id} to={`/checklist/${template.id}`}>
                     <Button
                       variant="outline"
-                      className="h-auto p-6 border-2 hover:border-primary hover:bg-primary/5 transition-all group w-full"
+                      className="h-auto p-4 sm:p-6 border-2 hover:border-primary hover:bg-primary/5 transition-all group w-full min-h-[120px] sm:min-h-[140px]"
                     >
-                      <div className="flex flex-col items-center text-center">
-                        <Icon className={`w-8 h-8 mb-3 text-${color}-600 group-hover:text-primary transition-colors`} />
-                        <h3 className="font-medium text-gray-900 mb-1">
+                      <div className="flex flex-col items-center text-center w-full max-w-full overflow-hidden">
+                        <Icon className={`w-6 h-6 sm:w-8 sm:h-8 mb-2 sm:mb-3 text-${color}-600 group-hover:text-primary transition-colors flex-shrink-0`} />
+                        <h3 className="font-medium text-gray-900 mb-1 text-sm sm:text-base line-clamp-1 w-full">
                           {template.name}
                         </h3>
-                        <p className="text-sm text-gray-600 line-clamp-2 break-words" style={{
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          maxHeight: '2.5rem',
-                          lineHeight: '1.25rem'
-                        }}>
-                          {template.description}
-                        </p>
+                        <div className="w-full overflow-hidden flex-1 template-card-content">
+                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
+                            {template.description}
+                          </p>
+                        </div>
                       </div>
                     </Button>
                   </Link>
