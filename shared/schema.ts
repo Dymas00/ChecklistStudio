@@ -41,8 +41,11 @@ export const checklists = pgTable("checklists", {
   photos: jsonb("photos"), // Array of photo URLs
   signature: text("signature"), // Base64 signature
   validationCode: text("validation_code"),
-  rating: integer("rating"), // 1-5 stars
-  feedback: text("feedback"),
+  rating: integer("rating"), // 1-5 stars para avaliação do técnico
+  feedback: text("feedback"), // comentário sobre o atendimento/técnico
+  approvalComment: text("approval_comment"), // comentário do analista na aprovação/reprovação
+  approvedBy: varchar("approved_by").references(() => users.id), // quem aprovou/reprovou
+  approvedAt: timestamp("approved_at"), // quando foi aprovado/reprovado
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

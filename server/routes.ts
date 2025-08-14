@@ -242,6 +242,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ message: "Checklist removido com sucesso" });
   });
 
+  // Approve or reject checklist
+  app.post("/api/checklists/:id/approve", requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { action, approvalComment, rating, feedback } = req.body;
+
+      // Verificar se o usuário pode aprovar/reprovar
+      if (!['analista', 'coordenador', 'administrador'].includes(req.user.role)) {
+        return res.status(403).json({ message: "Acesso negado - permissão insuficiente" });
+      }
+
+      // Verificar se é uma ação válida
+      if (!['approve', 'reject'].includes(action)) {
+        return res.status(400).json({ message: "Ação inválida" });
+      }
+
+      // Validar campos obrigatórios
+      if (!approvalComment?.trim()) {
+        return res.status(400).json({ message: "Comentário é obrigatório" });
+      }
+
+      if (action === 'approve' && (!rating || rating < 1 || rating > 5)) {
+        return res.status(400).json({ message: "Avaliação é obrigatória para aprovação (1-5 estrelas)" });
+      }
+
+      // Buscar o checklist
+      const checklist = await storage.getChecklist(id);
+      if (!checklist) {
+        return res.status(404).json({ message: "Checklist não encontrado" });
+      }
+
+      if (checklist.status !== 'pendente') {
+        return res.status(400).json({ message: "Este checklist já foi processado" });
+      }
+
+      // Preparar dados para atualização
+      const updateData = {
+        status: action === 'approve' ? 'aprovado' : 'rejeitado',
+        approvalComment: approvalComment.trim(),
+        approvedBy: req.user.id,
+        approvedAt: new Date().toISOString(),
+        ...(action === 'approve' && {
+          rating: parseInt(rating),
+          feedback: feedback?.trim() || null
+        })
+      };
+
+      // Atualizar o checklist
+      const updatedChecklist = await storage.updateChecklist(id, updateData);
+      
+      res.json({
+        message: `Checklist ${action === 'approve' ? 'aprovado' : 'rejeitado'} com sucesso`,
+        checklist: updatedChecklist
+      });
+    } catch (error) {
+      console.error('Error approving/rejecting checklist:', error);
+      res.status(500).json({ message: 'Erro interno do servidor' });
+    }
+  });
+
   // Dashboard metrics route
   app.get("/api/dashboard/metrics", requireAuth, async (req: any, res) => {
     const checklists = await storage.getChecklists();

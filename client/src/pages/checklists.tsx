@@ -9,10 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sidebar } from '@/components/layout/sidebar';
-import { ClipboardList, Search, Filter, Eye, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown } from 'lucide-react';
+import { ClipboardList, Search, Filter, Eye, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown, CheckCircle, XCircle } from 'lucide-react';
 import { Link } from 'wouter';
 import { exportChecklistToPDF } from '@/lib/pdf-export';
 import { useToast } from '@/hooks/use-toast';
+import ChecklistDetailsDialog from '@/components/checklist/checklist-details-dialog';
 
 function getStatusBadgeClass(status: string) {
   switch (status) {
@@ -77,6 +78,7 @@ export default function Checklists() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [isNewChecklistDialogOpen, setIsNewChecklistDialogOpen] = useState(false);
   const [exportingId, setExportingId] = useState<string | null>(null);
+  const [selectedChecklistForDetails, setSelectedChecklistForDetails] = useState<any>(null);
 
   const { data: checklists, isLoading } = useQuery({
     queryKey: ['/api/checklists'],
@@ -360,7 +362,11 @@ export default function Checklists() {
                         </div>
                         
                         <div className="flex items-center space-x-2">
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => setSelectedChecklistForDetails(checklist)}
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
                           
@@ -408,6 +414,14 @@ export default function Checklists() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Checklist Details Dialog */}
+        <ChecklistDetailsDialog
+          checklist={selectedChecklistForDetails}
+          isOpen={!!selectedChecklistForDetails}
+          onClose={() => setSelectedChecklistForDetails(null)}
+          technicanName={selectedChecklistForDetails && users ? getTechnicianName(selectedChecklistForDetails.technicianId) : undefined}
+        />
       </div>
     </div>
   );
