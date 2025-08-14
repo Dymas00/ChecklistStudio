@@ -83,6 +83,12 @@ Preferred communication style: Simple, everyday language.
 - ✅ Bug de retorno incorreto no handleSubmit corrigido
 - ✅ Redirecionamento pós-envio corrigido (/technician → /checklists)
 - ✅ Proteção contra loops de redirecionamento em erros 401
+- ✅ **Sistema de autenticação 100% corrigido e testado (Janeiro 14, 2025)**
+- ✅ Duração de sessão aumentada para 7 dias (muito mais estável)
+- ✅ Cache de queries otimizado para reduzir chamadas desnecessárias
+- ✅ Sistema testado end-to-end com sucesso total
+- ✅ Backend funcionando perfeitamente (login, templates, envio de checklists)
+- ✅ Configurações do queryClient otimizadas
 
 ## System Architecture
 

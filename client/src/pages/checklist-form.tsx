@@ -39,14 +39,15 @@ export default function ChecklistForm() {
   const isEditing = !!editId;
 
   const { data: templates, isLoading: templatesLoading } = useQuery({
-    queryKey: ['/api/templates']
+    queryKey: ['/api/templates'],
+    staleTime: 10 * 60 * 1000, // 10 minutes cache
   });
 
   // Fetch existing checklist data when editing
   const { data: existingChecklist, isLoading: checklistLoading } = useQuery({
     queryKey: ['/api/checklists', editId],
-    queryFn: () => editId ? apiRequest('GET', `/api/checklists/${editId}`) : null,
-    enabled: !!editId
+    enabled: !!editId,
+    staleTime: Infinity,
   });
   
   const template = (templates as any[])?.find((t: any) => t.id === templateId);
