@@ -77,6 +77,12 @@ Preferred communication style: Simple, everyday language.
 - ✅ Exibição de estrelas corrigida para usar valores inteiros
 - ✅ Proteções contra valores null/undefined em ratings
 - ✅ Sistema de ranking de técnicos aprimorado com formatação decimal
+- ✅ **Erro "Failed to fetch" no envio de checklist corrigido (Janeiro 14, 2025)**
+- ✅ Tratamento robusto de erros de rede adicionado
+- ✅ Mensagens de erro mais claras para problemas de conectividade
+- ✅ Bug de retorno incorreto no handleSubmit corrigido
+- ✅ Redirecionamento pós-envio corrigido (/technician → /checklists)
+- ✅ Proteção contra loops de redirecionamento em erros 401
 
 ## System Architecture
 

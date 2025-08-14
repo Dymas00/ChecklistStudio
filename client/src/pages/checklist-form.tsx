@@ -84,10 +84,12 @@ export default function ChecklistForm() {
         window.location.href = '/dashboard';
       }
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
         title: "Erro",
-        description: "Erro ao enviar checklist. Tente novamente.",
+        description: error?.message?.includes('conexão') 
+          ? "Erro de conexão. Verifique sua internet e tente novamente."
+          : "Erro ao enviar checklist. Tente novamente.",
         variant: "destructive",
       });
     },
@@ -170,6 +172,8 @@ export default function ChecklistForm() {
       status: 'pendente'
     };
 
+    let submitData;
+    
     if (hasFiles) {
       // Use FormData for file uploads
       
@@ -187,13 +191,14 @@ export default function ChecklistForm() {
         ...checklistData,
         responses: responsesCopy
       }));
+      
+      submitData = formData;
     } else {
       // No files, send as JSON
-      return checklistData;
+      submitData = checklistData;
     }
 
     try {
-      const submitData = hasFiles ? formData : checklistData;
       await submitMutation.mutateAsync(submitData);
       // Clear localStorage draft on successful submission
       clearDraft();

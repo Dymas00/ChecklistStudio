@@ -25,12 +25,19 @@ export async function apiRequest(
     headers['Content-Type'] = 'application/json';
   }
 
-  const res = await fetch(url, {
-    method,
-    headers,
-    body: data instanceof FormData ? data : (data ? JSON.stringify(data) : undefined),
-    credentials: "include",
-  });
+  let res: Response;
+  
+  try {
+    res = await fetch(url, {
+      method,
+      headers,
+      body: data instanceof FormData ? data : (data ? JSON.stringify(data) : undefined),
+      credentials: "include",
+    });
+  } catch (networkError) {
+    // Handle network errors (Failed to fetch, etc.)
+    throw new Error(`Erro de conexão: Verifique sua internet e tente novamente`);
+  }
 
   // Handle 401 errors specifically - but only if not already on login page
   if (res.status === 401 && !window.location.pathname.includes('/login')) {
@@ -57,10 +64,20 @@ export const getQueryFn: <T>(options: {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const res = await fetch(queryKey.join("/") as string, {
-      headers,
-      credentials: "include",
-    });
+    let res: Response;
+    
+    try {
+      res = await fetch(queryKey.join("/") as string, {
+        headers,
+        credentials: "include",
+      });
+    } catch (networkError) {
+      // Handle network errors for queries
+      if (unauthorizedBehavior === "returnNull") {
+        return null;
+      }
+      throw new Error(`Erro de conexão: Verifique sua internet e tente novamente`);
+    }
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
       return null;
