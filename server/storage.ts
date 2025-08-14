@@ -685,6 +685,26 @@ export class SQLiteStorage implements IStorage {
             },
             {
               id: 3,
+              title: "Checkin com a Central",
+              icon: "fas fa-phone",
+              fields: [
+                { id: "centralContact", label: "Entrou em contato com a central para autorização?", type: "evidence", required: true },
+                { id: "workOrderNumber", label: "Número da ordem de serviço", type: "text", required: true },
+                { id: "centralAgent", label: "Nome do atendente da central", type: "text", required: true }
+              ]
+            },
+            {
+              id: 4,
+              title: "Avaliação Inicial do Local",
+              icon: "fas fa-search",
+              fields: [
+                { id: "initialAssessment", label: "Avaliação inicial do ambiente realizada?", type: "evidence", required: true },
+                { id: "safetyCheck", label: "Verificação de segurança do local aprovada?", type: "evidence", required: true },
+                { id: "environmentPhoto", label: "Foto do ambiente antes da manutenção", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 5,
               title: "Tipo de Manutenção",
               icon: "fas fa-wrench",
               fields: [
@@ -694,36 +714,84 @@ export class SQLiteStorage implements IStorage {
               ]
             },
             {
-              id: 4,
-              title: "Atividades Realizadas",
-              icon: "fas fa-tasks",
+              id: 6,
+              title: "Desligamento e Preparação",
+              icon: "fas fa-power-off",
               fields: [
+                { id: "systemShutdown", label: "Desligamento seguro dos sistemas realizado?", type: "evidence", required: true },
+                { id: "toolsPreparation", label: "Ferramentas e equipamentos preparados?", type: "evidence", required: true },
+                { id: "backupVerification", label: "Backup das configurações verificado?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 7,
+              title: "Execução da Manutenção",
+              icon: "fas fa-cogs",
+              fields: [
+                { id: "maintenanceExecution", label: "Manutenção executada conforme procedimento?", type: "evidence", required: true },
                 { id: "activitiesPerformed", label: "Atividades realizadas", type: "textarea", required: true },
-                { id: "partsReplaced", label: "Peças substituídas (se houver)", type: "textarea" },
+                { id: "partsReplaced", label: "Peças substituídas (se houver)", type: "textarea" }
+              ]
+            },
+            {
+              id: 8,
+              title: "Teste de Funcionamento",
+              icon: "fas fa-check-circle",
+              fields: [
+                { id: "functionalTest", label: "Teste de funcionamento realizado?", type: "evidence", required: true },
                 { id: "testPerformed", label: "Testes realizados foram bem-sucedidos?", type: "evidence", required: true },
+                { id: "performanceCheck", label: "Verificação de performance aprovada?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 9,
+              title: "Teste de Conectividade",
+              icon: "fas fa-wifi",
+              fields: [
+                { id: "connectivityTest", label: "Teste de conectividade aprovado?", type: "evidence", required: true },
                 { id: "speedTest", label: "Velocidade do Speed Test pós-manutenção (Mbps)", type: "number", required: true },
                 { id: "speedTestPhoto", label: "Foto do Speed Test", type: "photo", required: true }
               ]
             },
             {
-              id: 5,
+              id: 10,
+              title: "Organização e Limpeza",
+              icon: "fas fa-broom",
+              fields: [
+                { id: "rackCleaned", label: "Rack foi limpo e organizado?", type: "evidence", required: true },
+                { id: "cablingOk", label: "Cabeamento está organizado e funcionando?", type: "evidence", required: true },
+                { id: "areaCleanup", label: "Área de trabalho foi limpa e organizada?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 11,
               title: "Verificações Finais",
               icon: "fas fa-clipboard-check",
               fields: [
                 { id: "systemsOperational", label: "Todos os sistemas estão operacionais?", type: "evidence", required: true },
-                { id: "cablingOk", label: "Cabeamento está organizado e funcionando?", type: "evidence", required: true },
-                { id: "rackCleaned", label: "Rack foi limpo e organizado?", type: "evidence", required: true },
+                { id: "finalInspection", label: "Inspeção final aprovada?", type: "evidence", required: true },
                 { id: "equipmentsAfter", label: "Foto final dos equipamentos", type: "photo", required: true }
               ]
             },
             {
-              id: 6,
+              id: 12,
+              title: "Documentação e Entrega",
+              icon: "fas fa-file-alt",
+              fields: [
+                { id: "maintenanceReport", label: "Relatório de manutenção preenchido?", type: "evidence", required: true },
+                { id: "clientHandover", label: "Entrega formal ao responsável da loja?", type: "evidence", required: true },
+                { id: "recommendations", label: "Recomendações para futuras manutenções", type: "textarea" }
+              ]
+            },
+            {
+              id: 13,
               title: "Finalização",
               icon: "fas fa-signature",
               fields: [
                 { id: "validationCode", label: "Código de validação", type: "text", required: true },
                 { id: "techSignature", label: "Assinatura do Técnico", type: "signature", required: true },
-                { id: "recommendations", label: "Recomendações para futuras manutenções", type: "textarea" }
+                { id: "clientSignature", label: "Assinatura do Responsável da Loja", type: "signature", required: true },
+                { id: "finalObservations", label: "Observações finais", type: "textarea" }
               ]
             }
           ]),
