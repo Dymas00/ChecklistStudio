@@ -20,6 +20,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import TemplateBuilder, { TemplateData } from '@/components/templates/template-builder';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { formatTimeAgo } from '@/lib/templates';
@@ -30,9 +31,55 @@ export default function Templates() {
   const { toast } = useToast();
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState<any>(null);
   
   const { data: templates, isLoading } = useQuery({
     queryKey: ['/api/templates']
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (templateData: TemplateData) => {
+      return apiRequest('POST', '/api/templates', templateData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/templates'] });
+      setIsCreateDialogOpen(false);
+      toast({
+        title: "Sucesso",
+        description: "Template criado com sucesso",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro",
+        description: "Erro ao criar template",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: TemplateData }) => {
+      return apiRequest('PUT', `/api/templates/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/templates'] });
+      setIsEditDialogOpen(false);
+      setEditingTemplate(null);
+      toast({
+        title: "Sucesso",
+        description: "Template atualizado com sucesso",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro",
+        description: "Erro ao atualizar template",
+        variant: "destructive",
+      });
+    },
   });
 
   const deleteMutation = useMutation({
@@ -64,6 +111,21 @@ export default function Templates() {
   const handleViewTemplate = (template: any) => {
     setSelectedTemplate(template);
     setIsViewDialogOpen(true);
+  };
+
+  const handleEditTemplate = (template: any) => {
+    setEditingTemplate(template);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleCreateTemplate = (templateData: TemplateData) => {
+    createMutation.mutate(templateData);
+  };
+
+  const handleUpdateTemplate = (templateData: TemplateData) => {
+    if (editingTemplate) {
+      updateMutation.mutate({ id: editingTemplate.id, data: templateData });
+    }
   };
 
   if (!user || user.role === 'tecnico') {
@@ -105,7 +167,7 @@ export default function Templates() {
                   <Upload className="w-4 h-4 mr-2" />
                   Importar Template
                 </Button>
-                <Button className="font-medium">
+                <Button onClick={() => setIsCreateDialogOpen(true)} className="font-medium">
                   <Plus className="w-4 h-4 mr-2" />
                   Novo Template
                 </Button>
@@ -147,7 +209,9 @@ export default function Templates() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="w-8 h-8 p-0 text-gray-400 hover:text-gray-600"
+                            className="w-8 h-8 p-0 text-gray-400 hover:text-blue-600"
+                            onClick={() => handleEditTemplate(template)}
+                            title="Editar template"
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -324,6 +388,48 @@ export default function Templates() {
                   </div>
                 </div>
               </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Create Template Dialog */}
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Criar Novo Template</DialogTitle>
+            </DialogHeader>
+            
+            <TemplateBuilder
+              onSave={handleCreateTemplate}
+              onCancel={() => setIsCreateDialogOpen(false)}
+              isLoading={createMutation.isPending}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Template Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Editar Template</DialogTitle>
+            </DialogHeader>
+            
+            {editingTemplate && (
+              <TemplateBuilder
+                initialData={{
+                  name: editingTemplate.name,
+                  type: editingTemplate.type,
+                  description: editingTemplate.description || '',
+                  icon: editingTemplate.icon,
+                  sections: editingTemplate.sections || []
+                }}
+                onSave={handleUpdateTemplate}
+                onCancel={() => {
+                  setIsEditDialogOpen(false);
+                  setEditingTemplate(null);
+                }}
+                isLoading={updateMutation.isPending}
+              />
             )}
           </DialogContent>
         </Dialog>
