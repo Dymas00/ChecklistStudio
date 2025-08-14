@@ -98,7 +98,6 @@ export default function Checklists() {
 
   const { data: templates } = useQuery({
     queryKey: ['/api/templates'],
-    enabled: isNewChecklistDialogOpen,
   });
 
   const filteredChecklists = Array.isArray(checklists) ? checklists.filter((checklist: any) => {
@@ -116,6 +115,11 @@ export default function Checklists() {
   const getTechnicianName = (technicianId: string) => {
     const technician = Array.isArray(users) ? users.find((u: any) => u.id === technicianId) : null;
     return technician?.name || 'Técnico não encontrado';
+  };
+
+  const getTemplateName = (templateId: string) => {
+    const template = Array.isArray(templates) ? templates.find((t: any) => t.id === templateId) : null;
+    return template?.name || 'Template';
   };
 
   const handleExportPDF = async (checklist: any) => {
@@ -337,10 +341,10 @@ export default function Checklists() {
                         
                         <div>
                           <h3 className="font-semibold text-gray-900">
-                            {checklist.templateId} - Loja {checklist.storeCode}
+                            Loja {checklist.storeCode}
                           </h3>
                           <p className="text-sm text-gray-600">
-                            Gerente: {checklist.storeManager}
+                            Gerente: {checklist.storeManager} • {getTemplateName(checklist.templateId)}
                           </p>
                           <div className="flex items-center text-xs text-gray-500 mt-1">
                             <span>Por {user?.role === 'administrador' ? getTechnicianName(checklist.technicianId) : 'você'}</span>
