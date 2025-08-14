@@ -149,7 +149,7 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                               onClick={() => window.open(`/uploads/${response}`, '_blank')}
                             />
                             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                              📷 Foto anexada: {response}
+                              📷 Foto anexada: {typeof response === 'object' && response !== null ? response.filename || 'arquivo' : response}
                             </Badge>
                           </div>
                         ) : (
