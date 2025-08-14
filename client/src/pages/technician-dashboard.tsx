@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { getStatusBadgeClass, getStatusLabel, formatTimeAgo } from '@/lib/templates';
 import { Link } from 'wouter';
+import Footer from '@/components/layout/footer';
 
 export default function TechnicianDashboard() {
   const { user } = useAuth();
@@ -44,7 +45,7 @@ export default function TechnicianDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="max-w-4xl mx-auto p-6">
         {/* Header */}
         <div className="text-center mb-8">
@@ -171,6 +172,7 @@ export default function TechnicianDashboard() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 }

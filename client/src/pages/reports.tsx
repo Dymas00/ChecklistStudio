@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sidebar } from '@/components/layout/sidebar';
+import Footer from '@/components/layout/footer';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
@@ -283,7 +284,7 @@ export default function Reports() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Sidebar />
       
       <div className="lg:ml-64 p-4 sm:p-6">
@@ -592,6 +593,7 @@ export default function Reports() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 }

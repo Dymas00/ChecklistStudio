@@ -20,6 +20,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { validateFormResponses, TemplateSection } from '@/lib/templates';
 import { Link } from 'wouter';
+import Footer from '@/components/layout/footer';
 
 export default function ChecklistForm() {
   const { user } = useAuth();
@@ -333,7 +334,7 @@ export default function ChecklistForm() {
   const sections = ((template as any)?.sections || []) as TemplateSection[];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Sidebar />
       
       <div className="lg:ml-64 p-4 sm:p-6">
@@ -442,6 +443,7 @@ export default function ChecklistForm() {
           </form>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

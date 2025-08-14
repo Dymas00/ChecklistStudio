@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sidebar } from '@/components/layout/sidebar';
+import Footer from '@/components/layout/footer';
 import { ClipboardList, Search, Filter, Eye, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown, CheckCircle, XCircle } from 'lucide-react';
 import { Link } from 'wouter';
 import { exportChecklistToPDF } from '@/lib/pdf-export';
@@ -178,7 +179,7 @@ export default function Checklists() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Sidebar />
       
       <div className="lg:ml-64 p-4 sm:p-6">
@@ -423,6 +424,7 @@ export default function Checklists() {
           technicanName={selectedChecklistForDetails && users ? getTechnicianName(selectedChecklistForDetails.technicianId) : undefined}
         />
       </div>
+      <Footer />
     </div>
   );
 }

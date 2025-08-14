@@ -3,6 +3,7 @@ import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Footer from '@/components/layout/footer';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { ClipboardCheck } from 'lucide-react';
@@ -32,8 +33,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="w-full max-w-md p-6">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="flex-1 flex items-center justify-center">
+        <div className="w-full max-w-md p-6">
         <Card className="shadow-xl border-0">
           <CardHeader className="text-center pb-2">
             <div className="w-16 h-16 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
@@ -87,7 +89,9 @@ export default function Login() {
 
           </CardContent>
         </Card>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

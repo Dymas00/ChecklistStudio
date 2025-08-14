@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Sidebar } from '@/components/layout/sidebar';
+import Footer from '@/components/layout/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -148,7 +149,7 @@ export default function Templates() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Sidebar />
       
       <div className="lg:ml-64 p-4 sm:p-6">
@@ -435,6 +436,7 @@ export default function Templates() {
           </DialogContent>
         </Dialog>
       </div>
+      <Footer />
     </div>
   );
 }
