@@ -85,7 +85,7 @@ export default function TechnicianDashboard() {
                         <h3 className="font-medium text-gray-900 mb-1">
                           {template.name}
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 line-clamp-2">
                           {template.description}
                         </p>
                       </div>
