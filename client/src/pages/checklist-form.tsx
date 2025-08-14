@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import SignatureCanvas from '@/components/checklist/signature-canvas';
 import EvidenceItem from '@/components/checklist/evidence-item';
 import ConditionalField from '@/components/checklist/conditional-field';
-import PhotoUpload from '@/components/checklist/photo-upload';
+import CameraPhotoUpload from '@/components/checklist/camera-photo-upload';
 import { ArrowLeft, Check, AlertCircle, Save } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -228,11 +228,11 @@ export default function ChecklistForm() {
 
       case 'photo':
         return (
-          <PhotoUpload
+          <CameraPhotoUpload
             onFileSelect={(file) => handleInputChange(field.id, file)}
-            accept="image/*"
-            capture={field.id.includes('selfie') ? 'user' : 'environment'}
+            fieldId={field.id}
             required={field.required}
+            label={field.label}
           />
         );
 
