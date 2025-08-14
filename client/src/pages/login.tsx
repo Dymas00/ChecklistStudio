@@ -7,7 +7,7 @@ import Footer from '@/components/layout/footer';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { ClipboardCheck } from 'lucide-react';
-import claroLogo from '@/assets/claro-empresas-logo.png';
+import claroLogo from '@/assets/claro-empresas-custom-logo.svg';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -43,7 +43,7 @@ export default function Login() {
               <img 
                 src={claroLogo} 
                 alt="Claro Empresas" 
-                className="h-16 w-auto" 
+                className="h-20 w-auto" 
               />
             </div>
             <CardTitle className="text-3xl font-bold text-gray-900">
