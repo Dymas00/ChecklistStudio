@@ -217,26 +217,53 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                             </span>
                           </p>
                         </div>
-                        {/* Sempre mostrar evidência se existir resposta de evidência */}
-                        {(typeof response === 'object' && response !== null && response?.photo) ? (
-                          <div className="space-y-2">
-                            <img
-                              src={`/uploads/${response.photo}`}
-                              alt="Evidência fotográfica"
-                              className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                              onClick={() => window.open(`/uploads/${response.photo}`, '_blank')}
-                            />
-                            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                              📷 Evidência fotográfica
-                            </Badge>
-                          </div>
-                        ) : (
-                          <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-                            <p className="text-sm text-yellow-700">
-                              📷 Nenhuma evidência fotográfica enviada
-                            </p>
-                          </div>
-                        )}
+                        {/* Verificar múltiplas possibilidades de evidência */}
+                        {(() => {
+                          // Verificar se é um objeto com photo
+                          if (typeof response === 'object' && response !== null && response?.photo) {
+                            return (
+                              <div className="space-y-2">
+                                <img
+                                  src={`/uploads/${response.photo}`}
+                                  alt="Evidência fotográfica"
+                                  className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                                  onClick={() => window.open(`/uploads/${response.photo}`, '_blank')}
+                                />
+                                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                  📷 Evidência fotográfica anexada
+                                </Badge>
+                              </div>
+                            );
+                          }
+                          
+                          // Verificar se há uma foto relacionada no responses (padrão fieldId_photo)
+                          const photoField = `${field.id}_photo`;
+                          const relatedPhoto = checklist.responses?.[photoField];
+                          if (relatedPhoto) {
+                            return (
+                              <div className="space-y-2">
+                                <img
+                                  src={`/uploads/${relatedPhoto}`}
+                                  alt="Evidência fotográfica"
+                                  className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                                  onClick={() => window.open(`/uploads/${relatedPhoto}`, '_blank')}
+                                />
+                                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                  📷 Evidência fotográfica anexada
+                                </Badge>
+                              </div>
+                            );
+                          }
+                          
+                          // Nenhuma evidência encontrada
+                          return (
+                            <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                              <p className="text-sm text-yellow-700">
+                                📷 Nenhuma evidência fotográfica enviada
+                              </p>
+                            </div>
+                          );
+                        })()}
                         {typeof response === 'object' && response !== null && response?.comment && (
                           <div className="bg-gray-50 rounded-lg p-4 border">
                             <p className="text-sm">
