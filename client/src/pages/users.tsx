@@ -341,11 +341,18 @@ export default function Users() {
                   
                   <div>
                     <Label htmlFor="contractor">Empreiteira</Label>
-                    <Input
-                      id="contractor"
-                      value={formData.contractor}
-                      onChange={(e) => setFormData({ ...formData, contractor: e.target.value })}
-                    />
+                    <Select onValueChange={(value) => setFormData({ ...formData, contractor: value })} value={formData.contractor}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma empreiteira" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Claro">Claro</SelectItem>
+                        <SelectItem value="Telmex">Telmex</SelectItem>
+                        <SelectItem value="Hitss">Hitss</SelectItem>
+                        <SelectItem value="Delfia">Delfia</SelectItem>
+                        <SelectItem value="AT Integrada">AT Integrada</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div className="flex justify-end space-x-3 pt-4">
@@ -442,11 +449,18 @@ export default function Users() {
               
               <div>
                 <Label htmlFor="edit-contractor">Empreiteira</Label>
-                <Input
-                  id="edit-contractor"
-                  value={formData.contractor}
-                  onChange={(e) => setFormData({ ...formData, contractor: e.target.value })}
-                />
+                <Select value={formData.contractor} onValueChange={(value) => setFormData({ ...formData, contractor: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione uma empreiteira" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Claro">Claro</SelectItem>
+                    <SelectItem value="Telmex">Telmex</SelectItem>
+                    <SelectItem value="Hitss">Hitss</SelectItem>
+                    <SelectItem value="Delfia">Delfia</SelectItem>
+                    <SelectItem value="AT Integrada">AT Integrada</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div className="flex justify-end space-x-3 pt-4">
