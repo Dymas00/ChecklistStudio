@@ -150,27 +150,32 @@ export default function ChecklistFormView({ checklist }: ChecklistFormViewProps)
                             const photoField = `${field.id}_photo`;
                             const relatedPhoto = checklist.responses?.[photoField];
                             if (relatedPhoto) {
-                              return (
-                                <div className="space-y-2">
-                                  <img
-                                    src={`/uploads/${relatedPhoto}`}
-                                    alt="Evidência fotográfica"
-                                    className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                                    onError={(e) => {
-                                      console.error('Erro ao carregar imagem relacionada:', `/uploads/${relatedPhoto}`);
-                                      e.currentTarget.style.display = 'none';
-                                      const errorDiv = document.createElement('div');
-                                      errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
-                                      errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar: ${relatedPhoto}</p>`;
-                                      e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
-                                    }}
-                                    onClick={() => window.open(`/uploads/${relatedPhoto}`, '_blank')}
-                                  />
-                                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                                    📷 Evidência fotográfica anexada
-                                  </Badge>
-                                </div>
-                              );
+                              // Determinar o nome do arquivo baseado na estrutura
+                              const photoFilename = typeof relatedPhoto === 'string' ? relatedPhoto : relatedPhoto.filename;
+                              
+                              if (photoFilename) {
+                                return (
+                                  <div className="space-y-2">
+                                    <img
+                                      src={`/uploads/${photoFilename}`}
+                                      alt="Evidência fotográfica"
+                                      className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                                      onError={(e) => {
+                                        console.error('Erro ao carregar imagem relacionada:', `/uploads/${photoFilename}`);
+                                        e.currentTarget.style.display = 'none';
+                                        const errorDiv = document.createElement('div');
+                                        errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
+                                        errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar: ${photoFilename}</p>`;
+                                        e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
+                                      }}
+                                      onClick={() => window.open(`/uploads/${photoFilename}`, '_blank')}
+                                    />
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                      📷 Evidência fotográfica anexada
+                                    </Badge>
+                                  </div>
+                                );
+                              }
                             }
                             
                             // Nenhuma evidência encontrada
