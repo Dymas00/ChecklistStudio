@@ -11,6 +11,9 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **January 14, 2025:**
+- ✅ Criado guia simplificado para rodar sem PostgreSQL (SETUP_SIMPLES.md)
+- ✅ Projeto configurado para usar SQLite por padrão (mais fácil setup local)
+- ✅ Arquivo .env.example atualizado com opções SQLite e PostgreSQL
 - ✅ Project renamed from "Checklist Management System/ChecklistPro" to "Checklist Virtual"
 - ✅ Updated all UI references including login page, sidebar, and documentation
 - ✅ Updated default user email domains from @checklistpro.com to @checklistvirtual.com (reverted back to @checklistpro.com per user request)
