@@ -10,14 +10,11 @@ export function useStableState<T>(initialValue: T) {
 
   const stableSetState = useCallback((valueOrUpdater: T | ((prev: T) => T)) => {
     updateCount.current++;
-    console.log(`State update #${updateCount.current}`);
-    
     setState(prev => {
       const newValue = typeof valueOrUpdater === 'function' 
         ? (valueOrUpdater as (prev: T) => T)(prev)
         : valueOrUpdater;
       
-      console.log('State changing from:', prev, 'to:', newValue);
       return newValue;
     });
   }, []);

@@ -48,7 +48,7 @@ export function useFormPersistence(
           localStorage.setItem(`checklist_draft_${templateId}`, JSON.stringify(safeResponses));
         }
       } catch (error) {
-        console.error('Error saving to localStorage:', error);
+        // Error saving to localStorage - silently fail
       }
     }, 500);
 

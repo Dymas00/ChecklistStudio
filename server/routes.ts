@@ -268,8 +268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/checklists", requireAuth, upload.any(), async (req: any, res) => {
     try {
-      console.log('Received checklist data:', req.body);
-      console.log('Received files:', req.files);
+
       
       let checklistData;
       
@@ -308,7 +307,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.status(201).json(checklist);
     } catch (error) {
-      console.error('Error creating checklist:', error);
+
       res.status(400).json({ 
         message: "Erro ao criar checklist",
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -374,7 +373,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const checklist = await storage.updateChecklist(req.params.id, updateData);
       res.json(checklist);
     } catch (error) {
-      console.error('Error updating checklist:', error);
+
       res.status(400).json({ message: "Erro ao atualizar checklist" });
     }
   });
@@ -442,7 +441,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         checklist: updatedChecklist
       });
     } catch (error) {
-      console.error('Error approving/rejecting checklist:', error);
+
       res.status(500).json({ message: 'Erro interno do servidor' });
     }
   });

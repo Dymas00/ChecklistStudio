@@ -51,7 +51,7 @@ export default function CameraPhotoUpload({
     const file = e.target.files?.[0];
     
     if (file) {
-      console.log('File selected:', file.name, file.size);
+
       setSelectedFile(file);
       
       const url = URL.createObjectURL(file);

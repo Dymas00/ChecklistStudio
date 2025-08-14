@@ -77,6 +77,7 @@ export default function Checklists() {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState('all');
   const [isNewChecklistDialogOpen, setIsNewChecklistDialogOpen] = useState(false);
   const [exportingId, setExportingId] = useState<string | null>(null);
   const [selectedChecklistForDetails, setSelectedChecklistForDetails] = useState<any>(null);
@@ -102,8 +103,9 @@ export default function Checklists() {
       checklist.templateId?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || checklist.status === statusFilter;
+    const matchesType = typeFilter === 'all' || checklist.templateType === typeFilter;
     
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesType;
   }) : [];
 
   const getTechnicianName = (technicianId: string) => {
@@ -253,7 +255,7 @@ export default function Checklists() {
                     })}
                   </div>
                   
-                  {(!templates || templates.length === 0) && (
+                  {(!templates || !Array.isArray(templates) || templates.length === 0) && (
                     <div className="text-center py-12">
                       <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
                         <ClipboardList className="w-8 h-8 text-gray-400" />
@@ -311,7 +313,7 @@ export default function Checklists() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <ClipboardList className="w-5 h-5 mr-2" />
-              Checklists ({filteredChecklists.length})
+              Checklists ({Array.isArray(filteredChecklists) ? filteredChecklists.length : 0})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
