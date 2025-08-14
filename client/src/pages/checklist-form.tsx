@@ -48,13 +48,13 @@ export default function ChecklistForm() {
     enabled: !!editId
   });
   
-  const template = templates?.find((t: any) => t.id === templateId);
+  const template = (templates as any[])?.find((t: any) => t.id === templateId);
   const isLoading = templatesLoading || (isEditing && checklistLoading);
 
   // Load existing data when in edit mode or from localStorage
   useEffect(() => {
     if (isEditing && existingChecklist && !Object.keys(responses).length) {
-      setResponses(existingChecklist.responses || {});
+      setResponses((existingChecklist as any).responses || {});
     } else if (!isEditing && !Object.keys(responses).length && templateId) {
       // Try to load from localStorage
       const savedDraft = localStorage.getItem(`checklist_draft_${templateId}`);
@@ -108,8 +108,10 @@ export default function ChecklistForm() {
         ...prev,
         [fieldId]: value
       };
-      // Save to localStorage to prevent data loss
-      localStorage.setItem(`checklist_draft_${templateId}`, JSON.stringify(newResponses));
+      // Save to localStorage to prevent data loss (delayed to avoid rapid saves)
+      setTimeout(() => {
+        localStorage.setItem(`checklist_draft_${templateId}`, JSON.stringify(newResponses));
+      }, 500);
       return newResponses;
     });
   };

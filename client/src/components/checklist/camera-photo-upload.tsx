@@ -145,35 +145,45 @@ export default function CameraPhotoUpload({
 
   const confirmPhoto = useCallback(() => {
     if (capturedPhoto) {
-      // Converter data URL para File
-      fetch(capturedPhoto)
-        .then(res => res.blob())
-        .then(blob => {
-          const timestamp = new Date().getTime();
-          const file = new File([blob], `photo_${fieldId}_${timestamp}.jpg`, { type: 'image/jpeg' });
-          
-          setSelectedFile(file);
+      // Converter data URL para File usando método mais estável
+      try {
+        const byteString = atob(capturedPhoto.split(',')[1]);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        
+        for (let i = 0; i < byteString.length; i++) {
+          uint8Array[i] = byteString.charCodeAt(i);
+        }
+        
+        const timestamp = new Date().getTime();
+        const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+        const file = new File([blob], `photo_${fieldId}_${timestamp}.jpg`, { type: 'image/jpeg' });
+        
+        setSelectedFile(file);
+        
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+        
+        stopCamera();
+        setIsCapturing(false);
+        
+        // Delay the callback to prevent state conflicts
+        setTimeout(() => {
           onFileSelect(file);
-          
-          const url = URL.createObjectURL(file);
-          setPreviewUrl(url);
-          
-          stopCamera();
-          setIsCapturing(false);
-          
-          toast({
-            title: 'Sucesso',
-            description: 'Foto capturada com sucesso!',
-          });
-        })
-        .catch(error => {
-          console.error('Erro ao processar foto:', error);
-          toast({
-            title: 'Erro',
-            description: 'Erro ao processar a foto capturada.',
-            variant: 'destructive',
-          });
+        }, 100);
+        
+        toast({
+          title: 'Sucesso',
+          description: 'Foto capturada com sucesso!',
         });
+      } catch (error) {
+        console.error('Erro ao processar foto:', error);
+        toast({
+          title: 'Erro',
+          description: 'Erro ao processar a foto capturada.',
+          variant: 'destructive',
+        });
+      }
     }
   }, [capturedPhoto, fieldId, onFileSelect, stopCamera, toast]);
 
@@ -192,7 +202,15 @@ export default function CameraPhotoUpload({
         URL.revokeObjectURL(previewUrl);
       }
     };
-  }, [cameraStream, previewUrl]);
+  }, []);
+
+  // Cleanup camera stream when dialog closes
+  useEffect(() => {
+    if (!showCameraDialog && cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop());
+      setCameraStream(null);
+    }
+  }, [showCameraDialog, cameraStream]);
 
   return (
     <div className={className}>
