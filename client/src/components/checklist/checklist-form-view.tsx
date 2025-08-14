@@ -157,8 +157,12 @@ export default function ChecklistFormView({ checklist }: ChecklistFormViewProps)
                                     alt="Evidência fotográfica"
                                     className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
                                     onError={(e) => {
-                                      e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDEySC0zIiBzdHJva2U9IiNhZmFmYWYiLz4KPHN2Zz4K';
-                                      e.currentTarget.alt = 'Imagem não encontrada';
+                                      console.error('Erro ao carregar imagem relacionada:', `/uploads/${relatedPhoto}`);
+                                      e.currentTarget.style.display = 'none';
+                                      const errorDiv = document.createElement('div');
+                                      errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
+                                      errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar: ${relatedPhoto}</p>`;
+                                      e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
                                     }}
                                     onClick={() => window.open(`/uploads/${relatedPhoto}`, '_blank')}
                                   />
