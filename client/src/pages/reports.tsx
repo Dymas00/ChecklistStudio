@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// Import do hook de autenticação
 import { useAuth } from '@/lib/auth';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
