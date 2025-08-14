@@ -705,7 +705,7 @@ export class MemStorage implements IStorage {
       id: randomUUID(),
       userId,
       token: randomUUID(),
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
       createdAt: new Date(),
     };
     this.sessions.set(session.token, session);

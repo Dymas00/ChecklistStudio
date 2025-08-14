@@ -89,36 +89,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
   };
 
-  // Set up token in query client
+  // Monitor token validity
   useEffect(() => {
-    if (token) {
-      queryClient.setDefaultOptions({
-        queries: {
-          ...queryClient.getDefaultOptions().queries,
-          queryFn: async ({ queryKey }) => {
-            const response = await fetch(queryKey.join("/") as string, {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-              },
-              credentials: "include",
-            });
-            
-            if (response.status === 401) {
-              logout();
-              throw new Error('Unauthorized');
-            }
-            
-            if (!response.ok) {
-              const text = (await response.text()) || response.statusText;
-              throw new Error(`${response.status}: ${text}`);
-            }
-            
-            return await response.json();
-          },
-        },
-      });
+    // Clear invalid tokens on load
+    if (token && authData === null) {
+      setToken(null);
+      localStorage.removeItem('token');
     }
-  }, [token, queryClient]);
+  }, [token, authData]);
 
   const user = (authData as any)?.user || null;
   const isAuthenticated = !!user;
