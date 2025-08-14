@@ -79,7 +79,7 @@ export default function ChecklistForm() {
       });
       // Navigate back based on user role
       if (user?.role === 'tecnico') {
-        window.location.href = '/technician';
+        window.location.href = '/checklists';
       } else {
         window.location.href = '/dashboard';
       }

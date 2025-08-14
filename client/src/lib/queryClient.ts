@@ -32,6 +32,14 @@ export async function apiRequest(
     credentials: "include",
   });
 
+  // Handle 401 errors specifically - but only if not already on login page
+  if (res.status === 401 && !window.location.pathname.includes('/login')) {
+    // Clear invalid token and redirect to login
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+    throw new Error('401: Sessão expirada, faça login novamente');
+  }
+
   await throwIfResNotOk(res);
   return res;
 }
