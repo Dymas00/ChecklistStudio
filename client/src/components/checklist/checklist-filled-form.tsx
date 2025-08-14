@@ -213,36 +213,31 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                           <p className="text-sm">
                             <span className="font-medium text-gray-700">Resposta:</span>
                             <span className="ml-2 text-gray-900">
-                              {typeof response === 'object' ? response?.answer || 'Não informado' : response || 'Não informado'}
+                              {typeof response === 'object' && response !== null ? response?.answer || 'Não informado' : response || 'Não informado'}
                             </span>
                           </p>
                         </div>
-                        {typeof response === 'object' && response?.photo && (
+                        {/* Sempre mostrar evidência se existir resposta de evidência */}
+                        {(typeof response === 'object' && response !== null && response?.photo) ? (
                           <div className="space-y-2">
                             <img
                               src={`/uploads/${response.photo}`}
                               alt="Evidência fotográfica"
                               className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                              onLoad={(e) => {
-                                console.log('Evidência carregada:', `/uploads/${response.photo}`);
-                              }}
-                              onError={(e) => {
-                                console.log('Erro ao carregar evidência:', `/uploads/${response.photo}`);
-                                const target = e.currentTarget as HTMLImageElement;
-                                target.style.display = 'none';
-                                const errorDiv = document.createElement('div');
-                                errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
-                                errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar evidência: ${response.photo}</p>`;
-                                target.parentNode?.insertBefore(errorDiv, target);
-                              }}
                               onClick={() => window.open(`/uploads/${response.photo}`, '_blank')}
                             />
                             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                               📷 Evidência fotográfica
                             </Badge>
                           </div>
+                        ) : (
+                          <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                            <p className="text-sm text-yellow-700">
+                              📷 Nenhuma evidência fotográfica enviada
+                            </p>
+                          </div>
                         )}
-                        {typeof response === 'object' && response?.comment && (
+                        {typeof response === 'object' && response !== null && response?.comment && (
                           <div className="bg-gray-50 rounded-lg p-4 border">
                             <p className="text-sm">
                               <span className="font-medium text-gray-700">Comentário adicional:</span>
