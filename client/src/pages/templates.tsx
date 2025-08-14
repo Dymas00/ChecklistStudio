@@ -6,7 +6,7 @@ import Footer from '@/components/layout/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { 
   Plus,
   Upload,
@@ -399,6 +399,9 @@ export default function Templates() {
           <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto p-0">
             <DialogHeader className="px-6 pt-6 pb-2">
               <DialogTitle>Criar Novo Template</DialogTitle>
+              <DialogDescription>
+                Configure as seções e campos do novo template de checklist
+              </DialogDescription>
             </DialogHeader>
             
             <DragDropTemplateBuilder
@@ -414,6 +417,9 @@ export default function Templates() {
           <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto p-0">
             <DialogHeader className="px-6 pt-6 pb-2">
               <DialogTitle>Editar Template</DialogTitle>
+              <DialogDescription>
+                Modifique as seções e campos do template selecionado
+              </DialogDescription>
             </DialogHeader>
             
             {editingTemplate && (

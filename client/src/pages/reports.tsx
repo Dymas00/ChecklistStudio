@@ -255,7 +255,7 @@ export default function Reports() {
         description: 'Relatório exportado com sucesso!',
       });
     } catch (error) {
-      console.error('Erro ao exportar relatório:', error);
+      // Error handled by toast notification
       toast({
         title: 'Erro',
         description: 'Falha ao exportar relatório. Tente novamente.',

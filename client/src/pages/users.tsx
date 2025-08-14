@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { 
   Plus,
   Edit,
@@ -265,6 +265,9 @@ export default function Users() {
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle>Criar Novo Usuário</DialogTitle>
+                  <DialogDescription>
+                    Preencha os dados para criar um novo usuário no sistema
+                  </DialogDescription>
                 </DialogHeader>
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -371,6 +374,9 @@ export default function Users() {
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Editar Usuário</DialogTitle>
+              <DialogDescription>
+                Modifique os dados do usuário selecionado
+              </DialogDescription>
             </DialogHeader>
             
             <form onSubmit={handleEditSubmit} className="space-y-4">

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { 
   User,
@@ -256,6 +256,9 @@ export default function Profile() {
                   <DialogContent className="max-w-md">
                     <DialogHeader>
                       <DialogTitle>Alterar Senha</DialogTitle>
+                      <DialogDescription>
+                        Digite sua senha atual e a nova senha para alterá-la
+                      </DialogDescription>
                     </DialogHeader>
                     
                     <form onSubmit={handlePasswordSubmit} className="space-y-4">
@@ -322,6 +325,9 @@ export default function Profile() {
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Editar Perfil</DialogTitle>
+              <DialogDescription>
+                Atualize suas informações pessoais
+              </DialogDescription>
             </DialogHeader>
             
             <form onSubmit={handleEditSubmit} className="space-y-4">

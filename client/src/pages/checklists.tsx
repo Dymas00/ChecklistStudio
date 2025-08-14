@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Sidebar } from '@/components/layout/sidebar';
 import Footer from '@/components/layout/footer';
 import { ClipboardList, Search, Filter, Eye, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown, CheckCircle, XCircle } from 'lucide-react';
@@ -151,7 +151,7 @@ export default function Checklists() {
         description: 'PDF exportado com sucesso!',
       });
     } catch (error) {
-      console.error('Erro ao exportar PDF:', error);
+      // Error handled by toast notification
       toast({
         title: 'Erro',
         description: 'Falha ao exportar PDF. Tente novamente.',
@@ -205,6 +205,9 @@ export default function Checklists() {
               <DialogContent className="max-w-full sm:max-w-4xl max-h-[90vh] sm:max-h-[80vh] overflow-y-auto mx-4">
                 <DialogHeader>
                   <DialogTitle className="text-lg sm:text-xl">Selecionar Template</DialogTitle>
+                  <DialogDescription>
+                    Escolha o tipo de checklist que deseja preencher
+                  </DialogDescription>
                 </DialogHeader>
                 
                 <div className="space-y-4">
