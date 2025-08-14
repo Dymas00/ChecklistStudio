@@ -11,6 +11,9 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 **January 14, 2025:**
+- ✅ Criada documentação técnica completa (README.md)
+- ✅ Documentação inclui arquitetura, API, deployment e troubleshooting
+- ✅ Configurado acesso remoto para múltiplas máquinas na rede
 - ✅ Criado guia simplificado para rodar sem PostgreSQL (SETUP_SIMPLES.md)
 - ✅ Projeto configurado para usar SQLite por padrão (mais fácil setup local)
 - ✅ Arquivo .env.example atualizado com opções SQLite e PostgreSQL
