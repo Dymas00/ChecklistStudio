@@ -11,12 +11,25 @@ Este guia mostra como rodar o Checklist Virtual na sua máquina **sem instalar P
 ## 🚀 Passo a Passo Simples
 
 ### 1. Pré-requisitos (Apenas Node.js)
+
+**Versão Recomendada: Node.js 20 LTS** (testado com v20.19.3)
+**Versão Mínima: Node.js 18+**
+
 ```bash
 # Verificar se tem Node.js instalado
-node --version    # Precisa ser 18+ ou 20+
+node --version    # Deve mostrar v18.x.x ou v20.x.x
+npm --version     # Deve mostrar 9.x.x ou 10.x.x
 
-# Se não tiver, baixe em: https://nodejs.org
+# Se não tiver ou versão antiga, baixe em: https://nodejs.org
+# IMPORTANTE: Escolha a versão "LTS" (Long Term Support)
 ```
+
+**Onde baixar:**
+- Site oficial: https://nodejs.org
+- Escolha: **LTS** (recomendado para estabilidade)
+- Windows: `.msi` installer
+- macOS: `.pkg` installer  
+- Linux: Via package manager ou `.tar.gz`
 
 ### 2. Baixar e Extrair o Projeto
 - Faça download do projeto (ZIP)
