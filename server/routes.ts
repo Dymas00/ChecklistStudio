@@ -240,6 +240,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Checklist routes
   app.get("/api/checklists", requireAuth, async (req: any, res) => {
+    // Disable caching completely
+    res.set({
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'ETag': Date.now().toString()
+    });
+    
     let checklists;
     if (req.user.role === UserRole.TECNICO) {
       checklists = await storage.getChecklistsByTechnician(req.user.id);
