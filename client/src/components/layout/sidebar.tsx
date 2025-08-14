@@ -147,6 +147,15 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           <LogOut className="w-4 h-4 mr-2" />
           Sair
         </Button>
+
+        <Separator className="my-3" />
+        
+        <div className="text-center">
+          <p className="text-xs text-gray-400 mb-1">Desenvolvido por</p>
+          <p className="text-xs font-medium text-gray-500">
+            Dymas Gomes | Victor Matheus
+          </p>
+        </div>
       </div>
     </div>
   );
