@@ -119,10 +119,12 @@ export default function ChecklistFormView({ checklist }: ChecklistFormViewProps)
                           <div className="bg-white rounded-lg p-3 border">
                             <p className="text-sm">
                               <span className="font-medium text-gray-700">Resposta:</span> 
-                              <span className="ml-2 text-gray-600">{response.answer || 'Não informado'}</span>
+                              <span className="ml-2 text-gray-600">
+                                {typeof response === 'object' && response !== null ? response.answer || 'Não informado' : response || 'Não informado'}
+                              </span>
                             </p>
                           </div>
-                          {response.photo && (
+                          {(typeof response === 'object' && response !== null && response.photo) && (
                             <div className="space-y-2">
                               <img
                                 src={`/uploads/${response.photo}`}
@@ -134,12 +136,12 @@ export default function ChecklistFormView({ checklist }: ChecklistFormViewProps)
                                 }}
                                 onClick={() => window.open(`/uploads/${response.photo}`, '_blank')}
                               />
-                              <p className="text-xs text-gray-500 flex items-center gap-1">
-                                📷 Evidência fotográfica
-                              </p>
+                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                📷 Evidência fotográfica anexada
+                              </Badge>
                             </div>
                           )}
-                          {response.comment && (
+                          {(typeof response === 'object' && response !== null && response.comment) && (
                             <div className="bg-white rounded-lg p-3 border">
                               <p className="text-sm">
                                 <span className="font-medium text-gray-700">Comentário:</span>
