@@ -139,29 +139,10 @@ export class PDFExporter {
   }
 
   async exportChecklist(data: ChecklistData): Promise<void> {
-    // Header with template layout styling
-    this.addTitle(`CHECKLIST - ${data.templateName.toUpperCase()}`, 18);
-    this.addLine();
+    // Header matching template design
+    this.addTemplateHeader(data);
     
-    // Basic Info in template style
-    this.addText(`Técnico: ${data.technicianName}`, 12, true);
-    this.addText(`Template: ${data.templateName}`, 10);
-    this.addText(`Criado em: ${new Date(data.createdAt).toLocaleString('pt-BR')}`, 10);
-    
-    if (data.completedAt) {
-      this.addText(`Concluído em: ${new Date(data.completedAt).toLocaleString('pt-BR')}`, 10);
-    }
-    
-    if (data.approvedAt && data.approvedBy) {
-      this.addText(`Aprovado em: ${new Date(data.approvedAt).toLocaleString('pt-BR')}`, 10);
-      this.addText(`Aprovado por: ${data.approvedBy}`, 10);
-    }
-    
-    this.addText(`Status: ${data.status.toUpperCase()}`, 10, true);
-    this.currentY += 10;
-    this.addLine();
-
-    // Template-based sections rendering
+    // Template-based sections rendering with exact layout
     if (data.sections && Array.isArray(data.sections)) {
       await this.renderTemplateSections(data.sections, data.responses);
     } else {
@@ -169,124 +150,291 @@ export class PDFExporter {
       await this.renderLegacySections(data);
     }
 
-    // Footer
+    // Footer with approval info
+    this.addTemplateFooter(data);
+  }
+
+  // Template-style header matching the original form
+  private addTemplateHeader(data: ChecklistData): void {
+    // Main title with Claro branding style
+    this.pdf.setFillColor(220, 220, 220); // Light gray background
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 25, 'F');
+    
+    this.currentY += 8;
+    this.addTitle(`${data.templateName.toUpperCase()}`, 16);
+    this.addText(`Checklist Virtual - Claro Empresas`, 10);
+    this.currentY += 5;
+    
+    // Info box similar to template header
+    const infoItems: string[] = [
+      `Técnico: ${data.technicianName}`,
+      `Criado em: ${new Date(data.createdAt).toLocaleString('pt-BR')}`,
+      `Status: ${data.status.toUpperCase()}`
+    ];
+    
+    if (data.completedAt) {
+      infoItems.splice(2, 0, `Concluído em: ${new Date(data.completedAt).toLocaleString('pt-BR')}`);
+    }
+    
+    this.addSectionBox('INFORMAÇÕES DO CHECKLIST', infoItems);
+  }
+
+  // Template footer with approval information  
+  private addTemplateFooter(data: ChecklistData): void {
+    this.currentY += 15;
+    
+    if (data.approvedAt && data.approvedBy) {
+      this.addSectionBox('INFORMAÇÕES DE APROVAÇÃO', [
+        `Aprovado em: ${new Date(data.approvedAt).toLocaleString('pt-BR')}`,
+        `Aprovado por: ${data.approvedBy}`
+      ]);
+    }
+
     this.currentY += 10;
+    this.pdf.setFontSize(8);
+    this.pdf.setFont('helvetica', 'italic');
     this.addText(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, 8);
     this.addText('Checklist Virtual - Claro Empresas', 8);
   }
 
-  // New method to render sections following template structure
+  // Helper method to create boxed sections like in the template
+  private addSectionBox(title: string, items: string[]): void {
+    this.checkPageBreak(30 + (items.length * 7));
+    
+    // Box background
+    this.pdf.setFillColor(248, 249, 250); // Very light gray
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 8 + (items.length * 7), 'F');
+    
+    // Box border
+    this.pdf.setDrawColor(200, 200, 200);
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 8 + (items.length * 7));
+    
+    this.currentY += 5;
+    this.addText(title, 10, true);
+    
+    items.forEach(item => {
+      this.addText(`  ${item}`, 9);
+    });
+    
+    this.currentY += 5;
+  }
+
+  // Enhanced method to render sections matching template layout
   private async renderTemplateSections(sections: any[], responses: Record<string, any>): Promise<void> {
     for (const section of sections) {
-      // Add section title with icon styling similar to the template
-      this.addTitle(`${section.title.toUpperCase()}`, 14);
+      this.currentY += 8; // Extra space between sections
+      
+      // Section header with background (like in template)
+      this.checkPageBreak(25);
+      this.pdf.setFillColor(240, 244, 248); // Light blue background
+      this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 18, 'F');
+      
+      this.currentY += 6;
+      this.pdf.setFontSize(14);
+      this.pdf.setFont('helvetica', 'bold');
+      this.pdf.text(`📋 ${section.title.toUpperCase()}`, this.margin + 5, this.currentY);
+      this.currentY += 12;
       
       if (section.fields && Array.isArray(section.fields)) {
-        // Render each field in the section
+        // Render fields in a grid-like layout when possible
         for (const field of section.fields) {
           await this.renderTemplateField(field, responses);
         }
       }
       
-      this.addLine();
+      this.currentY += 5; // Space after section
     }
   }
 
-  // New method to render individual fields maintaining template layout
+  // Enhanced field rendering with template-like styling
   private async renderTemplateField(field: any, responses: Record<string, any>): Promise<void> {
     const fieldId = field.id;
     const response = responses[fieldId];
     const photoResponse = responses[`${fieldId}_photo`] || responses[`${fieldId}Photo`];
     
-    // Field label in bold (similar to template)
-    this.addText(`${field.label}${field.required ? ' *' : ''}:`, 11, true);
+    // Field container with subtle border (like form fields)
+    this.checkPageBreak(20);
     
-    // Handle different field types
+    // Field background for better readability
+    this.pdf.setFillColor(252, 252, 252);
+    const fieldHeight = this.calculateFieldHeight(field, response, photoResponse);
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), fieldHeight, 'F');
+    
+    this.currentY += 3;
+    
+    // Field label with required indicator
+    this.pdf.setFontSize(11);
+    this.pdf.setFont('helvetica', 'bold');
+    const labelText = `${field.label}${field.required ? ' *' : ''}`;
+    this.pdf.text(labelText, this.margin + 5, this.currentY);
+    this.currentY += 8;
+    
+    // Handle different field types with template styling
     switch (field.type) {
       case 'text':
       case 'textarea':
-        if (response) {
-          this.addText(response, 10);
-        } else {
-          this.addText('Não preenchido', 10);
-        }
+        this.renderTextFieldValue(response);
         break;
         
       case 'radio':
-        if (response) {
-          this.addText(`☑ ${response}`, 10);
-        } else {
-          this.addText('Nenhuma opção selecionada', 10);
-        }
-        
-        // Show options for context (similar to template)
-        if (field.options && Array.isArray(field.options)) {
-          field.options.forEach((option: string) => {
-            if (option !== response) {
-              this.addText(`☐ ${option}`, 9);
-            }
-          });
-        }
+        this.renderRadioFieldValue(field, response);
         break;
         
       case 'evidence':
       case 'photo':
-        if (photoResponse || response) {
-          let photoFilename = null;
-          const photoData = photoResponse || response;
-          
-          if (typeof photoData === 'string') {
-            photoFilename = photoData;
-          } else if (photoData && photoData.filename) {
-            photoFilename = photoData.filename;
-          } else if (photoData && photoData.path) {
-            photoFilename = photoData.path.replace('uploads/', '');
-          }
-          
-          if (photoFilename) {
-            this.addText('Evidência anexada:', 9, true);
-            const cleanFilename = photoFilename.replace(/^uploads\//, '');
-            await this.addImage(`/uploads/${cleanFilename}`, 100, 75);
-          } else {
-            this.addText('Nenhuma evidência anexada', 10);
-          }
-        } else {
-          this.addText('Nenhuma evidência anexada', 10);
-        }
+        await this.renderEvidenceFieldValue(photoResponse || response);
         break;
         
       case 'signature':
-        if (response || photoResponse) {
-          this.addText('Assinatura capturada:', 9, true);
-          let signatureFilename = null;
-          const signatureData = photoResponse || response;
-          
-          if (typeof signatureData === 'string') {
-            signatureFilename = signatureData;
-          } else if (signatureData && signatureData.filename) {
-            signatureFilename = signatureData.filename;
-          }
-          
-          if (signatureFilename) {
-            const cleanFilename = signatureFilename.replace(/^uploads\//, '');
-            await this.addImage(`/uploads/${cleanFilename}`, 120, 60);
-          }
-        } else {
-          this.addText('Não assinado', 10);
-        }
+        await this.renderSignatureFieldValue(photoResponse || response);
         break;
         
       default:
-        if (response) {
-          this.addText(String(response), 10);
-        } else {
-          this.addText('Não preenchido', 10);
-        }
+        this.renderTextFieldValue(response);
         break;
     }
     
-    // Add some spacing between fields
-    this.currentY += 3;
+    this.currentY += 5; // Space after field
+  }
+
+  // Helper methods for field rendering
+  private calculateFieldHeight(field: any, response: any, photoResponse: any): number {
+    let height = 15; // Base height for label and padding
+    
+    if (field.type === 'radio' && field.options) {
+      height += field.options.length * 6; // Space for radio options
+    }
+    
+    if (field.type === 'evidence' || field.type === 'photo') {
+      if (photoResponse || response) {
+        height += 80; // Space for image
+      }
+    }
+    
+    if (field.type === 'signature') {
+      if (photoResponse || response) {
+        height += 65; // Space for signature
+      }
+    }
+    
+    return height;
+  }
+
+  private renderTextFieldValue(response: any): void {
+    this.pdf.setFont('helvetica', 'normal');
+    this.pdf.setFontSize(10);
+    
+    if (response) {
+      // Text field with border (like input field)
+      this.pdf.setDrawColor(200, 200, 200);
+      this.pdf.rect(this.margin + 5, this.currentY - 3, this.pdf.internal.pageSize.width - (2 * this.margin) - 10, 8);
+      this.pdf.text(String(response), this.margin + 8, this.currentY + 2);
+    } else {
+      this.pdf.setTextColor(150, 150, 150);
+      this.pdf.text('Não preenchido', this.margin + 8, this.currentY + 2);
+      this.pdf.setTextColor(0, 0, 0);
+    }
+    
+    this.currentY += 10;
+  }
+
+  private renderRadioFieldValue(field: any, response: any): void {
+    this.pdf.setFont('helvetica', 'normal');
+    this.pdf.setFontSize(10);
+    
+    if (field.options && Array.isArray(field.options)) {
+      field.options.forEach((option: string) => {
+        const isSelected = option === response;
+        const radioSymbol = isSelected ? '●' : '○';
+        
+        // Radio button styling
+        this.pdf.setFont('helvetica', isSelected ? 'bold' : 'normal');
+        this.pdf.text(`${radioSymbol} ${option}`, this.margin + 8, this.currentY);
+        this.currentY += 6;
+      });
+    } else if (response) {
+      this.pdf.text(`● ${response}`, this.margin + 8, this.currentY);
+      this.currentY += 6;
+    }
+    
+    if (!response && (!field.options || field.options.length === 0)) {
+      this.pdf.setTextColor(150, 150, 150);
+      this.pdf.text('Nenhuma opção selecionada', this.margin + 8, this.currentY);
+      this.pdf.setTextColor(0, 0, 0);
+      this.currentY += 6;
+    }
+  }
+
+  private async renderEvidenceFieldValue(photoData: any): Promise<void> {
+    if (photoData) {
+      let photoFilename = null;
+      
+      if (typeof photoData === 'string') {
+        photoFilename = photoData;
+      } else if (photoData && photoData.filename) {
+        photoFilename = photoData.filename;
+      } else if (photoData && photoData.path) {
+        photoFilename = photoData.path.replace('uploads/', '');
+      }
+      
+      if (photoFilename) {
+        this.pdf.setFont('helvetica', 'italic');
+        this.pdf.setFontSize(9);
+        this.pdf.text('📷 Evidência fotográfica:', this.margin + 8, this.currentY);
+        this.currentY += 8;
+        
+        const cleanFilename = photoFilename.replace(/^uploads\//, '');
+        await this.addImage(`/uploads/${cleanFilename}`, 120, 90);
+      } else {
+        this.renderNoEvidenceMessage();
+      }
+    } else {
+      this.renderNoEvidenceMessage();
+    }
+  }
+
+  private async renderSignatureFieldValue(signatureData: any): Promise<void> {
+    if (signatureData) {
+      let signatureFilename = null;
+      
+      if (typeof signatureData === 'string') {
+        signatureFilename = signatureData;
+      } else if (signatureData && signatureData.filename) {
+        signatureFilename = signatureData.filename;
+      }
+      
+      if (signatureFilename) {
+        this.pdf.setFont('helvetica', 'italic');
+        this.pdf.setFontSize(9);
+        this.pdf.text('✍️ Assinatura digital:', this.margin + 8, this.currentY);
+        this.currentY += 8;
+        
+        const cleanFilename = signatureFilename.replace(/^uploads\//, '');
+        await this.addImage(`/uploads/${cleanFilename}`, 140, 70);
+      } else {
+        this.renderNoSignatureMessage();
+      }
+    } else {
+      this.renderNoSignatureMessage();
+    }
+  }
+
+  private renderNoEvidenceMessage(): void {
+    this.pdf.setFont('helvetica', 'italic');
+    this.pdf.setFontSize(10);
+    this.pdf.setTextColor(150, 150, 150);
+    this.pdf.text('📷 Nenhuma evidência anexada', this.margin + 8, this.currentY);
+    this.pdf.setTextColor(0, 0, 0);
+    this.currentY += 8;
+  }
+
+  private renderNoSignatureMessage(): void {
+    this.pdf.setFont('helvetica', 'italic');
+    this.pdf.setFontSize(10);
+    this.pdf.setTextColor(150, 150, 150);
+    this.pdf.text('✍️ Não assinado', this.margin + 8, this.currentY);
+    this.pdf.setTextColor(0, 0, 0);
+    this.currentY += 8;
   }
 
   // Legacy method for backward compatibility
