@@ -200,6 +200,7 @@ export default function CameraPhotoUpload({
         ref={fileInputRef}
         type="file"
         accept="image/*"
+        capture="environment"
         onChange={handleFileSelect}
         className="hidden"
         required={required}
@@ -236,7 +237,7 @@ export default function CameraPhotoUpload({
                 size="sm"
               >
                 <Upload className="w-4 h-4 mr-2" />
-                Escolher da Galeria
+                {isMobile ? 'Câmera/Galeria' : 'Escolher da Galeria'}
               </Button>
             </div>
             

@@ -60,8 +60,8 @@ export default function PhotoUpload({
       <input
         ref={fileInputRef}
         type="file"
-        accept={accept}
-        capture={capture}
+        accept="image/*"
+        capture="environment"
         onChange={handleFileSelect}
         className="hidden"
         required={required}
@@ -85,7 +85,7 @@ export default function PhotoUpload({
               {capture === 'user' ? 'Tire uma selfie' : 'Adicionar foto'}
             </p>
             <p className="text-xs text-gray-500">
-              Clique para {capture === 'user' ? 'abrir a câmera' : 'selecionar uma foto'}
+              Clique para abrir a câmera ou selecionar uma foto
               {required && <span className="text-red-500 ml-1">*</span>}
             </p>
           </div>
