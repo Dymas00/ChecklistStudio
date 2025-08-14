@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { getStatusBadgeClass, getStatusLabel, formatTimeAgo } from '@/lib/templates';
 import { Link, useLocation } from 'wouter';
+import claroLogo from '@/assets/claro-empresas-logo-final.png';
 
 export default function Dashboard() {
   const { user, isAdmin } = useAuth();
@@ -34,10 +35,24 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Central Header with Logo */}
+      <div className="w-full bg-white shadow-sm border-b border-gray-200 py-4">
+        <div className="flex flex-col items-center">
+          <img 
+            src={claroLogo}
+            alt="Claro Empresas" 
+            className="h-12 w-auto mb-2" 
+          />
+          <h1 className="text-lg font-medium text-gray-700">
+            Checklist Virtual
+          </h1>
+        </div>
+      </div>
+      
       <Sidebar />
       
       <div className="lg:ml-64 p-4 sm:p-6">
-        {/* Header */}
+        {/* Page Header */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600 mt-1 text-sm sm:text-base">

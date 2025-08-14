@@ -15,6 +15,7 @@ import { Link } from 'wouter';
 import { exportChecklistToPDF } from '@/lib/pdf-export';
 import { useToast } from '@/hooks/use-toast';
 import ChecklistDetailsDialog from '@/components/checklist/checklist-details-dialog';
+import claroLogo from '@/assets/claro-empresas-logo-final.png';
 
 function getStatusBadgeClass(status: string) {
   switch (status) {
@@ -181,6 +182,20 @@ export default function Checklists() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
+        {/* Central Header with Logo */}
+        <div className="w-full bg-white shadow-sm border-b border-gray-200 py-4">
+          <div className="flex flex-col items-center">
+            <img 
+              src={claroLogo}
+              alt="Claro Empresas" 
+              className="h-12 w-auto mb-2" 
+            />
+            <h1 className="text-lg font-medium text-gray-700">
+              Checklist Virtual
+            </h1>
+          </div>
+        </div>
+        
         <Sidebar />
         <div className="ml-64 p-6">
           <div className="animate-pulse">
@@ -198,6 +213,20 @@ export default function Checklists() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Central Header with Logo */}
+      <div className="w-full bg-white shadow-sm border-b border-gray-200 py-4">
+        <div className="flex flex-col items-center">
+          <img 
+            src={claroLogo}
+            alt="Claro Empresas" 
+            className="h-12 w-auto mb-2" 
+          />
+          <h1 className="text-lg font-medium text-gray-700">
+            Checklist Virtual
+          </h1>
+        </div>
+      </div>
+      
       <Sidebar />
       
       <div className="lg:ml-64 p-4 sm:p-6">

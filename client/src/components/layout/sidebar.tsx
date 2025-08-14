@@ -66,18 +66,11 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
   return (
     <div className="flex flex-col h-full w-64 bg-white">
-      {/* Logo Section */}
+      {/* Menu Title */}
       <div className="flex justify-center py-4 border-b border-gray-200 w-full">
-        <div className="flex flex-col items-center">
-          <img 
-            src={claroLogo} 
-            alt="Claro Empresas" 
-            className="h-12 w-auto mb-2" 
-          />
-          <h1 className="text-sm font-medium text-gray-700">
-            Checklist Virtual
-          </h1>
-        </div>
+        <h1 className="text-lg font-semibold text-gray-900">
+          Menu
+        </h1>
       </div>
 
       {/* Navigation Menu */}
