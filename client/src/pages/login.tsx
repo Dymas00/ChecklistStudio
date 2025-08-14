@@ -43,7 +43,7 @@ export default function Login() {
               <img 
                 src={claroLogo} 
                 alt="Claro Empresas" 
-                className="h-20 w-auto" 
+                className="h-16 w-auto" 
               />
             </div>
             <CardTitle className="text-3xl font-bold text-gray-900">

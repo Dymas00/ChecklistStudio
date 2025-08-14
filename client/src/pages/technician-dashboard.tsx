@@ -59,7 +59,7 @@ export default function TechnicianDashboard() {
             <img 
               src={claroLogo} 
               alt="Claro Empresas" 
-              className="h-12 w-auto" 
+              className="h-10 w-auto" 
             />
             <div>
               <h1 className="text-lg font-semibold text-gray-900">Sistema de Checklists</h1>

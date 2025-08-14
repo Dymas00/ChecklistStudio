@@ -71,7 +71,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         <img 
           src={claroLogo} 
           alt="Claro Empresas" 
-          className="h-16 w-auto mr-3" 
+          className="h-12 w-auto mr-3" 
         />
         <div>
           <h1 className="text-lg font-semibold text-gray-900">

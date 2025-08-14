@@ -1,37 +1,17 @@
-<svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="200" height="80" fill="white" rx="8"/>
+<svg width="240" height="60" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with subtle transparency -->
+  <rect width="240" height="60" fill="rgba(255,255,255,0.95)" rx="4"/>
   
-  <!-- Claro text in red -->
-  <text x="20" y="35" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#E60012">
+  <!-- Claro text in red - exact match to image -->
+  <text x="10" y="32" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="bold" fill="#E60012" letter-spacing="-1px">
     claro
   </text>
   
-  <!-- Red hyphen -->
-  <rect x="105" y="28" width="12" height="4" fill="#E60012"/>
+  <!-- Red hyphen - positioned exactly like in image -->
+  <rect x="110" y="26" width="16" height="4" fill="#E60012"/>
   
-  <!-- Empresas text in black -->
-  <text x="20" y="60" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#2B2B2B">
+  <!-- Empresas text in black - matching exact positioning -->
+  <text x="10" y="52" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#333333" letter-spacing="0.5px">
     empresas
   </text>
-  
-  <!-- Checklist icon integration -->
-  <g transform="translate(150, 15)">
-    <!-- Clipboard background -->
-    <rect x="0" y="0" width="32" height="40" fill="#E60012" rx="3"/>
-    <rect x="3" y="6" width="26" height="30" fill="white" rx="2"/>
-    
-    <!-- Checkmarks -->
-    <g fill="#E60012" stroke="#E60012" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="8,15 12,19 22,11"/>
-      <polyline points="8,22 12,26 22,18"/>
-      <polyline points="8,29 12,33 22,25"/>
-    </g>
-    
-    <!-- Small indicator dot -->
-    <circle cx="38" cy="8" r="3" fill="#00A651"/>
-  </g>
-  
-  <!-- Bottom accent line -->
-  <rect x="20" y="70" width="160" height="2" fill="#E60012"/>
 </svg>
