@@ -170,7 +170,7 @@ export default function TechnicianDashboard() {
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-900">
-                        {checklist.templateId} - Loja {checklist.storeCode}
+                        Loja {checklist.storeCode}
                       </h3>
                       <p className="text-sm text-gray-600">
                         Criado em {formatTimeAgo(checklist.createdAt)}

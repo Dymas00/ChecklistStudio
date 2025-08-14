@@ -187,7 +187,7 @@ export default function Dashboard() {
                           </div>
                           <div>
                             <h3 className="font-medium text-gray-900">
-                              {checklist.templateId} - {checklist.storeCode}
+                              Loja {checklist.storeCode}
                             </h3>
                             <p className="text-sm text-gray-600">
                               {checklist.technicianId}
