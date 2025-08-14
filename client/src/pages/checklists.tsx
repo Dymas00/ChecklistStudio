@@ -84,6 +84,9 @@ export default function Checklists() {
 
   const { data: checklists, isLoading } = useQuery({
     queryKey: ['/api/checklists'],
+    refetchInterval: 5000, // Auto refresh every 5 seconds
+    staleTime: 0, // Always consider data stale
+    gcTime: 0, // Don't cache data
   });
 
   const { data: users } = useQuery({
