@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Sidebar } from '@/components/layout/sidebar';
@@ -30,6 +30,12 @@ export default function ChecklistForm() {
   const [, params] = useRoute('/checklist/:templateId');
   const templateId = params?.templateId;
   const [responses, setResponses] = useState<Record<string, any>>({});
+  const responsesRef = useRef(responses);
+  
+  // Keep ref in sync with state
+  useEffect(() => {
+    responsesRef.current = responses;
+  }, [responses]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
@@ -97,10 +103,35 @@ export default function ChecklistForm() {
   const { clearDraft } = useFormPersistence(templateId, responses, setResponses, isEditing);
 
   const handleInputChange = (fieldId: string, value: any) => {
-    setResponses(prev => ({
-      ...prev,
-      [fieldId]: value
-    }));
+    // Prevent updates during initial load
+    if (!templateId) return;
+    
+    setResponses(prev => {
+      // Use ref to ensure we have the latest state
+      const current = responsesRef.current;
+      const newResponses = {
+        ...current,
+        [fieldId]: value
+      };
+      
+      // Immediate localStorage backup for files
+      if (value instanceof File) {
+        try {
+          const fileData = {
+            name: value.name,
+            size: value.size,
+            type: value.type,
+            _isFile: true,
+            _fieldId: fieldId
+          };
+          localStorage.setItem(`file_${templateId}_${fieldId}`, JSON.stringify(fileData));
+        } catch (error) {
+          console.error('Error saving file data:', error);
+        }
+      }
+      
+      return newResponses;
+    });
   };
 
   const handleEvidenceChange = (fieldId: string, evidenceData: any) => {

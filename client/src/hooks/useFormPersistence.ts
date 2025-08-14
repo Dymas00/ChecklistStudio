@@ -36,8 +36,24 @@ export function useFormPersistence(
 
     // Set new timeout for debounced save
     saveTimeoutRef.current = setTimeout(() => {
-      localStorage.setItem(`checklist_draft_${templateId}`, JSON.stringify(responses));
-    }, 1000);
+      try {
+        // Create a safe copy for serialization
+        const safeResponses = Object.fromEntries(
+          Object.entries(responses).map(([key, value]) => [
+            key,
+            value instanceof File ? { 
+              name: value.name, 
+              size: value.size, 
+              type: value.type,
+              _isFile: true 
+            } : value
+          ])
+        );
+        localStorage.setItem(`checklist_draft_${templateId}`, JSON.stringify(safeResponses));
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
+      }
+    }, 500);
 
     return () => {
       if (saveTimeoutRef.current) {

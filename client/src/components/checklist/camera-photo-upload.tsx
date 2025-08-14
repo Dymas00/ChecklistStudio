@@ -51,11 +51,14 @@ export default function CameraPhotoUpload({
     const file = e.target.files?.[0];
     
     if (file) {
+      console.log('File selected:', file.name, file.size);
       setSelectedFile(file);
-      onFileSelect(file);
       
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
+      
+      // Call parent callback last
+      onFileSelect(file);
     }
   };
 
@@ -186,10 +189,8 @@ export default function CameraPhotoUpload({
         
         stopCamera();
         
-        // Delay the callback to prevent state conflicts
-        setTimeout(() => {
-          onFileSelect(file);
-        }, 100);
+        // Call immediately to update parent state
+        onFileSelect(file);
         
         toast({
           title: 'Sucesso',
