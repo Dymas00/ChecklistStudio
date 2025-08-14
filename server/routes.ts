@@ -266,27 +266,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/checklists", requireAuth, upload.array('photos'), async (req: any, res) => {
+  app.post("/api/checklists", requireAuth, upload.fields([
+    { name: 'data', maxCount: 1 }
+  ]), async (req: any, res) => {
     try {
-      const checklistData = JSON.parse(req.body.data);
+      console.log('Received checklist data:', req.body);
+      console.log('Received files:', req.files);
       
-      // Process uploaded files
-      const photos = req.files?.map((file: any) => ({
-        fieldId: file.fieldname,
-        filename: file.filename,
-        originalName: file.originalname,
-        path: file.path
-      })) || [];
+      let checklistData;
+      if (req.body.data) {
+        checklistData = JSON.parse(req.body.data);
+      } else {
+        // Handle case where data is sent as JSON body (without files)
+        checklistData = req.body;
+      }
+      
+      // Process file uploads from FormData
+      const processedResponses = { ...checklistData.responses };
+      
+      // Handle file fields in the responses
+      Object.entries(processedResponses).forEach(([key, value]) => {
+        if (req.files && req.files[key] && req.files[key][0]) {
+          const file = req.files[key][0];
+          processedResponses[key] = {
+            filename: file.filename,
+            originalName: file.originalname,
+            path: file.path,
+            mimetype: file.mimetype,
+            size: file.size
+          };
+        }
+      });
 
       const checklist = await storage.createChecklist({
         ...checklistData,
-        technicianId: req.user.id,
-        photos: photos
+        responses: processedResponses,
+        technicianId: req.user.id
       });
 
       res.status(201).json(checklist);
     } catch (error) {
-      res.status(400).json({ message: "Erro ao criar checklist" });
+      console.error('Error creating checklist:', error);
+      res.status(400).json({ 
+        message: "Erro ao criar checklist",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 

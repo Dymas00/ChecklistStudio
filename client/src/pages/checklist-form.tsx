@@ -60,13 +60,13 @@ export default function ChecklistForm() {
   }, [isEditing, existingChecklist]);
 
   const submitMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async (data: FormData | any) => {
       if (isEditing) {
         // Update existing checklist
-        return apiRequest('PUT', `/api/checklists/${editId}`, formData);
+        return apiRequest('PUT', `/api/checklists/${editId}`, data);
       } else {
         // Create new checklist
-        return apiRequest('POST', '/api/checklists', formData);
+        return apiRequest('POST', '/api/checklists', data);
       }
     },
     onSuccess: () => {
@@ -156,26 +156,46 @@ export default function ChecklistForm() {
 
     // Create FormData for file uploads
     const formData = new FormData();
+    
+    // Separate files from other responses
+    const responsesCopy = { ...responses };
+    const hasFiles = Object.values(responses).some(value => value instanceof File);
+    
     const checklistData = {
       templateId: (template as any)?.id,
       storeCode: responses.storeCode,
       storeManager: responses.storeManager,
       storePhone: responses.storePhone,
-      responses,
+      responses: responsesCopy,
       status: 'pendente'
     };
 
-    formData.append('data', JSON.stringify(checklistData));
-
-    // Handle file uploads
-    Object.entries(responses).forEach(([key, value]) => {
-      if (value instanceof File) {
-        formData.append(key, value);
-      }
-    });
+    if (hasFiles) {
+      // Use FormData for file uploads
+      formData.append('data', JSON.stringify(checklistData));
+      
+      // Handle file uploads - append files with their field names
+      Object.entries(responses).forEach(([key, value]) => {
+        if (value instanceof File) {
+          formData.append(key, value);
+          // Remove file from responses to avoid serialization issues
+          delete responsesCopy[key];
+        }
+      });
+      
+      // Update data with cleaned responses
+      formData.set('data', JSON.stringify({
+        ...checklistData,
+        responses: responsesCopy
+      }));
+    } else {
+      // No files, send as JSON
+      return checklistData;
+    }
 
     try {
-      await submitMutation.mutateAsync(formData);
+      const submitData = hasFiles ? formData : checklistData;
+      await submitMutation.mutateAsync(submitData);
       // Clear localStorage draft on successful submission
       clearDraft();
     } finally {
