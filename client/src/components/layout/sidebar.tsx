@@ -47,7 +47,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       name: 'Templates',
       href: '/templates',
       icon: FileText,
-      show: true,
+      show: ['administrador', 'coordenador', 'analista'].includes(user?.role || ''),
     },
     {
       name: 'Usuários',
