@@ -129,14 +129,22 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                               src={`/uploads/${response}`}
                               alt="Foto enviada pelo técnico"
                               className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                              onLoad={(e) => {
+                                console.log('Imagem carregada com sucesso:', `/uploads/${response}`);
+                              }}
                               onError={(e) => {
-                                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDEySC0zIiBzdHJva2U9IiNhZmFmYWYiLz4KPHN2Zz4K';
-                                e.currentTarget.alt = 'Imagem não encontrada';
+                                console.log('Erro ao carregar foto:', `/uploads/${response}`);
+                                const target = e.currentTarget as HTMLImageElement;
+                                target.style.display = 'none';
+                                const errorDiv = document.createElement('div');
+                                errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
+                                errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar: ${response}</p>`;
+                                target.parentNode?.insertBefore(errorDiv, target);
                               }}
                               onClick={() => window.open(`/uploads/${response}`, '_blank')}
                             />
                             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                              📷 Foto anexada
+                              📷 Foto anexada: {response}
                             </Badge>
                           </div>
                         ) : (
@@ -180,9 +188,17 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                               src={`/uploads/${response.photo}`}
                               alt="Evidência fotográfica"
                               className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                              onLoad={(e) => {
+                                console.log('Evidência carregada:', `/uploads/${response.photo}`);
+                              }}
                               onError={(e) => {
-                                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDEySC0zIiBzdHJva2U9IiNhZmFmYWYiLz4KPHN2Zz4K';
-                                e.currentTarget.alt = 'Imagem não encontrada';
+                                console.log('Erro ao carregar evidência:', `/uploads/${response.photo}`);
+                                const target = e.currentTarget as HTMLImageElement;
+                                target.style.display = 'none';
+                                const errorDiv = document.createElement('div');
+                                errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
+                                errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar evidência: ${response.photo}</p>`;
+                                target.parentNode?.insertBefore(errorDiv, target);
                               }}
                               onClick={() => window.open(`/uploads/${response.photo}`, '_blank')}
                             />
