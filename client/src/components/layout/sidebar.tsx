@@ -14,7 +14,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import claroLogo from '@/assets/claro-empresas-custom-logo.svg';
+import claroLogo from '@/assets/claro-empresas-logo-final.png';
 import { Link, useLocation } from 'wouter';
 
 function SidebarContent({ onClose }: { onClose?: () => void }) {
@@ -71,7 +71,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         <img 
           src={claroLogo} 
           alt="Claro Empresas" 
-          className="h-12 w-auto mr-3" 
+          className="h-14 w-auto mr-3" 
         />
         <div>
           <h1 className="text-lg font-semibold text-gray-900">

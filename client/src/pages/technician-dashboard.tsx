@@ -1,6 +1,6 @@
 import { useAuth } from '@/lib/auth';
 import { useQuery } from '@tanstack/react-query';
-import claroLogo from '@/assets/claro-empresas-custom-logo.svg';
+import claroLogo from '@/assets/claro-empresas-logo-final.png';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -59,7 +59,7 @@ export default function TechnicianDashboard() {
             <img 
               src={claroLogo} 
               alt="Claro Empresas" 
-              className="h-10 w-auto" 
+              className="h-12 w-auto" 
             />
             <div>
               <h1 className="text-lg font-semibold text-gray-900">Sistema de Checklists</h1>
