@@ -2,239 +2,75 @@
 
 ## Overview
 
-This is a comprehensive web-based checklist system designed for Claro Empresas operational workflows. The application enables technicians to complete digital checklists for various operational tasks (upgrades, maintenance, activation, migration) while providing management and analysis capabilities for supervisors. The system features role-based access control, mobile-responsive design, and comprehensive form validation with photo evidence capabilities.
+This is a comprehensive web-based checklist system designed for Claro Empresas operational workflows. The application enables technicians to complete digital checklists for various operational tasks (upgrades, maintenance, activation, migration) while providing management and analysis capabilities for supervisors. The system features role-based access control, mobile-responsive design, and comprehensive form validation with photo evidence capabilities. The business vision is to streamline operational processes, improve data accuracy, and provide actionable insights for Claro Empresas, leveraging digital transformation for enhanced efficiency and decision-making.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes
-
-**January 14, 2025 - Sistema Completamente Revisado:**
-- ✅ Criada documentação técnica completa (README.md)
-- ✅ Documentação inclui arquitetura, API, deployment e troubleshooting
-- ✅ Configurado acesso remoto para múltiplas máquinas na rede
-- ✅ Criado guia simplificado para rodar sem PostgreSQL (SETUP_SIMPLES.md)
-- ✅ Projeto configurado para usar SQLite por padrão (mais fácil setup local)
-- ✅ Arquivo .env.example atualizado com opções SQLite e PostgreSQL
-- ✅ Project renamed from "Checklist Management System/ChecklistPro" to "Checklist Virtual"
-- ✅ Updated all UI references including login page, sidebar, and documentation
-- ✅ Updated default user email domains from @checklistpro.com to @checklistvirtual.com (reverted back to @checklistpro.com per user request)
-- ✅ Removed default credentials display from login screen for security
-- ✅ Added proper page title to HTML document
-- ✅ Fixed storage implementation issues with missing methods for checklist persistence
-- ✅ Implemented complete template creation system with custom template builder
-- ✅ Added template editing functionality with visual interface
-- ✅ Created comprehensive VPS deployment guide and configuration files
-- ✅ Added deployment scripts and production configuration (PM2, Nginx, SSL)
-- ✅ Fixed all LSP TypeScript errors for clean production deployment
-- ✅ Removed Templates menu access for technicians (restricted to analyst+ roles)
-- ✅ Added "Desenvolvido por Dymas Gomes" footer throughout the application
-- ✅ Enhanced mobile responsiveness for template descriptions with improved text wrapping
-- ✅ Created complete VPS deployment guide with SSL certificate setup (DEPLOYMENT_VPS.md)
-- ✅ Simplified photo upload to use gallery/file picker only (removed complex camera functionality per user request)
-- ✅ Fixed all TypeScript errors and improved system stability
-- ✅ Corrected file upload handling for checklist submissions
-- ✅ Enhanced FormData processing for both JSON and multipart requests
-- ✅ Implemented robust error handling and validation
-- ✅ Optimized localStorage persistence excluding file objects
-- ✅ **Sistema completamente revisado e corrigido (Janeiro 14, 2025)**
-- ✅ Removidos todos os console.log desnecessários para produção
-- ✅ Corrigidos todos os erros TypeScript restantes
-- ✅ Build de produção funcionando perfeitamente
-- ✅ Sistema de upload de arquivos robusto e estável
-- ✅ Tratamento de erros melhorado em todo o código
-- ✅ Validações e verificações de tipos aprimoradas
-- ✅ **Sistema de fotos 100% galeria (Janeiro 14, 2025)**
-- ✅ Removida completamente funcionalidade de câmera
-- ✅ Todos os uploads usam apenas seleção da galeria
-- ✅ Interface simplificada com "Selecionar da Galeria"
-- ✅ Componentes antigos de câmera removidos do projeto
-- ✅ **Dashboard restrito para técnicos (Janeiro 14, 2025)**
-- ✅ Acesso ao Dashboard removido para usuários técnicos
-- ✅ Sidebar atualizada com restrições de acesso por role
-- ✅ Redirecionamento automático de técnicos para /checklists
-- ✅ Sistema de permissões aprimorado
-- ✅ **Bugs de login e redirecionamento corrigidos (Janeiro 14, 2025)**
-- ✅ Problema de "piscar" no login resolvido
-- ✅ Login funciona na primeira tentativa consistentemente
-- ✅ Redirecionamento correto: técnicos → /checklists, outros → /dashboard
-- ✅ Removido redirecionamento inválido para /technician
-- ✅ **Warnings de acessibilidade eliminados (Janeiro 14, 2025)**
-- ✅ DialogDescription adicionado em todos os diálogos
-- ✅ Componentes seguem padrões de acessibilidade ARIA
-- ✅ Console warnings de DialogContent resolvidos
-- ✅ **Console.log de produção removidos (Janeiro 14, 2025)**
-- ✅ Todos os console.log/error substituídos por toast notifications
-- ✅ Código de produção limpo e profissional
-- ✅ **Todos os erros TypeScript corrigidos (Janeiro 14, 2025)**
-- ✅ Sistema compila perfeitamente sem warnings LSP
-- ✅ Build de produção otimizado (65.2kb)
-- ✅ Código 100% tipado e validado
-- ✅ **Bugs do sistema de avaliação de técnicos corrigidos (Janeiro 14, 2025)**
-- ✅ Validação de rating melhorada com parseInt() para evitar NaN
-- ✅ Cálculo de média de avaliações considera apenas checklists aprovados
-- ✅ Exibição de estrelas corrigida para usar valores inteiros
-- ✅ Proteções contra valores null/undefined em ratings
-- ✅ Sistema de ranking de técnicos aprimorado com formatação decimal
-- ✅ **Erro "Failed to fetch" no envio de checklist corrigido (Janeiro 14, 2025)**
-- ✅ Tratamento robusto de erros de rede adicionado
-- ✅ Mensagens de erro mais claras para problemas de conectividade
-- ✅ Bug de retorno incorreto no handleSubmit corrigido
-- ✅ Redirecionamento pós-envio corrigido (/technician → /checklists)
-- ✅ Proteção contra loops de redirecionamento em erros 401
-- ✅ **Sistema de autenticação 100% corrigido e testado (Janeiro 14, 2025)**
-- ✅ Duração de sessão aumentada para 7 dias (muito mais estável)
-- ✅ Cache de queries otimizado para reduzir chamadas desnecessárias
-- ✅ Sistema testado end-to-end com sucesso total
-- ✅ Backend funcionando perfeitamente (login, templates, envio de checklists)
-- ✅ Configurações do queryClient otimizadas
-- ✅ **Sistema de evidências fotográficas corrigido para todos os templates (Agosto 14, 2025)**
-- ✅ Correção completa nas interfaces de preenchimento e visualização de checklists
-- ✅ Evidências funcionam corretamente em todos os 4 templates (Upgrade, Ativação, Migração, Manutenção)
-- ✅ Estrutura {"answer": "sim/não", "photo": "arquivo.jpg"} implementada em todos os componentes
-- ✅ ChecklistFilledForm e ChecklistFormView corrigidos com verificações robustas de objetos
-- ✅ Checklists de teste criados para todos os templates com evidências funcionais
-- ✅ Sistema de imagens servindo corretamente via /uploads/ para todos os tipos de evidência
-- ✅ **Rebranding completo para Claro Empresas (Agosto 14, 2025)**
-- ✅ Logo da Claro Empresas implementada em todos os componentes (sidebar, login, technician dashboard)
-- ✅ Nomenclatura atualizada: "Checklist Virtual" → "Sistema de Checklists"
-- ✅ Títulos de página e branding atualizados para refletir a identidade Claro Empresas
-- ✅ Exportação PDF atualizada com nova identidade visual
-- ✅ Nomenclatura padronizada mostrando apenas "Loja [código]" em todos os dashboards
-- ✅ **Correções universais de visualização e exportação (Agosto 14, 2025)**
-- ✅ Template names exibidos em todos os componentes ao invés de códigos técnicos
-- ✅ ChecklistDetailsDialog, ChecklistFormView, Dashboard e Checklists corrigidos
-- ✅ Exportação PDF aprimorada com busca robusta de todas as fotos (speed test, técnicas, evidências)
-- ✅ Sistema de detecção múltipla para estruturas de dados diferentes de fotos
-- ✅ Debug completo adicionado para identificar problemas de exportação
-- ✅ Suporte PNG/JPEG automático e limpeza de caminhos de arquivo
-- ✅ Aplicado para todos os 4 templates: Upgrade, Ativação, Migração, Manutenção
-- ✅ **Banco de dados SQLite implementado (Agosto 14, 2025)**
-- ✅ Sistema completamente persistente - dados não são perdidos ao reiniciar
-- ✅ Migração automática de MemStorage para SQLiteStorage
-- ✅ Tabelas criadas automaticamente: users, sessions, templates, checklists
-- ✅ Dados iniciais populados: usuários padrão e templates dos 4 tipos
-- ✅ Suporte completo a todas as operações CRUD com SQLite
-- ✅ Índices otimizados para performance em consultas frequentes
-- ✅ Sistema detecta automaticamente se deve usar SQLite ou PostgreSQL
-
 ## System Architecture
 
 ### Frontend Architecture
-The frontend is built with **React 18** using **TypeScript** for type safety. The application uses **Vite** as the build tool and development server, providing fast hot module replacement and optimized builds.
-
-**UI Framework**: The system leverages **shadcn/ui** components built on top of **Radix UI** primitives, providing accessible and customizable UI components. **Tailwind CSS** handles styling with a custom design system using CSS variables for theming.
-
-**State Management**: **TanStack Query (React Query)** manages server state, caching, and data synchronization. Local component state is handled with React hooks.
-
-**Routing**: **Wouter** provides lightweight client-side routing with TypeScript support.
-
-**Form Handling**: Custom form components handle complex checklist forms with conditional field rendering, file uploads, and signature capture capabilities.
+The frontend is built with **React 18** using **TypeScript** and **Vite**.
+**UI Framework**: **shadcn/ui** components built on **Radix UI** primitives, styled with **Tailwind CSS**.
+**State Management**: **TanStack Query (React Query)** manages server state; local state with React hooks.
+**Routing**: **Wouter** provides lightweight client-side routing.
+**Form Handling**: Custom components support complex forms with conditional rendering, file uploads, and signature capture.
 
 ### Backend Architecture
-The backend is an **Express.js** server written in **TypeScript** with ES modules. The server provides a RESTful API and handles authentication, file uploads, and business logic.
-
-**Session Management**: Uses token-based authentication stored in localStorage on the client side. Sessions are managed server-side with configurable storage.
-
-**API Design**: RESTful endpoints for user management, template management, checklist operations, and file uploads. All endpoints include proper error handling and validation.
-
-**File Handling**: **Multer** handles file uploads with validation for image types and size limits. Uploaded files are stored in a local uploads directory.
+The backend is an **Express.js** server written in **TypeScript** with ES modules, providing a RESTful API for authentication, file uploads, and business logic.
+**Session Management**: Token-based authentication stored in localStorage client-side.
+**API Design**: RESTful endpoints with error handling and validation.
+**File Handling**: **Multer** handles file uploads, storing them locally.
 
 ### Data Storage Solutions
-**Database**: **PostgreSQL** with **Drizzle ORM** for type-safe database operations. The schema includes tables for users, templates, checklists, and sessions.
-
-**Database Features**:
-- UUID primary keys for security
-- JSON columns for flexible form data storage
-- Timestamp tracking for audit trails
-- Foreign key relationships with proper constraints
-
-**Migration System**: Drizzle Kit handles database migrations and schema changes.
-
-**Development Storage**: In-memory storage implementation for development and testing, with interface-based design allowing easy switching to persistent storage.
+**Database**: **PostgreSQL** with **Drizzle ORM** for type-safe operations.
+**Database Features**: UUID primary keys, JSON columns for flexible data, timestamp tracking, foreign key relationships.
+**Migration System**: Drizzle Kit manages database migrations.
+**Development Storage**: In-memory storage for development, with automatic migration to SQLite for local persistence if configured.
 
 ### Authentication and Authorization
-**Role-Based Access Control**: Four user roles with distinct permissions:
-- **Técnico**: Create and submit checklists
-- **Analista**: Review and approve/reject checklists  
-- **Coordenador**: Manage team workflows and view analytics
-- **Administrador**: Full system access including user and template management
-
-**Security Features**:
-- Password hashing with bcrypt
-- Token-based session management
-- Protected routes with middleware validation
-- Input validation and sanitization
-
-**Session Handling**: Secure token generation with configurable expiration and proper logout functionality.
+**Role-Based Access Control**: Four user roles: Técnico, Analista, Coordenador, and Administrador, each with distinct permissions.
+**Security Features**: Password hashing (bcrypt), token-based session management, protected routes with middleware, input validation.
 
 ### Form and Template System
-**Dynamic Forms**: Templates define complex form structures with conditional field rendering based on user responses. The system supports various field types including text, radio, photo uploads, and digital signatures.
-
-**Conditional Logic**: Advanced conditional field display based on previous answers, enabling complex branching logic in checklists.
-
-**Validation**: Comprehensive client and server-side validation ensuring data integrity and required field completion.
-
-**File Management**: Integrated photo upload and signature capture with preview capabilities and file type validation.
+**Dynamic Forms**: Templates define complex form structures with conditional field rendering based on user responses, supporting various field types (text, radio, photo, digital signatures).
+**Conditional Logic**: Advanced conditional field display based on previous answers.
+**Validation**: Comprehensive client and server-side validation.
+**File Management**: Integrated photo upload and signature capture with previews and validation.
 
 ## External Dependencies
 
 ### Database Services
-- **@neondatabase/serverless**: Serverless PostgreSQL driver for Neon database connections
-- **Drizzle ORM**: Type-safe database toolkit with PostgreSQL dialect support
-- **connect-pg-simple**: PostgreSQL session store for Express sessions
+- **@neondatabase/serverless**: Serverless PostgreSQL driver
+- **Drizzle ORM**: Type-safe database toolkit
+- **connect-pg-simple**: PostgreSQL session store
 
 ### UI and Design System
-- **Radix UI**: Comprehensive set of accessible, unstyled UI primitives
-- **shadcn/ui**: Pre-built component library with consistent design patterns
-- **Tailwind CSS**: Utility-first CSS framework with custom design tokens
-- **Lucide React**: Icon library with consistent design language
+- **Radix UI**: Accessible, unstyled UI primitives
+- **shadcn/ui**: Pre-built component library
+- **Tailwind CSS**: Utility-first CSS framework
+- **Lucide React**: Icon library
 
 ### Development and Build Tools
-- **Vite**: Fast build tool with HMR and optimized production builds
-- **TypeScript**: Static type checking across the entire codebase
-- **@replit/vite-plugin-runtime-error-modal**: Development error overlay for better debugging
+- **Vite**: Fast build tool
+- **TypeScript**: Static type checking
 
 ### Authentication and Security
-- **bcrypt**: Password hashing for secure credential storage
-- **multer**: Multipart form data handling for file uploads
-- **express**: Web framework with middleware support
+- **bcrypt**: Password hashing
+- **multer**: Multipart form data handling
+- **express**: Web framework
 
 ### State Management and Data Fetching
-- **TanStack React Query**: Server state management with caching and synchronization
-- **Wouter**: Lightweight routing library with TypeScript support
+- **TanStack React Query**: Server state management
+- **Wouter**: Lightweight routing library
 
 ### Form Handling and Validation
-- **React Hook Form**: Performant form library with validation
-- **@hookform/resolvers**: Validation resolvers for various schema libraries
-- **Zod**: Schema validation with TypeScript inference
-- **drizzle-zod**: Automatic Zod schema generation from Drizzle schemas
+- **React Hook Form**: Performant form library
+- **Zod**: Schema validation
+- **drizzle-zod**: Automatic Zod schema generation
 
 ### Utilities and Helpers
-- **clsx** and **tailwind-merge**: Conditional CSS class composition
-- **date-fns**: Date manipulation and formatting utilities
+- **clsx** and **tailwind-merge**: CSS class composition
+- **date-fns**: Date manipulation
 - **class-variance-authority**: Component variant management
-
-## Deployment Information
-
-### Production Readiness
-The project is fully configured for VPS deployment with:
-- Production build scripts (`npm run build`, `npm start`)
-- PM2 ecosystem configuration for process management
-- Nginx reverse proxy configuration
-- SSL/TLS setup with Certbot
-- Automated deployment script (`scripts/deploy.sh`)
-- Environment variable templates
-- Logging and monitoring setup
-
-### Default Users (Production)
-- **Administrator**: admin@checklistpro.com / admin123
-- **Technician**: tecnico@checklistpro.com / tech123  
-- **Analyst**: analista@checklistpro.com / analyst123
-
-### Key Files for Deployment
-- `DEPLOYMENT.md`: Complete deployment guide
-- `ecosystem.config.js`: PM2 process configuration
-- `.env.example`: Environment variables template
-- `scripts/deploy.sh`: Automated deployment script
