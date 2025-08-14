@@ -413,7 +413,7 @@ export default function ChecklistForm() {
                 <CardHeader className="border-b border-gray-100 p-4 sm:p-6">
                   <CardTitle className="flex items-center text-lg sm:text-xl text-primary">
                     <i className={`${section.icon} mr-3`}></i>
-                    SEÇÃO {section.id} | {section.title}
+                    {section.title}
                   </CardTitle>
                 </CardHeader>
               

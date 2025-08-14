@@ -314,8 +314,8 @@ export class PDFExporter {
       this.pdf.setFontSize(14);
       this.pdf.setFont('helvetica', 'bold');
       
-      // Use translated section name
-      const translatedTitle = this.translateSectionName(section.title || section.id || 'Seção');
+      // Use translated section name - never use section.id as title
+      const translatedTitle = this.translateSectionName(section.title || 'Seção');
       this.pdf.text(`📋 ${translatedTitle.toUpperCase()}`, this.margin + 5, this.currentY);
       this.currentY += 12;
       

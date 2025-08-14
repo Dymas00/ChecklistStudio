@@ -395,9 +395,10 @@ export default function DragDropTemplateBuilder({
   );
 
   const addSection = () => {
+    const sectionNumber = template.sections.length + 1;
     const newSection: TemplateSection = {
       id: Date.now(),
-      title: 'Nova Seção',
+      title: `SEÇÃO ${sectionNumber}`,
       icon: 'Settings',
       fields: []
     };

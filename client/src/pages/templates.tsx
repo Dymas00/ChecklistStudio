@@ -352,7 +352,7 @@ export default function Templates() {
                         <CardContent className="p-4">
                           <div className="flex items-center mb-3">
                             <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                              <span className="text-primary font-semibold text-sm">{section.id}</span>
+                              <span className="text-primary font-semibold text-sm">📋</span>
                             </div>
                             <h4 className="font-semibold text-gray-900">
                               {section.title}
