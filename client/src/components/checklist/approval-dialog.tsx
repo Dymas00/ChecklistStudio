@@ -273,19 +273,29 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                   <div>
                     <Label className="text-sm font-medium">Fotos Anexadas</Label>
                     <div className="mt-2 grid grid-cols-2 gap-3">
-                      {checklist.files.map((file: any, index: number) => (
-                        <div key={index} className="relative">
-                          <img
-                            src={`/uploads/${file.filename}`}
-                            alt={`Foto ${index + 1}`}
-                            className="w-full h-32 object-cover rounded-lg border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                            onClick={() => window.open(`/uploads/${file.filename}`, '_blank')}
-                          />
-                          <div className="absolute bottom-1 left-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                            Foto {index + 1}
+                      {checklist.files.map((file: any, index: number) => {
+                        // Garantir que file é um objeto válido e tem filename
+                        const filename = typeof file === 'string' ? file : file?.filename;
+                        if (!filename) return null;
+                        
+                        return (
+                          <div key={index} className="relative">
+                            <img
+                              src={`/uploads/${filename}`}
+                              alt={`Foto ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                              onClick={() => window.open(`/uploads/${filename}`, '_blank')}
+                              onError={(e) => {
+                                console.error('Erro ao carregar imagem:', filename);
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                            <div className="absolute bottom-1 left-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                              Foto {index + 1}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -305,7 +315,9 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                               onClick={() => window.open(value, '_blank')}
                             />
                           ) : typeof value === 'object' && value !== null ? (
-                            JSON.stringify(value)
+                            <span className="text-gray-600 text-sm">
+                              {(value as any)?.filename ? `Arquivo: ${(value as any).filename}` : 'Objeto complexo'}
+                            </span>
                           ) : (
                             String(value || '')
                           )}

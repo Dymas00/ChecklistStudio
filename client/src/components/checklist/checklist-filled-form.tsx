@@ -72,19 +72,31 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
               
               <CardContent className="pt-6">
                 <div className="grid grid-cols-2 gap-4">
-                  {checklist.files.map((file: any, index: number) => (
-                    <div key={index} className="space-y-2">
-                      <img
-                        src={`/uploads/${file.filename || file}`}
-                        alt={`Foto ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                        onClick={() => window.open(`/uploads/${file.filename || file}`, '_blank')}
-                      />
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 w-full justify-center">
-                        📷 Foto {index + 1}
-                      </Badge>
-                    </div>
-                  ))}
+                  {checklist.files.map((file: any, index: number) => {
+                    const filename = typeof file === 'string' ? file : file?.filename;
+                    if (!filename) return null;
+                    
+                    return (
+                      <div key={index} className="space-y-2">
+                        <img
+                          src={`/uploads/${filename}`}
+                          alt={`Foto ${index + 1}`}
+                          className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                          onClick={() => window.open(`/uploads/${filename}`, '_blank')}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center h-32 flex items-center justify-center';
+                            errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar foto</p>`;
+                            e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
+                          }}
+                        />
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 w-full justify-center">
+                          📷 Foto {index + 1}
+                        </Badge>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -331,27 +343,32 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
             
             <CardContent className="pt-6">
               <div className="grid grid-cols-2 gap-4">
-                {checklist.files.map((file: any, index: number) => (
-                  <div key={index} className="space-y-2">
-                    <img
-                      src={`/uploads/${file.filename || file}`}
-                      alt={`Foto ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => window.open(`/uploads/${file.filename || file}`, '_blank')}
-                      onError={(e) => {
-                        const target = e.currentTarget as HTMLImageElement;
-                        target.style.display = 'none';
-                        const errorDiv = document.createElement('div');
-                        errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center h-32 flex items-center justify-center';
-                        errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar foto</p>`;
-                        target.parentNode?.insertBefore(errorDiv, target);
-                      }}
-                    />
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 w-full justify-center">
-                      📷 Foto {index + 1}
-                    </Badge>
-                  </div>
-                ))}
+                {checklist.files.map((file: any, index: number) => {
+                  const filename = typeof file === 'string' ? file : file?.filename;
+                  if (!filename) return null;
+                  
+                  return (
+                    <div key={index} className="space-y-2">
+                      <img
+                        src={`/uploads/${filename}`}
+                        alt={`Foto ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => window.open(`/uploads/${filename}`, '_blank')}
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          target.style.display = 'none';
+                          const errorDiv = document.createElement('div');
+                          errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center h-32 flex items-center justify-center';
+                          errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar foto</p>`;
+                          target.parentNode?.insertBefore(errorDiv, target);
+                        }}
+                      />
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 w-full justify-center">
+                        📷 Foto {index + 1}
+                      </Badge>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
