@@ -136,20 +136,9 @@ export default function Checklists() {
     setExportingId(checklist.id);
     
     try {
-      // Get template data with proper error handling
-      let template = null;
-      try {
-        const templateResponse = await fetch(`/api/templates/${checklist.templateId}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        if (templateResponse.ok) {
-          template = await templateResponse.json();
-        }
-      } catch (error) {
-        console.error('Erro ao buscar template:', error);
-      }
+      // Use the already loaded template from templates query
+      const template = Array.isArray(templates) ? templates.find((t: any) => t.id === checklist.templateId) : null;
+      console.log('Template encontrado para ID', checklist.templateId, ':', template);
       
       // Get analyst name if checklist is approved
       let analystName = 'Sistema';
@@ -158,10 +147,11 @@ export default function Checklists() {
         analystName = analyst ? analyst.name : checklist.approvedBy;
       }
 
-      // Ensure we have the template name - use the helper function as fallback
-      const templateName = template?.name || getTemplateName(checklist.templateId);
+      // Use template name directly or fallback
+      const templateName = template?.name || `Template ${checklist.templateId}`;
+      console.log('Nome do template para PDF:', templateName);
       
-      // Prepare checklist data for PDF export with debug info
+      // Prepare checklist data for PDF export
       const checklistData = {
         id: checklist.id,
         templateName: templateName,
@@ -173,11 +163,10 @@ export default function Checklists() {
         status: checklist.status,
         responses: checklist.responses || {},
         sections: template?.sections || [],
-        signature: checklist.signature // Add signature field explicitly
+        signature: checklist.signature
       };
 
-      console.log('Dados do checklist para PDF:', checklistData);
-      console.log('Template encontrado:', template);
+      console.log('Dados finais para PDF:', checklistData);
 
       await exportChecklistToPDF(checklistData);
       

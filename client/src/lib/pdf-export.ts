@@ -159,10 +159,17 @@ export class PDFExporter {
       await this.renderLegacySections(data);
     }
 
-    // Add signature if present in main data
-    if (data.signature) {
+    // Add signature section if present anywhere in the data
+    const signatureFound = data.signature || 
+      Object.keys(data.responses).find(key => key.includes('signature') || key.includes('Signature'));
+    
+    if (signatureFound) {
       this.currentY += 15;
-      await this.renderSignatureFieldValue(data.signature);
+      this.addTitle('ASSINATURA DO TÉCNICO', 12);
+      this.currentY += 5;
+      
+      const signatureData = data.signature || data.responses[signatureFound] || signatureFound;
+      await this.renderSignatureFieldValue(signatureData);
     }
 
     // Footer with approval info
