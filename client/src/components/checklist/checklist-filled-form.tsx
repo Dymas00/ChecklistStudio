@@ -102,8 +102,7 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
         {template.sections?.map((section: any, sectionIndex: number) => (
           <Card key={section.id || sectionIndex} className="shadow-sm">
             <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                {section.icon && <i className={section.icon}></i>}
+              <CardTitle className="text-lg">
                 {section.title}
               </CardTitle>
               {section.description && (
