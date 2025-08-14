@@ -1,10 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Camera, Upload, X, Eye, RotateCcw, Check, ImageIcon, Smartphone } from 'lucide-react';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { Camera, Upload, X, RotateCcw, Check, Image as ImageIcon, Smartphone } from 'lucide-react';
 
 interface CameraPhotoUploadProps {
   onFileSelect: (file: File | undefined) => void;
@@ -14,7 +13,7 @@ interface CameraPhotoUploadProps {
   label?: string;
 }
 
-// Detectar se é dispositivo móvel
+// Detectar se é um dispositivo móvel
 const isMobileDevice = () => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
          (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
@@ -77,7 +76,7 @@ export default function CameraPhotoUpload({
   const startCamera = async () => {
     try {
       // Primeiro tenta com a câmera específica
-      let constraints = {
+      let constraints: MediaStreamConstraints = {
         video: {
           facingMode: { exact: facingMode },
           width: { ideal: 1280 },
@@ -131,12 +130,13 @@ export default function CameraPhotoUpload({
     }
     setShowCameraDialog(false);
     setCapturedPhoto('');
+    setIsCapturing(false);
   };
 
   const switchCamera = async () => {
     stopCamera();
     setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
-    setTimeout(() => startCamera(), 100);
+    setTimeout(() => startCamera(), 200);
   };
 
   const capturePhoto = useCallback(() => {
@@ -166,7 +166,6 @@ export default function CameraPhotoUpload({
 
   const confirmPhoto = useCallback(() => {
     if (capturedPhoto) {
-      // Converter data URL para File usando método mais estável
       try {
         const byteString = atob(capturedPhoto.split(',')[1]);
         const arrayBuffer = new ArrayBuffer(byteString.length);
@@ -186,7 +185,6 @@ export default function CameraPhotoUpload({
         setPreviewUrl(url);
         
         stopCamera();
-        setIsCapturing(false);
         
         // Delay the callback to prevent state conflicts
         setTimeout(() => {
@@ -282,7 +280,7 @@ export default function CameraPhotoUpload({
             
             {required && (
               <p className="text-xs text-red-500 mt-2">
-                * Foto obrigatória
+                * Campo obrigatório
               </p>
             )}
           </CardContent>
@@ -351,21 +349,19 @@ export default function CameraPhotoUpload({
       {/* Dialog da Câmera */}
       <Dialog open={showCameraDialog} onOpenChange={stopCamera}>
         <DialogContent className="max-w-full max-h-full m-0 sm:max-w-lg sm:max-h-[90vh] sm:m-4">
-          <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span>Capturar Foto</span>
-              {isMobile && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={switchCamera}
-                  className="ml-2"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                </Button>
-              )}
-            </DialogTitle>
-          </DialogHeader>
+          <DialogTitle className="flex items-center justify-between">
+            <span>Capturar Foto</span>
+            {isMobile && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={switchCamera}
+                className="ml-2"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </Button>
+            )}
+          </DialogTitle>
           
           <div className="relative">
             {!isCapturing ? (
@@ -380,6 +376,7 @@ export default function CameraPhotoUpload({
                     transform: facingMode === 'user' ? 'scaleX(-1)' : 'none' 
                   }}
                 />
+                <canvas ref={canvasRef} className="hidden" />
                 
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
                   <Button
@@ -403,33 +400,23 @@ export default function CameraPhotoUpload({
                   <Button
                     onClick={retakePhoto}
                     variant="outline"
-                    size="lg"
-                    className="bg-white/90 hover:bg-white"
+                    size="sm"
                   >
-                    <X className="w-5 h-5 mr-2" />
-                    Refazer
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Tentar Novamente
                   </Button>
                   
                   <Button
                     onClick={confirmPhoto}
-                    size="lg"
-                    className="bg-green-600 hover:bg-green-700"
+                    size="sm"
                   >
-                    <Check className="w-5 h-5 mr-2" />
-                    Confirmar
+                    <Check className="w-4 h-4 mr-2" />
+                    Usar Foto
                   </Button>
                 </div>
               </div>
             )}
           </div>
-          
-          <canvas ref={canvasRef} className="hidden" />
-          
-          {!isMobile && (
-            <div className="text-xs text-gray-500 text-center">
-              Dica: Use um dispositivo móvel para melhor experiência com câmera
-            </div>
-          )}
         </DialogContent>
       </Dialog>
     </div>
