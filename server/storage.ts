@@ -1225,6 +1225,19 @@ class SQLiteStorage extends DatabaseStorage {
       active: true,
     });
 
+    // Create coordinator user
+    const coordPassword = await bcrypt.hash("coord123", 10);
+    await this.createUser({
+      email: "coordenador@checklistpro.com",
+      password: coordPassword,
+      name: "Carlos Mendes",
+      role: UserRole.COORDENADOR,
+      phone: "(11) 96666-6666",
+      cpf: "333.333.333-33",
+      contractor: "Claro/Telmex",
+      active: true,
+    });
+
     await this.seedTemplates();
   }
 
