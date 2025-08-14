@@ -143,6 +143,9 @@ export class PDFExporter {
     this.addTitle('RELATÓRIO DE CHECKLIST', 18);
     this.addLine();
     
+    // Debug: Log all response keys to understand data structure
+    console.log(`[PDF-DEBUG] Todas as chaves em responses:`, Object.keys(data.responses || {}));
+    
     // Basic Info
     this.addText(`Técnico: ${data.technicianName}`, 12, true);
     this.addText(`Criado em: ${new Date(data.createdAt).toLocaleString('pt-BR')}`, 10);
@@ -183,12 +186,21 @@ export class PDFExporter {
       }
     });
     
-    // Add technical data photos if available
-    const techPhotoFields = ['techName_photo', 'techPhone_photo', 'techCPF_photo', 'connectivityType_photo', 'designation_photo'];
+    // Add technical data photos if available - Enhanced search
+    const techPhotoFields = [
+      'techName_photo', 'techNamePhoto', 'tech-name-photo',
+      'techPhone_photo', 'techPhonePhoto', 'tech-phone-photo', 
+      'techCPF_photo', 'techCPFPhoto', 'tech-cpf-photo',
+      'connectivityType_photo', 'connectivityTypePhoto', 'connectivity-type-photo',
+      'designation_photo', 'designationPhoto', 'designation-photo'
+    ];
+    
+    const processedPhotos = new Set();
+    
     for (const photoFieldId of techPhotoFields) {
       const photoResponse = data.responses[photoFieldId];
-      if (photoResponse) {
-        const baseFieldId = photoFieldId.replace('_photo', '');
+      if (photoResponse && !processedPhotos.has(photoFieldId.toLowerCase().replace(/[-_]/g, ''))) {
+        const baseFieldId = photoFieldId.replace(/_photo$|Photo$|-photo$/i, '');
         const label = this.getFieldLabel(baseFieldId);
         this.addText(`Evidência - ${label}:`, 10, true);
         
@@ -203,10 +215,37 @@ export class PDFExporter {
         
         if (photoFilename) {
           const cleanFilename = photoFilename.replace(/^uploads\//, '');
+          console.log(`[PDF-DEBUG] Tech photo (${baseFieldId}): ${cleanFilename}`);
           await this.addImage(`/uploads/${cleanFilename}`, 80, 60);
+          processedPhotos.add(photoFieldId.toLowerCase().replace(/[-_]/g, ''));
         }
       }
     }
+    
+    // Also check for any other technical photos that might be stored differently
+    Object.keys(data.responses).forEach(key => {
+      if (key.toLowerCase().includes('photo') && key.toLowerCase().includes('tech') && !processedPhotos.has(key.toLowerCase())) {
+        const photoData = data.responses[key];
+        if (photoData) {
+          this.addText(`Evidência Técnica - ${key}:`, 10, true);
+          let photoFilename = null;
+          
+          if (typeof photoData === 'string') {
+            photoFilename = photoData;
+          } else if (photoData.filename) {
+            photoFilename = photoData.filename;
+          } else if (photoData.path) {
+            photoFilename = photoData.path.replace('uploads/', '');
+          }
+          
+          if (photoFilename) {
+            const cleanFilename = photoFilename.replace(/^uploads\//, '');
+            console.log(`[PDF-DEBUG] Additional tech photo (${key}): ${cleanFilename}`);
+            this.addImage(`/uploads/${cleanFilename}`, 80, 60);
+          }
+        }
+      }
+    });
     this.addLine();
 
     // Speed Test Section
@@ -214,8 +253,21 @@ export class PDFExporter {
       this.addTitle('TESTE DE VELOCIDADE', 14);
       this.addText(`Velocidade medida: ${data.responses.speedTest} Mbps`, 10);
       
-      // Speed test photo
-      const speedTestPhoto = data.responses.speedTest_photo;
+      // Speed test photo - check multiple possible locations
+      const speedTestPhotoSources = [
+        data.responses.speedTest_photo,
+        data.responses.speedTestPhoto,
+        data.responses['speed-test-photo']
+      ];
+      
+      let speedTestPhoto = null;
+      for (const source of speedTestPhotoSources) {
+        if (source) {
+          speedTestPhoto = source;
+          break;
+        }
+      }
+      
       if (speedTestPhoto) {
         this.addText('Evidência do teste de velocidade:', 10, true);
         let photoFilename = null;
@@ -230,8 +282,11 @@ export class PDFExporter {
         
         if (photoFilename) {
           const cleanFilename = photoFilename.replace(/^uploads\//, '');
+          console.log(`[PDF-DEBUG] Speed test photo: ${cleanFilename}`);
           await this.addImage(`/uploads/${cleanFilename}`, 80, 60);
         }
+      } else {
+        console.log(`[PDF-DEBUG] Nenhuma foto de speed test encontrada nos responses:`, Object.keys(data.responses));
       }
       this.addLine();
     }
@@ -258,6 +313,9 @@ export class PDFExporter {
         // Show evidence photo - Enhanced logic to handle multiple photo formats
         let photoFilename = null;
         
+        console.log(`[PDF-DEBUG] Processando evidência ${fieldId}: response=`, typeof response, response);
+        console.log(`[PDF-DEBUG] PhotoResponse ${fieldId}_photo:`, typeof photoResponse, photoResponse);
+        
         // Check if response is an object with photo property
         if (typeof response === 'object' && response && response.photo) {
           photoFilename = typeof response.photo === 'string' ? response.photo : response.photo.filename;
@@ -278,8 +336,10 @@ export class PDFExporter {
           this.addText('Evidência fotográfica:', 9, true);
           // Ensure clean filename without path prefixes
           const cleanFilename = photoFilename.replace(/^uploads\//, '');
+          console.log(`[PDF-DEBUG] Evidence photo (${fieldId}): ${cleanFilename}`);
           await this.addImage(`/uploads/${cleanFilename}`, 80, 60);
         } else {
+          console.log(`[PDF-DEBUG] Nenhuma foto encontrada para ${fieldId}`);
           this.addText('Nenhuma evidência fotográfica anexada', 9);
         }
         
