@@ -1,9 +1,9 @@
 import { sql } from "drizzle-orm";
-import { sqliteTable, text, integer, blob } from "drizzle-orm/sqlite-core";
+import { pgTable, text, integer, boolean, timestamp, serial, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = sqliteTable("users", {
+export const users = pgTable("users", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
@@ -12,23 +12,23 @@ export const users = sqliteTable("users", {
   phone: text("phone"),
   cpf: text("cpf"),
   contractor: text("contractor"),
-  active: integer("active", { mode: 'boolean' }).notNull().default(true),
-  createdAt: integer("created_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const templates = sqliteTable("templates", {
+export const templates = pgTable("templates", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   type: text("type").notNull(), // 'upgrade', 'ativacao', 'manutencao', 'migracao'
   description: text("description"),
   icon: text("icon").notNull(),
-  sections: text("sections", { mode: 'json' }).notNull(), // Array of section objects
-  active: integer("active", { mode: 'boolean' }).notNull().default(true),
-  createdAt: integer("created_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  sections: jsonb("sections").notNull(), // Array of section objects
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const checklists = sqliteTable("checklists", {
+export const checklists = pgTable("checklists", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   checklistNumber: text("checklist_number").notNull().unique(), // Número sequencial único do checklist
   templateId: text("template_id").notNull().references(() => templates.id),
@@ -38,39 +38,47 @@ export const checklists = sqliteTable("checklists", {
   storeManager: text("store_manager").notNull(),
   storePhone: text("store_phone").notNull(),
   status: text("status").notNull().default('pendente'), // 'pendente', 'aprovado', 'reprovado', 'em_analise'
-  responses: text("responses", { mode: 'json' }).notNull(), // Form responses
-  photos: text("photos", { mode: 'json' }), // Array of photo URLs
+  responses: jsonb("responses").notNull(), // Form responses
+  photos: jsonb("photos"), // Array of photo URLs
   signature: text("signature"), // Base64 signature
   validationCode: text("validation_code"),
   rating: integer("rating"), // 1-5 stars para avaliação do técnico
   feedback: text("feedback"), // comentário sobre o atendimento/técnico
   approvalComment: text("approval_comment"), // comentário do analista na aprovação/reprovação
   approvedBy: text("approved_by").references(() => users.id), // quem aprovou/reprovou
-  approvedAt: integer("approved_at", { mode: 'timestamp' }), // quando foi aprovado/reprovado
+  approvedAt: timestamp("approved_at"), // quando foi aprovado/reprovado
   // Campos para auditoria e rastreamento
   clientIp: text("client_ip"), // IP do cliente que criou o checklist
   userAgent: text("user_agent"), // User agent do navegador
   geoLocation: text("geo_location"), // Localização GPS se disponível
-  deviceInfo: text("device_info", { mode: 'json' }), // Informações do dispositivo
-  createdAt: integer("created_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  deviceInfo: jsonb("device_info"), // Informações do dispositivo
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const sessions = sqliteTable("sessions", {
+export const sessions = pgTable("sessions", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id),
   token: text("token").notNull().unique(),
-  expiresAt: integer("expires_at", { mode: 'timestamp' }).notNull(),
-  createdAt: integer("created_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 // Tabela para controle de sequência de números de checklist
-export const checklistSequence = sqliteTable("checklist_sequence", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const checklistSequence = pgTable("checklist_sequence", {
+  id: serial("id").primaryKey(),
   lastNumber: integer("last_number").notNull().default(0),
   year: integer("year").notNull(),
-  updatedAt: integer("updated_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+// User roles enum
+export enum UserRole {
+  TECNICO = "tecnico",
+  ANALISTA = "analista", 
+  COORDENADOR = "coordenador",
+  ADMINISTRADOR = "administrador"
+}
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
@@ -106,13 +114,3 @@ export const loginSchema = z.object({
 });
 
 export type LoginData = z.infer<typeof loginSchema>;
-
-// User roles enum
-export const UserRole = {
-  TECNICO: 'tecnico',
-  ANALISTA: 'analista', 
-  COORDENADOR: 'coordenador',
-  ADMINISTRADOR: 'administrador'
-} as const;
-
-export type UserRoleType = typeof UserRole[keyof typeof UserRole];

@@ -867,4 +867,285 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage implementation
+import { db } from "./db";
+import { users, templates, checklists, sessions, checklistSequence } from "@shared/schema";
+import { eq, desc, and, gte, lte } from "drizzle-orm";
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const [newUser] = await db.insert(users).values(user).returning();
+    return newUser;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser || undefined;
+  }
+
+  async getUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const result = await db.delete(users).where(eq(users.id, id));
+    return result.rowCount > 0;
+  }
+
+  async createSession(userId: string): Promise<Session> {
+    const token = randomUUID();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    
+    const [session] = await db
+      .insert(sessions)
+      .values({ userId, token, expiresAt })
+      .returning();
+    
+    return session;
+  }
+
+  async getSession(token: string): Promise<Session | undefined> {
+    const [session] = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.token, token));
+    return session || undefined;
+  }
+
+  async deleteSession(token: string): Promise<boolean> {
+    const result = await db.delete(sessions).where(eq(sessions.token, token));
+    return result.rowCount > 0;
+  }
+
+  async getTemplates(): Promise<Template[]> {
+    return await db.select().from(templates).where(eq(templates.active, true));
+  }
+
+  async getTemplate(id: string): Promise<Template | undefined> {
+    const [template] = await db.select().from(templates).where(eq(templates.id, id));
+    return template || undefined;
+  }
+
+  async createTemplate(template: InsertTemplate): Promise<Template> {
+    const [newTemplate] = await db.insert(templates).values(template).returning();
+    return newTemplate;
+  }
+
+  async updateTemplate(id: string, updates: Partial<Template>): Promise<Template | undefined> {
+    const [updatedTemplate] = await db
+      .update(templates)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(templates.id, id))
+      .returning();
+    return updatedTemplate || undefined;
+  }
+
+  async deleteTemplate(id: string): Promise<boolean> {
+    const result = await db.delete(templates).where(eq(templates.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getChecklists(): Promise<Checklist[]> {
+    return await db.select().from(checklists).orderBy(desc(checklists.createdAt));
+  }
+
+  async getChecklist(id: string): Promise<Checklist | undefined> {
+    const [checklist] = await db.select().from(checklists).where(eq(checklists.id, id));
+    return checklist || undefined;
+  }
+
+  async getChecklistByNumber(checklistNumber: string): Promise<Checklist | undefined> {
+    const [checklist] = await db
+      .select()
+      .from(checklists)
+      .where(eq(checklists.checklistNumber, checklistNumber));
+    return checklist || undefined;
+  }
+
+  async getChecklistsByTechnician(technicianId: string): Promise<Checklist[]> {
+    return await db
+      .select()
+      .from(checklists)
+      .where(eq(checklists.technicianId, technicianId))
+      .orderBy(desc(checklists.createdAt));
+  }
+
+  async getChecklistsByStore(storeCode: string): Promise<Checklist[]> {
+    return await db
+      .select()
+      .from(checklists)
+      .where(eq(checklists.storeCode, storeCode))
+      .orderBy(desc(checklists.createdAt));
+  }
+
+  async getChecklistsByStatus(status: string): Promise<Checklist[]> {
+    return await db
+      .select()
+      .from(checklists)
+      .where(eq(checklists.status, status))
+      .orderBy(desc(checklists.createdAt));
+  }
+
+  async getChecklistsByDateRange(startDate: Date, endDate: Date): Promise<Checklist[]> {
+    return await db
+      .select()
+      .from(checklists)
+      .where(and(gte(checklists.createdAt, startDate), lte(checklists.createdAt, endDate)))
+      .orderBy(desc(checklists.createdAt));
+  }
+
+  async createChecklist(checklist: InsertChecklist, auditInfo?: AuditInfo): Promise<Checklist> {
+    const checklistNumber = await this.generateChecklistNumber();
+    
+    const [newChecklist] = await db
+      .insert(checklists)
+      .values({
+        ...checklist,
+        checklistNumber,
+        clientIp: auditInfo?.clientIp,
+        userAgent: auditInfo?.userAgent,
+        geoLocation: auditInfo?.geoLocation,
+        deviceInfo: auditInfo?.deviceInfo,
+      })
+      .returning();
+    
+    return newChecklist;
+  }
+
+  async updateChecklist(id: string, updates: Partial<Checklist>): Promise<Checklist | undefined> {
+    const [updatedChecklist] = await db
+      .update(checklists)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(checklists.id, id))
+      .returning();
+    return updatedChecklist || undefined;
+  }
+
+  async deleteChecklist(id: string): Promise<boolean> {
+    const result = await db.delete(checklists).where(eq(checklists.id, id));
+    return result.rowCount > 0;
+  }
+
+  async generateChecklistNumber(): Promise<string> {
+    const currentYear = new Date().getFullYear();
+    
+    // Get or create sequence for current year
+    const [sequence] = await db
+      .select()
+      .from(checklistSequence)
+      .where(eq(checklistSequence.year, currentYear));
+    
+    let nextNumber = 1;
+    
+    if (sequence) {
+      nextNumber = sequence.lastNumber + 1;
+      await db
+        .update(checklistSequence)
+        .set({ lastNumber: nextNumber, updatedAt: new Date() })
+        .where(eq(checklistSequence.id, sequence.id));
+    } else {
+      await db
+        .insert(checklistSequence)
+        .values({ lastNumber: nextNumber, year: currentYear });
+    }
+    
+    return `CHK${currentYear}${nextNumber.toString().padStart(4, '0')}`;
+  }
+}
+
+// Initialize database storage with default data
+export class DatabaseStorageWithDefaults extends DatabaseStorage {
+  private initialized = false;
+
+  async initialize() {
+    if (this.initialized) return;
+    
+    // Check if we need to seed data
+    const existingUsers = await this.getUsers();
+    if (existingUsers.length === 0) {
+      await this.seedDefaultData();
+    }
+    
+    this.initialized = true;
+  }
+
+  private async seedDefaultData() {
+    // Create default admin user
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+    const adminUser = await this.createUser({
+      email: "admin@checklistpro.com",
+      password: hashedPassword,
+      name: "Administrador",
+      role: UserRole.ADMINISTRADOR,
+      phone: "(11) 99999-9999",
+      cpf: "000.000.000-00",
+      contractor: "Sistema",
+      active: true,
+    });
+
+    // Create sample technician
+    const techPassword = await bcrypt.hash("tech123", 10);
+    const techUser = await this.createUser({
+      email: "tecnico@checklistpro.com",
+      password: techPassword,
+      name: "João Silva",
+      role: UserRole.TECNICO,
+      phone: "(11) 98888-8888",
+      cpf: "111.111.111-11",
+      contractor: "Global Hitss",
+      active: true,
+    });
+
+    // Create analyst user
+    const analystPassword = await bcrypt.hash("analyst123", 10);
+    const analystUser = await this.createUser({
+      email: "analista@checklistpro.com",
+      password: analystPassword,
+      name: "Maria Santos",
+      role: UserRole.ANALISTA,
+      phone: "(11) 97777-7777",
+      cpf: "222.222.222-22",
+      contractor: "Claro/Telmex",
+      active: true,
+    });
+
+    // Create default templates - this will be a more complex seeding process
+    await this.seedTemplates();
+  }
+
+  private async seedTemplates() {
+    // Create MemStorage temporarily to get template data
+    const memStorage = new MemStorage();
+    await new Promise(resolve => setTimeout(resolve, 100)); // Wait for memStorage init
+    
+    try {
+      // Get templates from MemStorage and create them in database
+      const memTemplates = await memStorage.getTemplates();
+      
+      for (const template of memTemplates) {
+        const { id, createdAt, updatedAt, ...templateData } = template;
+        await this.createTemplate(templateData as InsertTemplate);
+      }
+      
+      console.log(`✅ Database seeded with ${memTemplates.length} templates`);
+    } catch (error) {
+      console.log("⚠️ Error seeding templates:", error);
+    }
+  }
+}
+
+export const storage = new DatabaseStorageWithDefaults();

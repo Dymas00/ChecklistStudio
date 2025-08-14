@@ -57,6 +57,10 @@ function requireAdmin(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Initialize database storage
+  if ('initialize' in storage && typeof storage.initialize === 'function') {
+    await (storage as any).initialize();
+  }
   
   // Authentication routes
   app.post("/api/auth/login", async (req, res) => {
