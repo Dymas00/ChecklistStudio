@@ -62,14 +62,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, password } = loginSchema.parse(req.body);
+      console.log("Login attempt for email:", email);
       
       const user = await storage.getUserByEmail(email);
       if (!user) {
+        console.log("User not found:", email);
         return res.status(401).json({ message: "Credenciais inválidas" });
       }
 
+      console.log("User found, checking password for:", email);
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
+        console.log("Invalid password for:", email);
         return res.status(401).json({ message: "Credenciais inválidas" });
       }
 
@@ -108,11 +112,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/users", requireAuth, requireAdmin, async (req, res) => {
     try {
-      const user = await storage.createUser(req.body);
+      console.log("Creating user with data:", { ...req.body, password: "[HIDDEN]" });
+      
+      // Hash the password before creating the user
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const userData = { ...req.body, password: hashedPassword };
+      
+      const user = await storage.createUser(userData);
       const { password: _, ...userWithoutPassword } = user;
+      console.log("User created successfully:", userWithoutPassword.email);
       res.status(201).json(userWithoutPassword);
     } catch (error) {
-      res.status(400).json({ message: "Erro ao criar usuário" });
+      console.error("Error creating user:", error);
+      res.status(400).json({ message: "Erro ao criar usuário: " + (error as Error).message });
     }
   });
 
