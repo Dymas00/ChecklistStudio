@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Sidebar } from '@/components/layout/sidebar';
 import Footer from '@/components/layout/footer';
-import { ClipboardList, Search, Filter, Eye, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown, CheckCircle, XCircle } from 'lucide-react';
+import { ClipboardList, Search, Filter, FileText, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown, CheckCircle, XCircle } from 'lucide-react';
 import { Link } from 'wouter';
 import { exportChecklistToPDF } from '@/lib/pdf-export';
 import { useToast } from '@/hooks/use-toast';
@@ -389,7 +389,7 @@ export default function Checklists() {
                             size="sm"
                             onClick={() => setSelectedChecklistForDetails(checklist)}
                           >
-                            <Eye className="w-4 h-4" />
+                            <FileText className="w-4 h-4" />
                           </Button>
                           
                           {checklist.status === 'aprovado' && (
