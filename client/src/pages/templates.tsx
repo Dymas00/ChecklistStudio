@@ -298,10 +298,10 @@ export default function Templates() {
               <DialogTitle className="flex items-center text-xl">
                 {selectedTemplate && (
                   <>
-                    <div className={`w-8 h-8 ${templateColors[selectedTemplate.type]?.bg || 'bg-gray-100'} rounded-lg flex items-center justify-center mr-3`}>
+                    <div className={`w-8 h-8 ${templateColors[selectedTemplate.type as keyof typeof templateColors]?.bg || 'bg-gray-100'} rounded-lg flex items-center justify-center mr-3`}>
                       {(() => {
                         const Icon = templateIcons[selectedTemplate.type as keyof typeof templateIcons] || Settings;
-                        return <Icon className={`w-4 h-4 ${templateColors[selectedTemplate.type]?.text || 'text-gray-600'}`} />;
+                        return <Icon className={`w-4 h-4 ${templateColors[selectedTemplate.type as keyof typeof templateColors]?.text || 'text-gray-600'}`} />;
                       })()}
                     </div>
                     {selectedTemplate.name}

@@ -65,9 +65,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('token', data.token);
       queryClient.setQueryData(['/api/auth/me'], data);
       
-      // Navigate based on user role
+      // Navigate based on user role - technicians to checklists
       if (data.user.role === UserRole.TECNICO) {
-        navigate('/technician');
+        navigate('/checklists');
       } else {
         navigate('/dashboard');
       }
@@ -133,11 +133,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!isAuthenticated && currentPath !== '/login' && currentPath !== '/') {
         navigate('/login');
       } else if (isAuthenticated && (currentPath === '/login' || currentPath === '/')) {
-        if (isTechnician) {
-          navigate('/technician');
-        } else {
-          navigate('/dashboard');
-        }
+        // Always redirect to /checklists for technicians, /dashboard for others
+        const targetPath = isTechnician ? '/checklists' : '/dashboard';
+        navigate(targetPath);
       }
     }
   }, [isAuthenticated, isLoading, isTechnician, navigate]);
