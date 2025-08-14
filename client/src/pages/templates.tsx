@@ -353,7 +353,7 @@ export default function Templates() {
                               <span className="text-primary font-semibold text-sm">{section.id}</span>
                             </div>
                             <h4 className="font-semibold text-gray-900">
-                              SEÇÃO {section.id} | {section.title}
+                              {section.title}
                             </h4>
                           </div>
                           
