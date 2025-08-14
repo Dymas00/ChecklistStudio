@@ -3,7 +3,7 @@ import { useAuth } from '@/lib/auth';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Star, User, Phone, Clock, CheckCircle, XCircle, MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
@@ -77,6 +77,9 @@ export default function ChecklistDetailsDialog({
                 {getStatusLabel(checklist.status)}
               </Badge>
             </DialogTitle>
+            <DialogDescription>
+              Visualize todos os detalhes e dados do checklist preenchido pelo técnico
+            </DialogDescription>
           </DialogHeader>
 
           <ScrollArea className="max-h-[70vh]">
