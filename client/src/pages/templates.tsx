@@ -21,6 +21,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import TemplateBuilder, { TemplateData } from '@/components/templates/template-builder';
+import DragDropTemplateBuilder from '@/components/templates/drag-drop-template-builder';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { formatTimeAgo } from '@/lib/templates';
@@ -394,12 +395,12 @@ export default function Templates() {
 
         {/* Create Template Dialog */}
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
+          <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto p-0">
+            <DialogHeader className="px-6 pt-6 pb-2">
               <DialogTitle>Criar Novo Template</DialogTitle>
             </DialogHeader>
             
-            <TemplateBuilder
+            <DragDropTemplateBuilder
               onSave={handleCreateTemplate}
               onCancel={() => setIsCreateDialogOpen(false)}
               isLoading={createMutation.isPending}
@@ -409,13 +410,13 @@ export default function Templates() {
 
         {/* Edit Template Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
+          <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto p-0">
+            <DialogHeader className="px-6 pt-6 pb-2">
               <DialogTitle>Editar Template</DialogTitle>
             </DialogHeader>
             
             {editingTemplate && (
-              <TemplateBuilder
+              <DragDropTemplateBuilder
                 initialData={{
                   name: editingTemplate.name,
                   type: editingTemplate.type,

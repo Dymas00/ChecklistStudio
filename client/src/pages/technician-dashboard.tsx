@@ -85,7 +85,15 @@ export default function TechnicianDashboard() {
                         <h3 className="font-medium text-gray-900 mb-1">
                           {template.name}
                         </h3>
-                        <p className="text-sm text-gray-600 line-clamp-2">
+                        <p className="text-sm text-gray-600 line-clamp-2 break-words" style={{
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          maxHeight: '2.5rem',
+                          lineHeight: '1.25rem'
+                        }}>
                           {template.description}
                         </p>
                       </div>
