@@ -315,16 +315,30 @@ export class SQLiteStorage implements IStorage {
             },
             {
               id: 4,
-              title: "Testes e Evidências de Entrega",
-              icon: "fas fa-clipboard-check",
+              title: "Teste de Conectividade",
+              icon: "fas fa-wifi",
               fields: [
-                { id: "connectivityTest", label: "1. TESTE DE CONECTIVIDADE", type: "photo", required: true },
-                { id: "speedTest", label: "2. TESTE DE SPEED", type: "photo", required: true },
-                { id: "merakiNotesAdjustment", label: "3. AJUSTE DESCRIÇÃO DO NOTES NO MERAKI", type: "photo", required: true }
+                { id: "connectivityTest", label: "TESTE DE CONECTIVIDADE", type: "photo", required: true }
               ]
             },
             {
               id: 5,
+              title: "Teste de Speed",
+              icon: "fas fa-tachometer-alt",
+              fields: [
+                { id: "speedTest", label: "TESTE DE SPEED", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 6,
+              title: "Ajuste Descrição do Notes no Meraki",
+              icon: "fas fa-edit",
+              fields: [
+                { id: "merakiNotesAdjustment", label: "AJUSTE DESCRIÇÃO DO NOTES NO MERAKI", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 7,
               title: "Código de Validação",
               icon: "fas fa-signature",
               fields: [
