@@ -56,7 +56,7 @@ export default function TechnicianDashboard() {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-center">
               <img 
                 src={claroLogo} 
                 alt="Claro Empresas" 
