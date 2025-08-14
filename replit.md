@@ -102,6 +102,14 @@ Preferred communication style: Simple, everyday language.
 - ✅ Títulos de página e branding atualizados para refletir a identidade Claro Empresas
 - ✅ Exportação PDF atualizada com nova identidade visual
 - ✅ Nomenclatura padronizada mostrando apenas "Loja [código]" em todos os dashboards
+- ✅ **Correções universais de visualização e exportação (Agosto 14, 2025)**
+- ✅ Template names exibidos em todos os componentes ao invés de códigos técnicos
+- ✅ ChecklistDetailsDialog, ChecklistFormView, Dashboard e Checklists corrigidos
+- ✅ Exportação PDF aprimorada com busca robusta de todas as fotos (speed test, técnicas, evidências)
+- ✅ Sistema de detecção múltipla para estruturas de dados diferentes de fotos
+- ✅ Debug completo adicionado para identificar problemas de exportação
+- ✅ Suporte PNG/JPEG automático e limpeza de caminhos de arquivo
+- ✅ Aplicado para todos os 4 templates: Upgrade, Ativação, Migração, Manutenção
 
 ## System Architecture
 

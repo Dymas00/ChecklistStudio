@@ -13,6 +13,11 @@ export default function ChecklistFormView({ checklist }: ChecklistFormViewProps)
     staleTime: 10 * 60 * 1000,
   });
 
+  const getTemplateName = (templateId: string) => {
+    const template = Array.isArray(templates) ? templates.find((t: any) => t.id === templateId) : null;
+    return template?.name || 'Template não encontrado';
+  };
+
   if (!checklist.responses || Object.keys(checklist.responses).length === 0) {
     return (
       <div className="border-t pt-4">

@@ -119,7 +119,7 @@ export default function Checklists() {
 
   const getTemplateName = (templateId: string) => {
     const template = Array.isArray(templates) ? templates.find((t: any) => t.id === templateId) : null;
-    return template?.name || 'Template';
+    return template?.name || 'Template não encontrado';
   };
 
   const handleExportPDF = async (checklist: any) => {
