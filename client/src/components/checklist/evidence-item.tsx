@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
-import PhotoUpload from './photo-upload';
+import SimplePhotoUpload from './simple-photo-upload';
 import { Camera, FileText } from 'lucide-react';
 
 interface EvidenceItemProps {
@@ -87,11 +87,11 @@ export default function EvidenceItem({
               Anexar Foto Comprobatória {required && <span className="text-red-500">*</span>}
             </Label>
           </div>
-          <PhotoUpload
+          <SimplePhotoUpload
             onFileSelect={handlePhotoChange}
-            accept="image/*"
-            capture="environment"
+            fieldId={`${question}-photo`}
             required={required}
+            label="Anexar Foto"
           />
         </div>
       )}

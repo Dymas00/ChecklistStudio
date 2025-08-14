@@ -60,7 +60,6 @@ export default function SimplePhotoUpload({
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        capture="environment"
         onChange={handleFileSelect}
         className="hidden"
         required={required}
@@ -82,7 +81,7 @@ export default function SimplePhotoUpload({
               type="button"
             >
               <Upload className="w-4 h-4 mr-2" />
-              Selecionar Foto
+              Selecionar da Galeria
             </Button>
             
             {required && (

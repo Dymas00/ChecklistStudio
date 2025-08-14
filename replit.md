@@ -45,6 +45,11 @@ Preferred communication style: Simple, everyday language.
 - ✅ Sistema de upload de arquivos robusto e estável
 - ✅ Tratamento de erros melhorado em todo o código
 - ✅ Validações e verificações de tipos aprimoradas
+- ✅ **Sistema de fotos 100% galeria (Janeiro 14, 2025)**
+- ✅ Removida completamente funcionalidade de câmera
+- ✅ Todos os uploads usam apenas seleção da galeria
+- ✅ Interface simplificada com "Selecionar da Galeria"
+- ✅ Componentes antigos de câmera removidos do projeto
 
 ## System Architecture
 
