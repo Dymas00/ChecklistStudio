@@ -24,10 +24,7 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
   const queryClient = useQueryClient();
 
   const approveChecklistMutation = useMutation({
-    mutationFn: (data: any) => apiRequest(`/api/checklists/${checklist.id}/approve`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
+    mutationFn: (data: any) => apiRequest('POST', `/api/checklists/${checklist.id}/approve`, data),
     onSuccess: () => {
       toast({
         title: 'Sucesso',
