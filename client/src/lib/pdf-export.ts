@@ -134,8 +134,7 @@ export class PDFExporter {
     this.addLine();
     
     // Basic Info
-    this.addText(`Template: ${data.templateName}`, 12, true);
-    this.addText(`Técnico: ${data.technicianName}`, 10);
+    this.addText(`Técnico: ${data.technicianName}`, 12, true);
     this.addText(`Criado em: ${new Date(data.createdAt).toLocaleString('pt-BR')}`, 10);
     
     if (data.completedAt) {
@@ -173,6 +172,22 @@ export class PDFExporter {
         this.addText(`${label}: ${value}`, 10);
       }
     });
+    
+    // Add technical data photos if available
+    const techPhotoFields = ['techName_photo', 'techPhone_photo', 'techCPF_photo', 'connectivityType_photo', 'designation_photo'];
+    for (const photoFieldId of techPhotoFields) {
+      const photoResponse = data.responses[photoFieldId];
+      if (photoResponse) {
+        const baseFieldId = photoFieldId.replace('_photo', '');
+        const label = this.getFieldLabel(baseFieldId);
+        this.addText(`Evidência - ${label}:`, 10, true);
+        
+        const photoFilename = typeof photoResponse === 'string' ? photoResponse : photoResponse.filename;
+        if (photoFilename) {
+          await this.addImage(`/uploads/${photoFilename}`, 80, 60);
+        }
+      }
+    }
     this.addLine();
 
     // Speed Test Section
@@ -252,7 +267,7 @@ export class PDFExporter {
     // Footer
     this.currentY += 10;
     this.addText(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, 8);
-    this.addText('Sistema de Checklists Claro Empresas - Desenvolvido por Dymas Gomes', 8);
+    this.addText('Checklist Virtual - Claro Empresas - Desenvolvido por Dymas Gomes', 8);
   }
 
   private getFieldLabel(fieldId: string): string {
@@ -291,6 +306,6 @@ export async function exportChecklistToPDF(checklist: ChecklistData): Promise<vo
   const exporter = new PDFExporter();
   await exporter.exportChecklist(checklist);
   
-  const filename = `checklist_${checklist.templateName.toLowerCase()}_${checklist.id}_${new Date().toISOString().split('T')[0]}.pdf`;
+  const filename = `checklist_${checklist.id}_${new Date().toISOString().split('T')[0]}.pdf`;
   exporter.download(filename);
 }

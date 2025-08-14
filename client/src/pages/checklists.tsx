@@ -139,6 +139,13 @@ export default function Checklists() {
       const templateResponse = await fetch(`/api/templates/${checklist.templateId}`);
       const template = await templateResponse.json();
       
+      // Get analyst name if checklist is approved
+      let analystName = 'Sistema';
+      if (checklist.approvedBy && checklist.status === 'approved') {
+        const analyst = users?.find(u => u.id === checklist.approvedBy);
+        analystName = analyst ? analyst.name : checklist.approvedBy;
+      }
+
       // Prepare checklist data for PDF export
       const checklistData = {
         id: checklist.id,
@@ -147,7 +154,7 @@ export default function Checklists() {
         createdAt: checklist.createdAt,
         completedAt: checklist.completedAt,
         approvedAt: checklist.approvedAt,
-        approvedBy: checklist.approvedBy || 'Sistema',
+        approvedBy: analystName,
         status: checklist.status,
         responses: checklist.responses || {},
         sections: template.sections || []
