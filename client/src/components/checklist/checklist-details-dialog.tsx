@@ -149,7 +149,7 @@ export default function ChecklistDetailsDialog({
                             <Star
                               key={i}
                               className={`w-4 h-4 ${
-                                i < parseInt(checklist.rating)
+                                i < (parseInt(checklist.rating) || 0)
                                   ? 'text-yellow-400 fill-current'
                                   : 'text-gray-300'
                               }`}

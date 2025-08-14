@@ -586,10 +586,10 @@ export default function Reports() {
                       <td className="text-center py-2 text-red-600">{tech.rejected}</td>
                       <td className="text-center py-2 text-yellow-600">{tech.pending}</td>
                       <td className="text-center py-2">
-                        {tech.total > 0 ? ((tech.approved / tech.total) * 100).toFixed(0) : 0}%
+                        {tech.total > 0 ? ((tech.approved / tech.total) * 100).toFixed(0) : '0'}%
                       </td>
                       <td className="text-center py-2">
-                        {tech.rating > 0 ? tech.rating.toFixed(1) : '-'}
+                        {tech.rating > 0 ? Number(tech.rating).toFixed(1) : '-'}
                       </td>
                     </tr>
                   ))}
