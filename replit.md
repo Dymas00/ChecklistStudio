@@ -13,10 +13,14 @@ Preferred communication style: Simple, everyday language.
 **January 14, 2025:**
 - ✅ Project renamed from "Checklist Management System/ChecklistPro" to "Checklist Virtual"
 - ✅ Updated all UI references including login page, sidebar, and documentation
-- ✅ Updated default user email domains from @checklistpro.com to @checklistvirtual.com
+- ✅ Updated default user email domains from @checklistpro.com to @checklistvirtual.com (reverted back to @checklistpro.com per user request)
 - ✅ Removed default credentials display from login screen for security
 - ✅ Added proper page title to HTML document
 - ✅ Fixed storage implementation issues with missing methods for checklist persistence
+- ✅ Implemented complete template creation system with custom template builder
+- ✅ Added template editing functionality with visual interface
+- ✅ Created comprehensive VPS deployment guide and configuration files
+- ✅ Added deployment scripts and production configuration (PM2, Nginx, SSL)
 
 ## System Architecture
 
@@ -114,3 +118,26 @@ The backend is an **Express.js** server written in **TypeScript** with ES module
 - **clsx** and **tailwind-merge**: Conditional CSS class composition
 - **date-fns**: Date manipulation and formatting utilities
 - **class-variance-authority**: Component variant management
+
+## Deployment Information
+
+### Production Readiness
+The project is fully configured for VPS deployment with:
+- Production build scripts (`npm run build`, `npm start`)
+- PM2 ecosystem configuration for process management
+- Nginx reverse proxy configuration
+- SSL/TLS setup with Certbot
+- Automated deployment script (`scripts/deploy.sh`)
+- Environment variable templates
+- Logging and monitoring setup
+
+### Default Users (Production)
+- **Administrator**: admin@checklistpro.com / admin123
+- **Technician**: tecnico@checklistpro.com / tech123  
+- **Analyst**: analista@checklistpro.com / analyst123
+
+### Key Files for Deployment
+- `DEPLOYMENT.md`: Complete deployment guide
+- `ecosystem.config.js`: PM2 process configuration
+- `.env.example`: Environment variables template
+- `scripts/deploy.sh`: Automated deployment script
