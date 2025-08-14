@@ -38,7 +38,12 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
           {Object.entries(checklist.responses || {}).map(([key, value]) => (
             <div key={key} className="bg-gray-50 p-3 rounded-lg">
               <p className="text-sm font-medium text-gray-700 capitalize">{key}:</p>
-              <p className="text-sm text-gray-900 mt-1">{String(value)}</p>
+              <p className="text-sm text-gray-900 mt-1">
+                {typeof value === 'object' && value !== null 
+                  ? JSON.stringify(value, null, 2)
+                  : String(value)
+                }
+              </p>
             </div>
           ))}
         </div>
@@ -218,7 +223,10 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                       </div>
                     ) : (
                       <Input
-                        value={response || ''}
+                        value={typeof response === 'object' && response !== null 
+                          ? JSON.stringify(response) 
+                          : String(response || '')
+                        }
                         disabled
                         className="bg-gray-50 cursor-not-allowed"
                       />
