@@ -50,6 +50,11 @@ Preferred communication style: Simple, everyday language.
 - ✅ Todos os uploads usam apenas seleção da galeria
 - ✅ Interface simplificada com "Selecionar da Galeria"
 - ✅ Componentes antigos de câmera removidos do projeto
+- ✅ **Dashboard restrito para técnicos (Janeiro 14, 2025)**
+- ✅ Acesso ao Dashboard removido para usuários técnicos
+- ✅ Sidebar atualizada com restrições de acesso por role
+- ✅ Redirecionamento automático de técnicos para /checklists
+- ✅ Sistema de permissões aprimorado
 
 ## System Architecture
 

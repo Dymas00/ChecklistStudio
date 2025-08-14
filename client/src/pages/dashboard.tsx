@@ -16,17 +16,20 @@ import {
   Star
 } from 'lucide-react';
 import { getStatusBadgeClass, getStatusLabel, formatTimeAgo } from '@/lib/templates';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 
 export default function Dashboard() {
   const { user, isAdmin } = useAuth();
+  const [, setLocation] = useLocation();
   
   const { data: metrics, isLoading } = useQuery({
     queryKey: ['/api/dashboard/metrics']
   });
 
+  // Redirect technicians to checklists page
   if (!user || user.role === 'tecnico') {
-    return null; // Will be handled by auth redirect
+    setLocation('/checklists');
+    return null;
   }
 
   return (
@@ -130,7 +133,7 @@ export default function Dashboard() {
                   <div className="mt-4 flex items-center">
                     <TrendingUp className="w-4 h-4 text-green-600 mr-1" />
                     <span className="text-green-600 text-sm font-medium">
-                      {metrics?.approvalRate}%
+                      {(metrics as any)?.approvalRate || 0}%
                     </span>
                     <span className="text-gray-600 text-sm ml-2">
                       taxa de aprovação

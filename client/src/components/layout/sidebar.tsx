@@ -29,7 +29,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       name: 'Dashboard',
       href: '/dashboard',
       icon: BarChart3,
-      show: true,
+      show: ['analista', 'coordenador', 'administrador'].includes(user?.role || ''),
     },
     {
       name: 'Checklists',
