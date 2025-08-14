@@ -267,6 +267,52 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                     </div>
                   </div>
                 )}
+
+                {/* Images Section */}
+                {checklist.files && checklist.files.length > 0 && (
+                  <div>
+                    <Label className="text-sm font-medium">Fotos Anexadas</Label>
+                    <div className="mt-2 grid grid-cols-2 gap-3">
+                      {checklist.files.map((file: any, index: number) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={`/uploads/${file.filename}`}
+                            alt={`Foto ${index + 1}`}
+                            className="w-full h-32 object-cover rounded-lg border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                            onClick={() => window.open(`/uploads/${file.filename}`, '_blank')}
+                          />
+                          <div className="absolute bottom-1 left-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                            Foto {index + 1}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Additional fields from responses that might contain image references */}
+                {Object.entries(checklist.responses || {}).map(([key, value]) => {
+                  if (key.toLowerCase().includes('foto') || key.toLowerCase().includes('image')) {
+                    return (
+                      <div key={key}>
+                        <Label className="text-sm font-medium">{key}</Label>
+                        <div className="mt-1 p-3 bg-white border rounded-md">
+                          {typeof value === 'string' && value.includes('/uploads/') ? (
+                            <img
+                              src={value}
+                              alt={key}
+                              className="max-w-full h-32 object-cover rounded cursor-pointer"
+                              onClick={() => window.open(value, '_blank')}
+                            />
+                          ) : (
+                            String(value)
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
               </div>
             </div>
           </div>
