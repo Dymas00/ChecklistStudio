@@ -252,7 +252,7 @@ export class PDFExporter {
     // Footer
     this.currentY += 10;
     this.addText(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, 8);
-    this.addText('Sistema Checklist Virtual - Desenvolvido por Dymas Gomes', 8);
+    this.addText('Sistema de Checklists Claro Empresas - Desenvolvido por Dymas Gomes', 8);
   }
 
   private getFieldLabel(fieldId: string): string {

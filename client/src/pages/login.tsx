@@ -7,6 +7,7 @@ import Footer from '@/components/layout/footer';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { ClipboardCheck } from 'lucide-react';
+import claroLogo from '@/assets/claro-empresas-logo.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -38,14 +39,18 @@ export default function Login() {
         <div className="w-full max-w-md p-6">
         <Card className="shadow-xl border-0">
           <CardHeader className="text-center pb-2">
-            <div className="w-16 h-16 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-              <ClipboardCheck className="h-8 w-8 text-white" />
+            <div className="mx-auto mb-4 flex items-center justify-center">
+              <img 
+                src={claroLogo} 
+                alt="Claro Empresas" 
+                className="h-16 w-auto" 
+              />
             </div>
             <CardTitle className="text-3xl font-bold text-gray-900">
-              Checklist Virtual
+              Sistema de Checklists
             </CardTitle>
             <p className="text-gray-600 mt-2">
-              Gerencie seus checklists operacionais
+              Gestão operacional eficiente
             </p>
           </CardHeader>
           

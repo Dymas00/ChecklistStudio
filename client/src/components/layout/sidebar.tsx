@@ -14,6 +14,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import claroLogo from '@/assets/claro-empresas-logo.png';
 import { Link, useLocation } from 'wouter';
 
 function SidebarContent({ onClose }: { onClose?: () => void }) {
@@ -67,15 +68,17 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
     <div className="flex flex-col h-full w-64 bg-white">
       {/* Logo Section */}
       <div className="flex items-center px-6 py-4 border-b border-gray-200">
-        <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-3">
-          <ClipboardCheck className="w-6 h-6 text-white" />
-        </div>
+        <img 
+          src={claroLogo} 
+          alt="Claro Empresas" 
+          className="h-12 w-auto mr-3" 
+        />
         <div>
           <h1 className="text-lg font-semibold text-gray-900">
-            Checklist Virtual
+            Sistema de Checklists
           </h1>
           <p className="text-xs text-gray-600">
-            Sistema de Gestão
+            Gestão Operacional
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useAuth } from '@/lib/auth';
 import { useQuery } from '@tanstack/react-query';
+import claroLogo from '@/assets/claro-empresas-logo.png';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -55,11 +56,13 @@ export default function TechnicianDashboard() {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <ClipboardCheck className="h-5 w-5 text-white" />
-            </div>
+            <img 
+              src={claroLogo} 
+              alt="Claro Empresas" 
+              className="h-10 w-auto" 
+            />
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Checklist Virtual</h1>
+              <h1 className="text-lg font-semibold text-gray-900">Sistema de Checklists</h1>
               <p className="text-sm text-gray-600">Portal do Técnico</p>
             </div>
           </div>

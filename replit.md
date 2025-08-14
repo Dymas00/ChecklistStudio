@@ -1,8 +1,8 @@
-# Checklist Virtual
+# Sistema de Checklists - Claro Empresas
 
 ## Overview
 
-This is a comprehensive web-based checklist virtual system designed for operational workflows. The application enables technicians to complete digital checklists for various operational tasks (upgrades, maintenance, activation, migration) while providing management and analysis capabilities for supervisors. The system features role-based access control, mobile-responsive design, and comprehensive form validation with photo evidence capabilities.
+This is a comprehensive web-based checklist system designed for Claro Empresas operational workflows. The application enables technicians to complete digital checklists for various operational tasks (upgrades, maintenance, activation, migration) while providing management and analysis capabilities for supervisors. The system features role-based access control, mobile-responsive design, and comprehensive form validation with photo evidence capabilities.
 
 ## User Preferences
 
@@ -96,6 +96,12 @@ Preferred communication style: Simple, everyday language.
 - ✅ ChecklistFilledForm e ChecklistFormView corrigidos com verificações robustas de objetos
 - ✅ Checklists de teste criados para todos os templates com evidências funcionais
 - ✅ Sistema de imagens servindo corretamente via /uploads/ para todos os tipos de evidência
+- ✅ **Rebranding completo para Claro Empresas (Agosto 14, 2025)**
+- ✅ Logo da Claro Empresas implementada em todos os componentes (sidebar, login, technician dashboard)
+- ✅ Nomenclatura atualizada: "Checklist Virtual" → "Sistema de Checklists"
+- ✅ Títulos de página e branding atualizados para refletir a identidade Claro Empresas
+- ✅ Exportação PDF atualizada com nova identidade visual
+- ✅ Nomenclatura padronizada mostrando apenas "Loja [código]" em todos os dashboards
 
 ## System Architecture
 
