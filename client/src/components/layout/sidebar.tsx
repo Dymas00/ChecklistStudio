@@ -127,6 +127,21 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
         <Separator className="mb-3" />
 
+        <Link to="/profile" onClick={handleLinkClick}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`w-full justify-start mb-1 ${
+              isActive('/profile')
+                ? 'bg-primary/10 text-primary font-medium'
+                : 'text-gray-600 hover:text-primary hover:bg-primary/5'
+            }`}
+          >
+            <User className="w-4 h-4 mr-2" />
+            Meu Perfil
+          </Button>
+        </Link>
+
         <Button
           variant="ghost"
           size="sm"
@@ -177,7 +192,7 @@ export function Sidebar() {
               <ClipboardCheck className="w-5 h-5 text-white" />
             </div>
             <h1 className="text-lg font-semibold text-gray-900">
-              Checklist Pro
+              Checklist Virtual
             </h1>
           </div>
         </div>

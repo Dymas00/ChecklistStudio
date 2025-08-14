@@ -41,6 +41,9 @@ export default function Users() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -49,6 +52,11 @@ export default function Users() {
     phone: '',
     cpf: '',
     contractor: '',
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
   });
 
   const { data: users, isLoading } = useQuery({
@@ -106,9 +114,119 @@ export default function Users() {
     },
   });
 
+  const editMutation = useMutation({
+    mutationFn: async ({ userId, userData }: { userId: string; userData: any }) => {
+      return apiRequest('PUT', `/api/users/${userId}`, userData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      setIsEditDialogOpen(false);
+      setEditingUser(null);
+      toast({
+        title: "Sucesso",
+        description: "Usuário atualizado com sucesso",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro",
+        description: "Erro ao atualizar usuário",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const changePasswordMutation = useMutation({
+    mutationFn: async ({ userId, passwords }: { userId: string; passwords: any }) => {
+      return apiRequest('POST', `/api/users/${userId}/change-password`, passwords);
+    },
+    onSuccess: () => {
+      setIsPasswordDialogOpen(false);
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setEditingUser(null);
+      toast({
+        title: "Sucesso",
+        description: "Senha alterada com sucesso",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro",
+        description: error?.message || "Erro ao alterar senha",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     createMutation.mutate(formData);
+  };
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingUser) {
+      editMutation.mutate({ 
+        userId: editingUser.id, 
+        userData: {
+          name: formData.name,
+          email: formData.email,
+          role: formData.role,
+          phone: formData.phone,
+          cpf: formData.cpf,
+          contractor: formData.contractor,
+        }
+      });
+    }
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast({
+        title: "Erro",
+        description: "As senhas não coincidem",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (passwordData.newPassword.length < 6) {
+      toast({
+        title: "Erro",
+        description: "A nova senha deve ter pelo menos 6 caracteres",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (editingUser) {
+      changePasswordMutation.mutate({
+        userId: editingUser.id,
+        passwords: {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        }
+      });
+    }
+  };
+
+  const handleEdit = (userData: any) => {
+    setEditingUser(userData);
+    setFormData({
+      name: userData.name,
+      email: userData.email,
+      password: '',
+      role: userData.role,
+      phone: userData.phone || '',
+      cpf: userData.cpf || '',
+      contractor: userData.contractor || '',
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleChangePassword = (userData: any) => {
+    setEditingUser(userData);
+    setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    setIsPasswordDialogOpen(true);
   };
 
   const handleDelete = (userId: string, userName: string) => {
@@ -247,6 +365,164 @@ export default function Users() {
           </div>
         </div>
 
+        {/* Edit User Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Editar Usuário</DialogTitle>
+            </DialogHeader>
+            
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="edit-name">Nome Completo</Label>
+                <Input
+                  id="edit-name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="edit-email">E-mail</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                  disabled={!isAdmin}
+                />
+              </div>
+              
+              {isAdmin && (
+                <div>
+                  <Label htmlFor="edit-role">Função</Label>
+                  <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })} required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma função" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(roleLabels).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
+              <div>
+                <Label htmlFor="edit-phone">Telefone</Label>
+                <Input
+                  id="edit-phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="edit-cpf">CPF</Label>
+                <Input
+                  id="edit-cpf"
+                  value={formData.cpf}
+                  onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
+                  disabled={!isAdmin}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="edit-contractor">Empreiteira</Label>
+                <Input
+                  id="edit-contractor"
+                  value={formData.contractor}
+                  onChange={(e) => setFormData({ ...formData, contractor: e.target.value })}
+                />
+              </div>
+              
+              <div className="flex justify-end space-x-3 pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  onClick={() => setIsEditDialogOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={editMutation.isPending}
+                >
+                  {editMutation.isPending ? "Salvando..." : "Salvar Alterações"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Change Password Dialog */}
+        <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Alterar Senha</DialogTitle>
+            </DialogHeader>
+            
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="current-password">Senha Atual</Label>
+                <Input
+                  id="current-password"
+                  type="password"
+                  value={passwordData.currentPassword}
+                  onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                  required
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="new-password">Nova Senha</Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  value={passwordData.newPassword}
+                  onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="confirm-password">Confirmar Nova Senha</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  value={passwordData.confirmPassword}
+                  onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <div className="flex justify-end space-x-3 pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  onClick={() => setIsPasswordDialogOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={changePasswordMutation.isPending}
+                >
+                  {changePasswordMutation.isPending ? "Alterando..." : "Alterar Senha"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
         {isLoading ? (
           <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
@@ -313,9 +589,21 @@ export default function Users() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="w-8 h-8 p-0 text-gray-400 hover:text-gray-600"
+                          className="w-8 h-8 p-0 text-gray-400 hover:text-blue-600"
+                          onClick={() => handleEdit(userData)}
+                          title="Editar usuário"
                         >
                           <Edit className="w-4 h-4" />
+                        </Button>
+                        
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="w-8 h-8 p-0 text-gray-400 hover:text-orange-600"
+                          onClick={() => handleChangePassword(userData)}
+                          title="Alterar senha"
+                        >
+                          🔑
                         </Button>
                         
                         {userData.id !== user?.id && (
@@ -325,6 +613,7 @@ export default function Users() {
                             className="w-8 h-8 p-0 text-gray-400 hover:text-red-600"
                             onClick={() => handleDelete(userData.id, userData.name)}
                             disabled={deleteMutation.isPending}
+                            title="Excluir usuário"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>

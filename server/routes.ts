@@ -115,9 +115,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/users/:id", requireAuth, requireAdmin, async (req, res) => {
+  app.put("/api/users/:id", requireAuth, async (req: any, res) => {
     try {
-      const user = await storage.updateUser(req.params.id, req.body);
+      // Allow users to update their own profile or admins to update any profile
+      const isOwnProfile = req.params.id === req.user.id;
+      const isAdmin = req.user.role === UserRole.ADMINISTRADOR;
+      
+      if (!isOwnProfile && !isAdmin) {
+        return res.status(403).json({ message: "Acesso negado" });
+      }
+
+      // If not admin, restrict what can be updated
+      let updateData = req.body;
+      if (!isAdmin) {
+        // Regular users can only update their own name, phone, and contractor
+        const { name, phone, contractor } = req.body;
+        updateData = { name, phone, contractor };
+      }
+
+      const user = await storage.updateUser(req.params.id, updateData);
       if (!user) {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
@@ -125,6 +141,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(userWithoutPassword);
     } catch (error) {
       res.status(400).json({ message: "Erro ao atualizar usuário" });
+    }
+  });
+
+  // Change password route
+  app.post("/api/users/:id/change-password", requireAuth, async (req: any, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const isOwnProfile = req.params.id === req.user.id;
+      const isAdmin = req.user.role === UserRole.ADMINISTRADOR;
+
+      if (!isOwnProfile && !isAdmin) {
+        return res.status(403).json({ message: "Acesso negado" });
+      }
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Senha atual e nova senha são obrigatórias" });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "A nova senha deve ter pelo menos 6 caracteres" });
+      }
+
+      const user = await storage.getUser(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+
+      // Verify current password (unless admin changing someone else's password)
+      if (isOwnProfile) {
+        const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!isValidPassword) {
+          return res.status(401).json({ message: "Senha atual incorreta" });
+        }
+      }
+
+      // Hash new password and update
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      await storage.updateUser(req.params.id, { password: hashedNewPassword });
+
+      res.json({ message: "Senha alterada com sucesso" });
+    } catch (error) {
+      res.status(400).json({ message: "Erro ao alterar senha" });
     }
   });
 

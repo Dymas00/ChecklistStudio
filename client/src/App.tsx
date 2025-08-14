@@ -12,6 +12,7 @@ import Templates from "@/pages/templates";
 import Users from "@/pages/users";
 import Checklists from "@/pages/checklists";
 import Reports from "@/pages/reports";
+import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/templates" component={Templates} />
       <Route path="/users" component={Users} />
       <Route path="/reports" component={Reports} />
+      <Route path="/profile" component={Profile} />
       <Route component={NotFound} />
     </Switch>
   );

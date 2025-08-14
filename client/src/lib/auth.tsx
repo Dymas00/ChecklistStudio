@@ -26,6 +26,7 @@ interface AuthContextType {
   user: User | null;
   login: (data: LoginData) => Promise<void>;
   logout: () => void;
+  refreshUser: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
   isAdmin: boolean;
@@ -85,6 +86,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await loginMutation.mutateAsync(data);
   };
 
+  const refreshUser = () => {
+    queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+  };
+
   // Set up token in query client
   useEffect(() => {
     if (token) {
@@ -142,6 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     login,
     logout,
+    refreshUser,
     isLoading,
     isAuthenticated,
     isAdmin,
