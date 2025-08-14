@@ -419,6 +419,12 @@ export class PDFExporter {
       
       if (typeof signaturePhoto === 'string') {
         photoFilename = signaturePhoto;
+        // Handle base64 data URLs directly
+        if (signaturePhoto.startsWith('data:image/')) {
+          console.log(`[PDF-DEBUG] Technician signature (base64): ${signaturePhoto.substring(0, 50)}...`);
+          await this.addImage(signaturePhoto, 120, 60);
+          return;
+        }
       } else if (signaturePhoto.filename) {
         photoFilename = signaturePhoto.filename;
       } else if (signaturePhoto.path) {
