@@ -44,10 +44,10 @@ export default function TechnicianDashboard() {
   };
 
   const templateColors = {
-    upgrade: 'blue',
-    ativacao: 'green', 
-    manutencao: 'orange',
-    migracao: 'purple',
+    upgrade: { bg: 'bg-blue-50 hover:bg-blue-100', text: 'text-blue-600', border: 'hover:border-blue-300' },
+    ativacao: { bg: 'bg-green-50 hover:bg-green-100', text: 'text-green-600', border: 'hover:border-green-300' },
+    manutencao: { bg: 'bg-orange-50 hover:bg-orange-100', text: 'text-orange-600', border: 'hover:border-orange-300' },
+    migracao: { bg: 'bg-purple-50 hover:bg-purple-100', text: 'text-purple-600', border: 'hover:border-purple-300' },
   };
 
   return (
@@ -133,26 +133,39 @@ export default function TechnicianDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               {((templates as any) || [])?.map((template: any) => {
                 const Icon = templateIcons[template.type as keyof typeof templateIcons] || ClipboardCheck;
-                const color = templateColors[template.type as keyof typeof templateColors] || 'gray';
+                const colors = templateColors[template.type as keyof typeof templateColors] || { 
+                  bg: 'bg-gray-50 hover:bg-gray-100', 
+                  text: 'text-gray-600', 
+                  border: 'hover:border-gray-300' 
+                };
                 
                 return (
                   <Link key={template.id} to={`/checklist/${template.id}`}>
-                    <Button
-                      variant="outline"
-                      className="h-auto p-3 sm:p-6 border-2 hover:border-primary hover:bg-primary/5 transition-all group w-full min-h-[130px] sm:min-h-[140px]"
+                    <div
+                      className={`
+                        h-auto p-4 sm:p-6 border-2 border-gray-200 rounded-lg 
+                        ${colors.bg} ${colors.border} 
+                        transition-all duration-200 group w-full min-h-[140px] sm:min-h-[160px] 
+                        cursor-pointer hover:shadow-md
+                      `}
                     >
-                      <div className="flex flex-col items-center text-center w-full max-w-full overflow-hidden space-y-1 sm:space-y-2">
-                        <Icon className={`w-5 h-5 sm:w-8 sm:h-8 mb-1 sm:mb-2 text-${color}-600 group-hover:text-primary transition-colors flex-shrink-0`} />
-                        <h3 className="font-medium text-gray-900 text-xs sm:text-base line-clamp-1 w-full leading-tight">
+                      <div className="flex flex-col items-center text-center w-full max-w-full overflow-hidden space-y-2 sm:space-y-3">
+                        <div className={`w-12 h-12 sm:w-16 sm:h-16 ${colors.bg.split(' ')[0].replace('50', '100')} rounded-full flex items-center justify-center mb-2`}>
+                          <Icon className={`w-6 h-6 sm:w-8 sm:h-8 ${colors.text} transition-colors flex-shrink-0`} />
+                        </div>
+                        <h3 className="font-semibold text-gray-900 text-sm sm:text-lg line-clamp-2 w-full leading-tight">
                           {template.name}
                         </h3>
                         <div className="w-full overflow-hidden flex-1 template-card-content px-1 sm:px-0">
-                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 leading-snug">
+                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-3 leading-snug">
                             {template.description}
                           </p>
                         </div>
+                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${colors.bg.split(' ')[0].replace('50', '100')} ${colors.text}`}>
+                          {template.sections?.length || 0} seções
+                        </div>
                       </div>
-                    </Button>
+                    </div>
                   </Link>
                 );
               })}
