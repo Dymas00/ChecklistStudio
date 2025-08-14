@@ -151,6 +151,23 @@ cp backup-20250114.db database.db
 
 ## ❓ Problemas Comuns
 
+### ⚠️ Erro "ENOTSUP" no Windows
+```
+Error: listen ENOTSUP: operation not supported on socket 0.0.0.0:5000
+```
+
+**Soluções:**
+```bash
+# 1. Mudar porta no .env
+PORT=3000
+
+# 2. Ou executar como administrador
+# Botão direito no terminal → "Executar como administrador"
+
+# 3. Verificar se Windows Defender está bloqueando
+# Configurações → Vírus e proteção → Exclusões
+```
+
 ### "Porta 5000 em uso"
 ```bash
 # Mudar porta no .env

@@ -1,0 +1,98 @@
+10:40:04 PM [express] serving on port 3000
+Error:   Failed to scan for dependencies from entries:
+  D:/projetos/ChecklistStudio/client/index.html
+
+  X [ERROR] No matching export in "client/src/lib/auth.ts" for import "AuthProvider"
+
+    client/src/App.tsx:6:9:
+      6 │ import { AuthProvider } from "@/lib/auth";
+        ╵          ~~~~~~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/components/checklist/checklist-details-dialog.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/components/layout/sidebar.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/checklist-form.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/checklists.tsx:3:9:
+      3 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/dashboard.tsx:1:9:
+      1 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/login.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/profile.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/reports.tsx:3:9:
+      3 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/technician-dashboard.tsx:1:9:
+      1 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/templates.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "useAuth"
+
+    client/src/pages/users.tsx:2:9:
+      2 │ import { useAuth } from '@/lib/auth';
+        ╵          ~~~~~~~
+
+
+    at failureErrorWithLog (D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:1472:15)
+    at D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:945:25
+    at runOnEndCallbacks (D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:1315:45)
+    at buildResponseToResult (D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:943:7)
+    at D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:955:9
+    at new Promise (<anonymous>)
+    at requestCallbacks.on-end (D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:954:54)
+    at handleRequest (D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:647:17)
+    at handleIncomingPacket (D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:672:7)
+    at Socket.readFromStdout (D:\projetos\ChecklistStudio\node_modules\vite\node_modules\esbuild\lib\main.js:600:7)
