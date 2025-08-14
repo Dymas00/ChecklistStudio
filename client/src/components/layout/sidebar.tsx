@@ -38,6 +38,12 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       show: true,
     },
     {
+      name: 'Relatórios',
+      href: '/reports',
+      icon: BarChart3,
+      show: ['administrador', 'coordenador'].includes(user?.role || ''),
+    },
+    {
       name: 'Templates',
       href: '/templates',
       icon: FileText,
