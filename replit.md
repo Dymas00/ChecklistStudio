@@ -89,6 +89,13 @@ Preferred communication style: Simple, everyday language.
 - ✅ Sistema testado end-to-end com sucesso total
 - ✅ Backend funcionando perfeitamente (login, templates, envio de checklists)
 - ✅ Configurações do queryClient otimizadas
+- ✅ **Sistema de evidências fotográficas corrigido para todos os templates (Agosto 14, 2025)**
+- ✅ Correção completa nas interfaces de preenchimento e visualização de checklists
+- ✅ Evidências funcionam corretamente em todos os 4 templates (Upgrade, Ativação, Migração, Manutenção)
+- ✅ Estrutura {"answer": "sim/não", "photo": "arquivo.jpg"} implementada em todos os componentes
+- ✅ ChecklistFilledForm e ChecklistFormView corrigidos com verificações robustas de objetos
+- ✅ Checklists de teste criados para todos os templates com evidências funcionais
+- ✅ Sistema de imagens servindo corretamente via /uploads/ para todos os tipos de evidência
 
 ## System Architecture
 
