@@ -76,30 +76,51 @@ export default function CameraPhotoUpload({
 
   const startCamera = async () => {
     try {
-      const constraints = {
+      // Primeiro tenta com a câmera específica
+      let constraints = {
         video: {
-          facingMode,
+          facingMode: { exact: facingMode },
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
       };
 
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (exactError) {
+        // Se falhar, tenta sem o "exact"
+        constraints = {
+          video: {
+            facingMode: facingMode,
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        };
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      }
+
       setCameraStream(stream);
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.play();
+        await videoRef.current.play();
       }
       
       setShowCameraDialog(true);
     } catch (error) {
       console.error('Erro ao acessar câmera:', error);
+      
+      // Fallback para input file com capture
       toast({
-        title: 'Erro na Câmera',
-        description: 'Não foi possível acessar a câmera. Verifique as permissões.',
-        variant: 'destructive',
+        title: 'Câmera não disponível',
+        description: 'Usando seletor de arquivo com acesso à câmera.',
       });
+      
+      // Trigger file input directly
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
     }
   };
 

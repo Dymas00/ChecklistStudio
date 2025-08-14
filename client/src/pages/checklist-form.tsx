@@ -21,6 +21,7 @@ import { useToast } from '@/hooks/use-toast';
 import { validateFormResponses, TemplateSection } from '@/lib/templates';
 import { Link } from 'wouter';
 import Footer from '@/components/layout/footer';
+import { useFormPersistence } from '@/hooks/useFormPersistence';
 
 export default function ChecklistForm() {
   const { user } = useAuth();
@@ -51,22 +52,12 @@ export default function ChecklistForm() {
   const template = (templates as any[])?.find((t: any) => t.id === templateId);
   const isLoading = templatesLoading || (isEditing && checklistLoading);
 
-  // Load existing data when in edit mode or from localStorage
+  // Load existing checklist data when editing
   useEffect(() => {
-    if (isEditing && existingChecklist && !Object.keys(responses).length) {
+    if (isEditing && existingChecklist && Object.keys(responses).length === 0) {
       setResponses((existingChecklist as any).responses || {});
-    } else if (!isEditing && !Object.keys(responses).length && templateId) {
-      // Try to load from localStorage
-      const savedDraft = localStorage.getItem(`checklist_draft_${templateId}`);
-      if (savedDraft) {
-        try {
-          setResponses(JSON.parse(savedDraft));
-        } catch (error) {
-          console.error('Error loading draft from localStorage:', error);
-        }
-      }
     }
-  }, [isEditing, existingChecklist, templateId]);
+  }, [isEditing, existingChecklist]);
 
   const submitMutation = useMutation({
     mutationFn: async (formData: FormData) => {
@@ -102,18 +93,14 @@ export default function ChecklistForm() {
     },
   });
 
+  // Use form persistence hook
+  const { clearDraft } = useFormPersistence(templateId, responses, setResponses, isEditing);
+
   const handleInputChange = (fieldId: string, value: any) => {
-    setResponses(prev => {
-      const newResponses = {
-        ...prev,
-        [fieldId]: value
-      };
-      // Save to localStorage to prevent data loss (delayed to avoid rapid saves)
-      setTimeout(() => {
-        localStorage.setItem(`checklist_draft_${templateId}`, JSON.stringify(newResponses));
-      }, 500);
-      return newResponses;
-    });
+    setResponses(prev => ({
+      ...prev,
+      [fieldId]: value
+    }));
   };
 
   const handleEvidenceChange = (fieldId: string, evidenceData: any) => {
@@ -187,7 +174,7 @@ export default function ChecklistForm() {
     try {
       await submitMutation.mutateAsync(formData);
       // Clear localStorage draft on successful submission
-      localStorage.removeItem(`checklist_draft_${templateId}`);
+      clearDraft();
     } finally {
       setIsSubmitting(false);
     }
