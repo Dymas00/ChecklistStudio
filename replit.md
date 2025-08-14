@@ -110,6 +110,14 @@ Preferred communication style: Simple, everyday language.
 - ✅ Debug completo adicionado para identificar problemas de exportação
 - ✅ Suporte PNG/JPEG automático e limpeza de caminhos de arquivo
 - ✅ Aplicado para todos os 4 templates: Upgrade, Ativação, Migração, Manutenção
+- ✅ **Banco de dados SQLite implementado (Agosto 14, 2025)**
+- ✅ Sistema completamente persistente - dados não são perdidos ao reiniciar
+- ✅ Migração automática de MemStorage para SQLiteStorage
+- ✅ Tabelas criadas automaticamente: users, sessions, templates, checklists
+- ✅ Dados iniciais populados: usuários padrão e templates dos 4 tipos
+- ✅ Suporte completo a todas as operações CRUD com SQLite
+- ✅ Índices otimizados para performance em consultas frequentes
+- ✅ Sistema detecta automaticamente se deve usar SQLite ou PostgreSQL
 
 ## System Architecture
 
