@@ -51,12 +51,22 @@ export default function ChecklistForm() {
   const template = templates?.find((t: any) => t.id === templateId);
   const isLoading = templatesLoading || (isEditing && checklistLoading);
 
-  // Load existing data when in edit mode
+  // Load existing data when in edit mode or from localStorage
   useEffect(() => {
     if (isEditing && existingChecklist && !Object.keys(responses).length) {
       setResponses(existingChecklist.responses || {});
+    } else if (!isEditing && !Object.keys(responses).length && templateId) {
+      // Try to load from localStorage
+      const savedDraft = localStorage.getItem(`checklist_draft_${templateId}`);
+      if (savedDraft) {
+        try {
+          setResponses(JSON.parse(savedDraft));
+        } catch (error) {
+          console.error('Error loading draft from localStorage:', error);
+        }
+      }
     }
-  }, [isEditing, existingChecklist, responses]);
+  }, [isEditing, existingChecklist, templateId]);
 
   const submitMutation = useMutation({
     mutationFn: async (formData: FormData) => {
@@ -93,10 +103,15 @@ export default function ChecklistForm() {
   });
 
   const handleInputChange = (fieldId: string, value: any) => {
-    setResponses(prev => ({
-      ...prev,
-      [fieldId]: value
-    }));
+    setResponses(prev => {
+      const newResponses = {
+        ...prev,
+        [fieldId]: value
+      };
+      // Save to localStorage to prevent data loss
+      localStorage.setItem(`checklist_draft_${templateId}`, JSON.stringify(newResponses));
+      return newResponses;
+    });
   };
 
   const handleEvidenceChange = (fieldId: string, evidenceData: any) => {
@@ -169,6 +184,8 @@ export default function ChecklistForm() {
 
     try {
       await submitMutation.mutateAsync(formData);
+      // Clear localStorage draft on successful submission
+      localStorage.removeItem(`checklist_draft_${templateId}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -288,10 +305,10 @@ export default function ChecklistForm() {
 
   // Auto-save functionality
   useEffect(() => {
+    if (Object.keys(responses).length === 0) return;
+    
     const autoSaveInterval = setInterval(() => {
-      if (Object.keys(responses).length > 0) {
-        saveAsDraft();
-      }
+      saveAsDraft();
     }, 60000); // Auto-save every minute
 
     return () => clearInterval(autoSaveInterval);
