@@ -1,9 +1,9 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, integer, boolean, timestamp, serial, jsonb } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
+export const users = sqliteTable("users", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
@@ -12,23 +12,23 @@ export const users = pgTable("users", {
   phone: text("phone"),
   cpf: text("cpf"),
   contractor: text("contractor"),
-  active: boolean("active").notNull().default(true),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  active: integer("active", { mode: 'boolean' }).notNull().default(true),
+  createdAt: integer("created_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
-export const templates = pgTable("templates", {
+export const templates = sqliteTable("templates", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   type: text("type").notNull(), // 'upgrade', 'ativacao', 'manutencao', 'migracao'
   description: text("description"),
   icon: text("icon").notNull(),
-  sections: jsonb("sections").notNull(), // Array of section objects
-  active: boolean("active").notNull().default(true),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  sections: text("sections", { mode: 'json' }).notNull(), // Array of section objects
+  active: integer("active", { mode: 'boolean' }).notNull().default(true),
+  createdAt: integer("created_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
-export const checklists = pgTable("checklists", {
+export const checklists = sqliteTable("checklists", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   checklistNumber: text("checklist_number").notNull().unique(), // Número sequencial único do checklist
   templateId: text("template_id").notNull().references(() => templates.id),
@@ -38,38 +38,38 @@ export const checklists = pgTable("checklists", {
   storeManager: text("store_manager").notNull(),
   storePhone: text("store_phone").notNull(),
   status: text("status").notNull().default('pendente'), // 'pendente', 'aprovado', 'reprovado', 'em_analise'
-  responses: jsonb("responses").notNull(), // Form responses
-  photos: jsonb("photos"), // Array of photo URLs
+  responses: text("responses", { mode: 'json' }).notNull(), // Form responses
+  photos: text("photos", { mode: 'json' }), // Array of photo URLs
   signature: text("signature"), // Base64 signature
   validationCode: text("validation_code"),
   rating: integer("rating"), // 1-5 stars para avaliação do técnico
   feedback: text("feedback"), // comentário sobre o atendimento/técnico
   approvalComment: text("approval_comment"), // comentário do analista na aprovação/reprovação
   approvedBy: text("approved_by").references(() => users.id), // quem aprovou/reprovou
-  approvedAt: timestamp("approved_at"), // quando foi aprovado/reprovado
+  approvedAt: integer("approved_at", { mode: 'timestamp' }), // quando foi aprovado/reprovado
   // Campos para auditoria e rastreamento
   clientIp: text("client_ip"), // IP do cliente que criou o checklist
   userAgent: text("user_agent"), // User agent do navegador
   geoLocation: text("geo_location"), // Localização GPS se disponível
-  deviceInfo: jsonb("device_info"), // Informações do dispositivo
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  deviceInfo: text("device_info", { mode: 'json' }), // Informações do dispositivo
+  createdAt: integer("created_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
-export const sessions = pgTable("sessions", {
+export const sessions = sqliteTable("sessions", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id),
   token: text("token").notNull().unique(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: integer("expires_at", { mode: 'timestamp' }).notNull(),
+  createdAt: integer("created_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
 // Tabela para controle de sequência de números de checklist
-export const checklistSequence = pgTable("checklist_sequence", {
-  id: serial("id").primaryKey(),
+export const checklistSequence = sqliteTable("checklist_sequence", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   lastNumber: integer("last_number").notNull().default(0),
   year: integer("year").notNull(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  updatedAt: integer("updated_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
 // User roles enum

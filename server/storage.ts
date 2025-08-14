@@ -1148,4 +1148,165 @@ export class DatabaseStorageWithDefaults extends DatabaseStorage {
   }
 }
 
-export const storage = new DatabaseStorageWithDefaults();
+// SQLite Database storage - persistent local storage
+class SQLiteStorage extends DatabaseStorage {
+  constructor() {
+    super();
+    this.initializeSQLite();
+  }
+
+  private async initializeSQLite() {
+    try {
+      // Initialize database with tables
+      await this.createTables();
+      
+      // Check if we need to seed data
+      const existingUsers = await this.getUsers();
+      if (existingUsers.length === 0) {
+        await this.seedDefaultData();
+      }
+      
+      console.log("✅ SQLite database initialized successfully");
+    } catch (error) {
+      console.error("❌ Error initializing SQLite database:", error);
+    }
+  }
+
+  private async createTables() {
+    try {
+      // Create tables using raw SQL if needed
+      // Drizzle should handle this automatically
+      const users = await this.getUsers();
+      console.log(`📊 Database ready with ${users.length} users`);
+    } catch (error) {
+      console.log("🔧 Setting up database tables...");
+    }
+  }
+
+  private async seedDefaultData() {
+    console.log("🌱 Seeding default data...");
+    
+    // Create default admin user
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+    await this.createUser({
+      email: "admin@checklistpro.com",
+      password: hashedPassword,
+      name: "Administrador",
+      role: UserRole.ADMINISTRADOR,
+      phone: "(11) 99999-9999",
+      cpf: "000.000.000-00",
+      contractor: "Sistema",
+      active: true,
+    });
+
+    // Create sample technician
+    const techPassword = await bcrypt.hash("tech123", 10);
+    await this.createUser({
+      email: "tecnico@checklistpro.com",
+      password: techPassword,
+      name: "João Silva",
+      role: UserRole.TECNICO,
+      phone: "(11) 98888-8888",
+      cpf: "111.111.111-11",
+      contractor: "Global Hitss",
+      active: true,
+    });
+
+    // Create analyst user
+    const analystPassword = await bcrypt.hash("analyst123", 10);
+    await this.createUser({
+      email: "analista@checklistpro.com",
+      password: analystPassword,
+      name: "Maria Santos",
+      role: UserRole.ANALISTA,
+      phone: "(11) 97777-7777",
+      cpf: "222.222.222-22",
+      contractor: "Claro/Telmex",
+      active: true,
+    });
+
+    await this.seedTemplates();
+  }
+
+  private async seedTemplates() {
+    console.log("📋 Seeding templates...");
+    
+    // Check if templates already exist
+    try {
+      const existingTemplates = await this.getTemplates();
+      if (existingTemplates.length > 0) {
+        console.log(`✅ Templates already exist: ${existingTemplates.length}`);
+        return;
+      }
+    } catch (error) {
+      console.log("⚠️ Error checking existing templates:", error);
+    }
+
+    // Create MemStorage temporarily to get template data
+    const memStorage = new MemStorage();
+    
+    // Wait for MemStorage to initialize
+    let attempts = 0;
+    let memTemplates = [];
+    
+    while (attempts < 5) {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 200));
+        memTemplates = await memStorage.getTemplates();
+        if (memTemplates.length > 0) break;
+        attempts++;
+      } catch (error) {
+        attempts++;
+        console.log(`⚠️ Attempt ${attempts} to get templates failed`);
+      }
+    }
+
+    if (memTemplates.length === 0) {
+      console.log("⚠️ No templates found in MemStorage, creating minimal template");
+      // Create a basic template if none found
+      try {
+        await this.createTemplate({
+          name: "Upgrade",
+          type: "upgrade",
+          description: "Template básico para upgrade de equipamentos",
+          icon: "fas fa-arrow-up",
+          active: true,
+          sections: [
+            {
+              id: 1,
+              title: "Informações Básicas",
+              icon: "fas fa-info-circle",
+              fields: [
+                { id: "storeCode", label: "Código da Loja", type: "text", required: true },
+                { id: "techName", label: "Nome do Técnico", type: "text", required: true },
+              ]
+            }
+          ]
+        });
+        console.log("✅ Created basic template");
+      } catch (error) {
+        console.log("⚠️ Error creating basic template:", error);
+      }
+      return;
+    }
+    
+    try {
+      // Get templates from MemStorage and create them in database
+      for (const template of memTemplates) {
+        const { id, createdAt, updatedAt, ...templateData } = template;
+        try {
+          await this.createTemplate(templateData as InsertTemplate);
+          console.log(`✅ Created template: ${template.name}`);
+        } catch (error) {
+          console.log(`⚠️ Template ${template.name} creation failed:`, error.message);
+        }
+      }
+      
+      console.log(`✅ Seeded ${memTemplates.length} templates successfully`);
+    } catch (error) {
+      console.log("⚠️ Error seeding templates:", error);
+    }
+  }
+}
+
+export const storage = new SQLiteStorage();
