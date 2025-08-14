@@ -38,6 +38,7 @@ The backend is an **Express.js** server written in **TypeScript** with ES module
 **Conditional Logic**: Advanced conditional field display based on previous answers.
 **Validation**: Comprehensive client and server-side validation.
 **File Management**: Integrated photo upload and signature capture with previews and validation.
+**PDF Export**: Advanced PDF generation with template-faithful layout, section name translation, signature rendering, and proper template name display.
 
 ## External Dependencies
 

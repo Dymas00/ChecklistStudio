@@ -274,6 +274,62 @@ export class SQLiteStorage implements IStorage {
         },
         {
           id: randomUUID(),
+          name: "Upgrade (Novo)",
+          type: "upgrade_novo",
+          icon: "fas fa-arrow-up",
+          description: "Template para atualização de equipamentos com testes e evidências específicas",
+          sections: JSON.stringify([
+            {
+              id: 1,
+              title: "Dados do Analista",
+              icon: "fas fa-user-tie",
+              fields: [
+                { id: "analystName", label: "Nome do Analista", type: "text", required: true },
+                { id: "analystEmail", label: "E-mail do Analista", type: "email", required: true },
+                { id: "analystConsent", label: "Eu aceito que meus dados sensíveis serão armazenados.", type: "radio", required: true, options: ["SIM", "NÃO"] }
+              ]
+            },
+            {
+              id: 2,
+              title: "Dados do Técnico",
+              icon: "fas fa-hard-hat",
+              fields: [
+                { id: "techConsent", label: "Eu aceito que meus dados sensíveis serão armazenados.", type: "radio", required: true, options: ["SIM", "NÃO"] },
+                { id: "techName", label: "Nome do Técnico", type: "text", required: true },
+                { id: "techPhone", label: "Telefone", type: "tel", required: true },
+                { id: "techCPF", label: "CPF", type: "text", required: true },
+                { id: "techSelfie", label: "Tire uma selfie do seu rosto.", type: "photo", required: true },
+                { id: "contractor", label: "Empreiteira/Operadora", type: "select", required: true, options: ["Global Hitss", "Claro/Telmex", "Delfia", "Outra"] },
+                { id: "otherContractor", label: "Observações para 'Outra':", type: "textarea", conditional: { field: "contractor", value: "Outra" } }
+              ]
+            },
+            {
+              id: 3,
+              title: "Dados da Loja",
+              icon: "fas fa-store",
+              fields: [
+                { id: "storeCode", label: "Código da Loja", type: "text", required: true },
+                { id: "storeManager", label: "Responsável", type: "text", required: true },
+                { id: "storePhone", label: "Telefone", type: "tel", required: true }
+              ]
+            },
+            {
+              id: 4,
+              title: "Testes e Evidências de Entrega",
+              icon: "fas fa-clipboard-check",
+              fields: [
+                { id: "connectivityTest", label: "1. TESTE DE CONECTIVIDADE", type: "photo", required: true },
+                { id: "speedTest", label: "2. TESTE DE SPEED", type: "photo", required: true },
+                { id: "merakiNotesAdjustment", label: "3. AJUSTE DESCRIÇÃO DO NOTES NO MERAKI", type: "photo", required: true }
+              ]
+            }
+          ]),
+          active: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: randomUUID(),
           name: "Ativação",
           type: "ativacao",
           icon: "fas fa-power-off",

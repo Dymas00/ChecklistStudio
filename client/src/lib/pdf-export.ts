@@ -160,7 +160,14 @@ export class PDFExporter {
       'power_check': 'Verificação de Energia',
       'signal_test': 'Teste de Sinal',
       'performance_test': 'Teste de Performance',
-      'final_check': 'Verificação Final'
+      'final_check': 'Verificação Final',
+      'Dados do Analista': 'Dados do Analista',
+      'Dados do Técnico': 'Dados do Técnico',
+      'Dados da Loja': 'Dados da Loja',
+      'Testes e Evidências de Entrega': 'Testes e Evidências de Entrega',
+      'Produto a ser instalado': 'Produto a ser instalado',
+      'Evidências': 'Evidências',
+      'Código de Validação': 'Código de Validação'
     };
 
     // Se encontrar tradução exata, use ela
