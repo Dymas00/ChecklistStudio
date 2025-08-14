@@ -139,19 +139,13 @@ export class PDFExporter {
   }
 
   async exportChecklist(data: ChecklistData): Promise<void> {
-    console.log('[PDF-DEBUG] Exportando checklist:', data);
-    console.log('[PDF-DEBUG] Seções encontradas:', data.sections);
-    console.log('[PDF-DEBUG] Respostas encontradas:', data.responses);
-    
     // Header matching template design
     this.addTemplateHeader(data);
     
     // Template-based sections rendering with exact layout
     if (data.sections && Array.isArray(data.sections) && data.sections.length > 0) {
-      console.log('[PDF-DEBUG] Usando renderização baseada no template');
       await this.renderTemplateSections(data.sections, data.responses);
     } else {
-      console.log('[PDF-DEBUG] Usando renderização legada - sections:', data.sections);
       // Fallback to original method if sections are not available
       await this.renderLegacySections(data);
     }
@@ -167,15 +161,29 @@ export class PDFExporter {
     this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 25, 'F');
     
     this.currentY += 8;
-    this.addTitle(`${data.templateName.toUpperCase()}`, 16);
+    this.pdf.setTextColor(0, 0, 0); // Ensure black text
+    this.addTitle(`CHECKLIST - ${data.templateName.toUpperCase()}`, 16);
+    this.pdf.setTextColor(60, 60, 60); // Dark gray for subtitle
     this.addText(`Checklist Virtual - Claro Empresas`, 10);
+    this.pdf.setTextColor(0, 0, 0); // Reset to black
     this.currentY += 5;
     
+    // Helper function to translate status to Portuguese
+    const getStatusLabel = (status: string) => {
+      switch (status) {
+        case 'aprovado': return 'APROVADO';
+        case 'rejeitado': return 'REJEITADO';
+        case 'pendente': return 'PENDENTE';
+        case 'em_analise': return 'EM ANÁLISE';
+        default: return status.toUpperCase();
+      }
+    };
+
     // Info box similar to template header
     const infoItems: string[] = [
       `Técnico: ${data.technicianName}`,
       `Criado em: ${new Date(data.createdAt).toLocaleString('pt-BR')}`,
-      `Status: ${data.status.toUpperCase()}`
+      `Status: ${getStatusLabel(data.status)}`
     ];
     
     if (data.completedAt) {
@@ -227,11 +235,7 @@ export class PDFExporter {
 
   // Enhanced method to render sections matching template layout
   private async renderTemplateSections(sections: any[], responses: Record<string, any>): Promise<void> {
-    console.log('[PDF-DEBUG] Renderizando seções do template. Total:', sections.length);
-    
     for (const section of sections) {
-      console.log('[PDF-DEBUG] Renderizando seção:', section.title, 'com', section.fields?.length || 0, 'campos');
-      
       this.currentY += 8; // Extra space between sections
       
       // Section header with background (like in template)
@@ -246,13 +250,11 @@ export class PDFExporter {
       this.currentY += 12;
       
       if (section.fields && Array.isArray(section.fields)) {
-        // Render fields in a grid-like layout when possible
+        // Render fields maintaining template order and structure
         for (const field of section.fields) {
-          console.log('[PDF-DEBUG] Renderizando campo:', field.label, 'tipo:', field.type, 'resposta:', responses[field.id]);
           await this.renderTemplateField(field, responses);
         }
       } else {
-        console.log('[PDF-DEBUG] Seção sem campos válidos:', section);
         this.addText('Seção sem campos configurados', 10);
       }
       

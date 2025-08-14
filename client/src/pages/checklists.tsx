@@ -150,7 +150,7 @@ export default function Checklists() {
       // Prepare checklist data for PDF export
       const checklistData = {
         id: checklist.id,
-        templateName: template.name || checklist.templateId,
+        templateName: template.name || getTemplateName(checklist.templateId),
         technicianName: getTechnicianName(checklist.technicianId),
         createdAt: checklist.createdAt,
         completedAt: checklist.completedAt,
