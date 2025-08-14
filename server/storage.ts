@@ -322,6 +322,15 @@ export class SQLiteStorage implements IStorage {
                 { id: "speedTest", label: "2. TESTE DE SPEED", type: "photo", required: true },
                 { id: "merakiNotesAdjustment", label: "3. AJUSTE DESCRIÇÃO DO NOTES NO MERAKI", type: "photo", required: true }
               ]
+            },
+            {
+              id: 5,
+              title: "Código de Validação",
+              icon: "fas fa-signature",
+              fields: [
+                { id: "validationCode", label: "Insira o código recebido e assine", type: "text", required: true },
+                { id: "techSignature", label: "Assinatura - Técnico", type: "signature", required: true }
+              ]
             }
           ]),
           active: 1,
