@@ -227,6 +227,14 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                                   src={`/uploads/${response.photo}`}
                                   alt="Evidência fotográfica"
                                   className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                                  onError={(e) => {
+                                    console.error('Erro ao carregar imagem:', `/uploads/${response.photo}`);
+                                    e.currentTarget.style.display = 'none';
+                                    const errorDiv = document.createElement('div');
+                                    errorDiv.className = 'bg-red-50 border border-red-200 rounded-lg p-4 text-center';
+                                    errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar: ${response.photo}</p>`;
+                                    e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
+                                  }}
                                   onClick={() => window.open(`/uploads/${response.photo}`, '_blank')}
                                 />
                                 <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
