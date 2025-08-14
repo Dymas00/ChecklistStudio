@@ -11,6 +11,7 @@ export interface ChecklistData {
   approvedBy?: string;
   status: string;
   responses: Record<string, any>;
+  signature?: string; // Add signature field
   sections: Array<{
     id: string;
     title: string;
@@ -21,6 +22,7 @@ export interface ChecklistData {
       type: string;
       required: boolean;
       value?: any;
+      options?: string[];
     }>;
   }>;
 }
@@ -139,6 +141,13 @@ export class PDFExporter {
   }
 
   async exportChecklist(data: ChecklistData): Promise<void> {
+    console.log('[PDF-EXPORT] Dados recebidos:', {
+      templateName: data.templateName,
+      sectionsCount: data.sections?.length || 0,
+      hasSignature: !!data.signature,
+      responsesKeys: Object.keys(data.responses || {})
+    });
+
     // Header matching template design
     this.addTemplateHeader(data);
     
@@ -148,6 +157,12 @@ export class PDFExporter {
     } else {
       // Fallback to original method if sections are not available
       await this.renderLegacySections(data);
+    }
+
+    // Add signature if present in main data
+    if (data.signature) {
+      this.currentY += 15;
+      await this.renderSignatureFieldValue(data.signature);
     }
 
     // Footer with approval info
