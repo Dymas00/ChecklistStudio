@@ -140,6 +140,44 @@ export class PDFExporter {
     }
   }
 
+  private translateSectionName(sectionName: string): string {
+    const translations: Record<string, string> = {
+      'equipment_info': 'Informações do Equipamento',
+      'site_info': 'Informações do Site',
+      'installation': 'Instalação',
+      'configuration': 'Configuração',
+      'testing': 'Testes',
+      'documentation': 'Documentação',
+      'completion': 'Finalização',
+      'verification': 'Verificação',
+      'maintenance': 'Manutenção',
+      'upgrade': 'Upgrade',
+      'migration': 'Migração',
+      'activation': 'Ativação',
+      'quality_check': 'Verificação de Qualidade',
+      'safety_check': 'Verificação de Segurança',
+      'network_config': 'Configuração de Rede',
+      'power_check': 'Verificação de Energia',
+      'signal_test': 'Teste de Sinal',
+      'performance_test': 'Teste de Performance',
+      'final_check': 'Verificação Final'
+    };
+
+    // Se encontrar tradução exata, use ela
+    if (translations[sectionName]) {
+      return translations[sectionName];
+    }
+
+    // Senão, formatar o nome removendo underscores e capitalizando
+    return sectionName
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+      .replace(/\bE\b/g, 'e')
+      .replace(/\bDe\b/g, 'de')
+      .replace(/\bDo\b/g, 'do')
+      .replace(/\bDa\b/g, 'da');
+  }
+
   async exportChecklist(data: ChecklistData): Promise<void> {
     console.log('[PDF-EXPORT] Dados recebidos:', {
       templateName: data.templateName,
@@ -268,7 +306,10 @@ export class PDFExporter {
       this.currentY += 6;
       this.pdf.setFontSize(14);
       this.pdf.setFont('helvetica', 'bold');
-      this.pdf.text(`📋 ${section.title.toUpperCase()}`, this.margin + 5, this.currentY);
+      
+      // Use translated section name
+      const translatedTitle = this.translateSectionName(section.title || section.id || 'Seção');
+      this.pdf.text(`📋 ${translatedTitle.toUpperCase()}`, this.margin + 5, this.currentY);
       this.currentY += 12;
       
       if (section.fields && Array.isArray(section.fields)) {
