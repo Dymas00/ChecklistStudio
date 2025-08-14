@@ -1157,18 +1157,23 @@ class SQLiteStorage extends DatabaseStorage {
 
   private async initializeSQLite() {
     try {
+      console.log("🗄️ Initializing Native SQLite database...");
+      console.log("📁 Database file: ./database.sqlite");
+      console.log("🔧 Driver: better-sqlite3 (Native SQLite - NO PostgreSQL)");
+      
       // Initialize database with tables
       await this.createTables();
       
       // Check if we need to seed data
       const existingUsers = await this.getUsers();
       if (existingUsers.length === 0) {
+        console.log("📊 Seeding Native SQLite database...");
         await this.seedDefaultData();
       }
       
-      console.log("✅ SQLite database initialized successfully");
+      console.log("✅ Native SQLite database initialized successfully - PostgreSQL dependencies removed");
     } catch (error) {
-      console.error("❌ Error initializing SQLite database:", error);
+      console.error("❌ Error initializing Native SQLite database:", error);
     }
   }
 

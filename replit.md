@@ -24,9 +24,9 @@ The backend is an **Express.js** server written in **TypeScript** with ES module
 **File Handling**: **Multer** for file uploads, storing files in a local uploads directory.
 
 ### Data Storage Solutions
-**Database**: **SQLite** with **Drizzle ORM** for type-safe operations. Schema includes users, templates, checklists, and sessions, utilizing UUID primary keys, JSON columns for flexible data, and timestamp tracking. Uses local SQLite file for data persistence as requested by user.
-**Migration System**: Drizzle Kit manages database migrations.
-**Development Storage**: In-memory storage for local development.
+**Database**: **Native SQLite** with **better-sqlite3** driver and **Drizzle ORM** for type-safe operations. Schema includes users, templates, checklists, and sessions, utilizing UUID primary keys, JSON columns for flexible data, and timestamp tracking. Uses local SQLite file (`./database.sqlite`) for data persistence. **All PostgreSQL dependencies have been completely removed** as explicitly requested by user for native SQLite implementation.
+**Migration System**: Drizzle Kit configured for SQLite migrations.
+**Storage Implementation**: SQLiteStorage class provides persistent local storage with automatic initialization and seeding.
 
 ### Authentication and Authorization
 **Role-Based Access Control**: Four user roles (Técnico, Analista, Coordenador, Administrador) with distinct permissions.
