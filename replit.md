@@ -32,6 +32,7 @@ Preferred communication style: Simple, everyday language.
 - ✅ Added "Desenvolvido por Dymas Gomes" footer throughout the application
 - ✅ Enhanced mobile responsiveness for template descriptions with improved text wrapping
 - ✅ Created complete VPS deployment guide with SSL certificate setup (DEPLOYMENT_VPS.md)
+- ✅ Simplified photo upload to use gallery/file picker only (removed complex camera functionality per user request)
 
 ## System Architecture
 
