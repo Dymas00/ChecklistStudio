@@ -903,7 +903,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUser(id: string): Promise<boolean> {
     const result = await db.delete(users).where(eq(users.id, id));
-    return result.rowCount > 0;
+    return result.changes > 0;
   }
 
   async createSession(userId: string): Promise<Session> {
@@ -928,7 +928,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteSession(token: string): Promise<boolean> {
     const result = await db.delete(sessions).where(eq(sessions.token, token));
-    return result.rowCount > 0;
+    return result.changes > 0;
   }
 
   async getTemplates(): Promise<Template[]> {
@@ -956,7 +956,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteTemplate(id: string): Promise<boolean> {
     const result = await db.delete(templates).where(eq(templates.id, id));
-    return result.rowCount > 0;
+    return result.changes > 0;
   }
 
   async getChecklists(): Promise<Checklist[]> {
@@ -1037,7 +1037,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteChecklist(id: string): Promise<boolean> {
     const result = await db.delete(checklists).where(eq(checklists.id, id));
-    return result.rowCount > 0;
+    return result.changes > 0;
   }
 
   async generateChecklistNumber(): Promise<string> {
@@ -1247,7 +1247,7 @@ class SQLiteStorage extends DatabaseStorage {
     
     // Wait for MemStorage to initialize
     let attempts = 0;
-    let memTemplates = [];
+    let memTemplates: Template[] = [];
     
     while (attempts < 5) {
       try {
@@ -1257,7 +1257,7 @@ class SQLiteStorage extends DatabaseStorage {
         attempts++;
       } catch (error) {
         attempts++;
-        console.log(`⚠️ Attempt ${attempts} to get templates failed`);
+        console.log(`⚠️ Attempt ${attempts} to get templates failed:`, (error as Error).message);
       }
     }
 
@@ -1285,7 +1285,7 @@ class SQLiteStorage extends DatabaseStorage {
         });
         console.log("✅ Created basic template");
       } catch (error) {
-        console.log("⚠️ Error creating basic template:", error);
+        console.log("⚠️ Error creating basic template:", (error as Error).message);
       }
       return;
     }
@@ -1298,7 +1298,7 @@ class SQLiteStorage extends DatabaseStorage {
           await this.createTemplate(templateData as InsertTemplate);
           console.log(`✅ Created template: ${template.name}`);
         } catch (error) {
-          console.log(`⚠️ Template ${template.name} creation failed:`, error.message);
+          console.log(`⚠️ Template ${template.name} creation failed:`, (error as Error).message);
         }
       }
       
