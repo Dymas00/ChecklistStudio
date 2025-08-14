@@ -48,31 +48,12 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
-    console.error('Global error handler:', err);
-    
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
-    let message = "Erro interno do servidor";
-    
-    // More descriptive error messages for common issues
-    if (status === 401) {
-      message = "Não autorizado. Faça login novamente.";
-    } else if (status === 403) {
-      message = "Acesso negado. Permissões insuficientes.";
-    } else if (status === 404) {
-      message = "Recurso não encontrado.";
-    } else if (status === 400) {
-      message = err.message || "Dados inválidos.";
-    } else if (err.code === 'SQLITE_CONSTRAINT') {
-      message = "Erro de validação de dados.";
-    }
+    const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
-    
-    // Only throw in development for debugging
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Full error stack:', err);
-    }
+    throw err;
   });
 
   // importantly only setup vite in development and after
@@ -89,7 +70,7 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  const host = process.env.NODE_ENV === 'production' ? "0.0.0.0" : "0.0.0.0";
+  const host = process.env.HOST || (process.env.NODE_ENV === 'production' ? "0.0.0.0" : "localhost");
   
   server.listen({
     port,

@@ -57,10 +57,6 @@ function requireAdmin(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Initialize database storage
-  if ('initialize' in storage && typeof storage.initialize === 'function') {
-    await (storage as any).initialize();
-  }
   
   // Authentication routes
   app.post("/api/auth/login", async (req, res) => {
@@ -112,34 +108,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/users", requireAuth, requireAdmin, async (req, res) => {
     try {
-      // Validate and hash password before creating user
-      const { password, email, ...otherData } = req.body;
-      
-      if (!password || password.length < 6) {
-        return res.status(400).json({ message: "Senha deve ter pelo menos 6 caracteres" });
-      }
-
-      if (!email || !email.includes('@')) {
-        return res.status(400).json({ message: "Email válido é obrigatório" });
-      }
-
-      // Check if user already exists
-      const existingUser = await storage.getUserByEmail(email);
-      if (existingUser) {
-        return res.status(409).json({ message: "Email já está em uso" });
-      }
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const user = await storage.createUser({
-        ...otherData,
-        email,
-        password: hashedPassword
-      });
-      
+      const user = await storage.createUser(req.body);
       const { password: _, ...userWithoutPassword } = user;
       res.status(201).json(userWithoutPassword);
     } catch (error) {
-      console.error("Error creating user:", error);
       res.status(400).json({ message: "Erro ao criar usuário" });
     }
   });
@@ -215,22 +187,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/users/:id", requireAuth, requireAdmin, async (req: any, res) => {
-    try {
-      // Prevent admin from deleting themselves
-      if (req.params.id === req.user.id) {
-        return res.status(400).json({ message: "Não é possível deletar sua própria conta" });
-      }
-
-      const deleted = await storage.deleteUser(req.params.id);
-      if (!deleted) {
-        return res.status(404).json({ message: "Usuário não encontrado" });
-      }
-      res.json({ message: "Usuário removido com sucesso" });
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      res.status(500).json({ message: "Erro interno do servidor" });
+  app.delete("/api/users/:id", requireAuth, requireAdmin, async (req, res) => {
+    const deleted = await storage.deleteUser(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Usuário não encontrado" });
     }
+    res.json({ message: "Usuário removido com sucesso" });
   });
 
   // Template routes
@@ -249,21 +211,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/templates", requireAuth, requireAdmin, async (req, res) => {
     try {
-      // Validate required template fields
-      const { name, type, sections } = req.body;
-      
-      if (!name || !type || !sections) {
-        return res.status(400).json({ message: "Nome, tipo e seções são obrigatórios" });
-      }
-
-      if (!Array.isArray(sections) || sections.length === 0) {
-        return res.status(400).json({ message: "Template deve ter pelo menos uma seção" });
-      }
-
       const template = await storage.createTemplate(req.body);
       res.status(201).json(template);
     } catch (error) {
-      console.error("Error creating template:", error);
       res.status(400).json({ message: "Erro ao criar template" });
     }
   });
@@ -327,51 +277,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/checklists", requireAuth, upload.any(), async (req: any, res) => {
     try {
+
+      
       let checklistData;
       
       // Handle different content types
       if (req.body.data) {
         // FormData with files
-        try {
-          checklistData = JSON.parse(req.body.data);
-        } catch (parseError) {
-          return res.status(400).json({ message: "Dados JSON inválidos" });
-        }
+        checklistData = JSON.parse(req.body.data);
       } else if (req.headers['content-type']?.includes('application/json')) {
         // Pure JSON (no files)
         checklistData = req.body;
       } else {
         return res.status(400).json({ message: "Formato de dados inválido" });
-      }
-
-      // Validate required fields
-      const { templateId, storeCode, storeManager, storePhone, responses } = checklistData;
-      
-      if (!templateId) {
-        return res.status(400).json({ message: "Template é obrigatório" });
-      }
-      if (!storeCode || !storeCode.trim()) {
-        return res.status(400).json({ message: "Código da loja é obrigatório" });
-      }
-      if (!storeManager || !storeManager.trim()) {
-        return res.status(400).json({ message: "Nome do gerente é obrigatório" });
-      }
-      if (!storePhone || !storePhone.trim()) {
-        return res.status(400).json({ message: "Telefone da loja é obrigatório" });
-      }
-      if (!responses || typeof responses !== 'object') {
-        return res.status(400).json({ message: "Respostas do checklist são obrigatórias" });
-      }
-
-      // Verify template exists
-      const template = await storage.getTemplate(templateId);
-      if (!template) {
-        return res.status(400).json({ message: "Template não encontrado" });
-      }
-
-      // Additional validation for basic response fields
-      if (!responses.storeCode || responses.storeCode !== storeCode) {
-        return res.status(400).json({ message: "Código da loja inconsistente" });
       }
       
       // Process file uploads from FormData
@@ -398,8 +316,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.status(201).json(checklist);
     } catch (error) {
-      console.error("Error creating checklist:", error);
-      res.status(500).json({ message: "Erro interno do servidor ao criar checklist" });
+
+      res.status(400).json({ 
+        message: "Erro ao criar checklist",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 
@@ -461,8 +382,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const checklist = await storage.updateChecklist(req.params.id, updateData);
       res.json(checklist);
     } catch (error) {
-      console.error("Error updating checklist:", error);
-      res.status(500).json({ message: "Erro interno do servidor ao atualizar checklist" });
+
+      res.status(400).json({ message: "Erro ao atualizar checklist" });
     }
   });
 
@@ -529,8 +450,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         checklist: updatedChecklist
       });
     } catch (error) {
-      console.error('Error processing checklist approval:', error);
-      res.status(500).json({ message: 'Erro interno do servidor ao processar aprovação' });
+
+      res.status(500).json({ message: 'Erro interno do servidor' });
     }
   });
 

@@ -86,26 +86,11 @@ export default function ChecklistForm() {
       }
     },
     onError: (error: any) => {
-      console.error('Checklist submission error:', error);
-      let errorMessage = "Erro ao enviar checklist. Tente novamente.";
-      
-      if (error?.message) {
-        if (error.message.includes('conexão') || error.message.includes('Failed to fetch')) {
-          errorMessage = "Erro de conexão. Verifique sua internet e tente novamente.";
-        } else if (error.message.includes('Template não encontrado')) {
-          errorMessage = "Template inválido. Recarregue a página e tente novamente.";
-        } else if (error.message.includes('Campos obrigatórios faltando')) {
-          errorMessage = "Alguns campos obrigatórios não foram preenchidos.";
-        } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
-          errorMessage = "Sessão expirada. Faça login novamente.";
-        } else {
-          errorMessage = error.message;
-        }
-      }
-      
       toast({
         title: "Erro",
-        description: errorMessage,
+        description: error?.message?.includes('conexão') 
+          ? "Erro de conexão. Verifique sua internet e tente novamente."
+          : "Erro ao enviar checklist. Tente novamente.",
         variant: "destructive",
       });
     },
@@ -116,7 +101,6 @@ export default function ChecklistForm() {
 
   const handleInputChange = (fieldId: string, value: any) => {
     // Prevent updates during initial load
-    if (isLoading) return;
     if (!templateId) return;
     
     setResponses(prev => ({

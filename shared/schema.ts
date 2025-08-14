@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, blob } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -72,14 +72,6 @@ export const checklistSequence = sqliteTable("checklist_sequence", {
   updatedAt: integer("updated_at", { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
-// User roles enum
-export enum UserRole {
-  TECNICO = "tecnico",
-  ANALISTA = "analista", 
-  COORDENADOR = "coordenador",
-  ADMINISTRADOR = "administrador"
-}
-
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 export const insertTemplateSchema = createInsertSchema(templates).omit({ id: true, createdAt: true, updatedAt: true });
@@ -114,3 +106,13 @@ export const loginSchema = z.object({
 });
 
 export type LoginData = z.infer<typeof loginSchema>;
+
+// User roles enum
+export const UserRole = {
+  TECNICO: 'tecnico',
+  ANALISTA: 'analista', 
+  COORDENADOR: 'coordenador',
+  ADMINISTRADOR: 'administrador'
+} as const;
+
+export type UserRoleType = typeof UserRole[keyof typeof UserRole];
