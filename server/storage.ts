@@ -64,7 +64,7 @@ export class MemStorage implements IStorage {
     const hashedPassword = await bcrypt.hash("admin123", 10);
     const adminUser: User = {
       id: randomUUID(),
-      email: "admin@checklistpro.com",
+      email: "admin@checklistvirtual.com",
       password: hashedPassword,
       name: "Administrador",
       role: UserRole.ADMINISTRADOR,
@@ -80,7 +80,7 @@ export class MemStorage implements IStorage {
     const techPassword = await bcrypt.hash("tech123", 10);
     const techUser: User = {
       id: randomUUID(),
-      email: "tecnico@checklistpro.com",
+      email: "tecnico@checklistvirtual.com",
       password: techPassword,
       name: "João Silva",
       role: UserRole.TECNICO,
@@ -96,7 +96,7 @@ export class MemStorage implements IStorage {
     const analystPassword = await bcrypt.hash("analyst123", 10);
     const analystUser: User = {
       id: randomUUID(),
-      email: "analista@checklistpro.com",
+      email: "analista@checklistvirtual.com",
       password: analystPassword,
       name: "Maria Santos",
       role: UserRole.ANALISTA,

@@ -1,12 +1,22 @@
-# Checklist Management System
+# Checklist Virtual
 
 ## Overview
 
-This is a comprehensive web-based checklist management system designed for operational workflows. The application enables technicians to complete digital checklists for various operational tasks (upgrades, maintenance, activation, migration) while providing management and analysis capabilities for supervisors. The system features role-based access control, mobile-responsive design, and comprehensive form validation with photo evidence capabilities.
+This is a comprehensive web-based checklist virtual system designed for operational workflows. The application enables technicians to complete digital checklists for various operational tasks (upgrades, maintenance, activation, migration) while providing management and analysis capabilities for supervisors. The system features role-based access control, mobile-responsive design, and comprehensive form validation with photo evidence capabilities.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Recent Changes
+
+**January 14, 2025:**
+- ✅ Project renamed from "Checklist Management System/ChecklistPro" to "Checklist Virtual"
+- ✅ Updated all UI references including login page, sidebar, and documentation
+- ✅ Updated default user email domains from @checklistpro.com to @checklistvirtual.com
+- ✅ Removed default credentials display from login screen for security
+- ✅ Added proper page title to HTML document
+- ✅ Fixed storage implementation issues with missing methods for checklist persistence
 
 ## System Architecture
 

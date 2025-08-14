@@ -72,7 +72,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         </div>
         <div>
           <h1 className="text-lg font-semibold text-gray-900">
-            Checklist Pro
+            Checklist Virtual
           </h1>
           <p className="text-xs text-gray-600">
             Sistema de Gestão

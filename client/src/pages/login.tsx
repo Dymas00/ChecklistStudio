@@ -40,7 +40,7 @@ export default function Login() {
               <ClipboardCheck className="h-8 w-8 text-white" />
             </div>
             <CardTitle className="text-3xl font-bold text-gray-900">
-              Sistema de Checklist
+              Checklist Virtual
             </CardTitle>
             <p className="text-gray-600 mt-2">
               Gerencie seus checklists operacionais
@@ -84,11 +84,7 @@ export default function Login() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-500">
-                Credenciais padrão: admin@checklistpro.com / admin123
-              </p>
-            </div>
+
           </CardContent>
         </Card>
       </div>
