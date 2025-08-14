@@ -151,6 +151,27 @@ cp backup-20250114.db database.db
 
 ## ❓ Problemas Comuns
 
+### ⚠️ Erro "No matching export" - AuthProvider/useAuth
+```
+X [ERROR] No matching export in "client/src/lib/auth.ts" for import "AuthProvider"
+```
+
+**Causa:** Arquivo baixado como `auth.ts` em vez de `auth.tsx`
+
+**Solução:**
+```bash
+# 1. Renomear o arquivo (Windows)
+cd client/src/lib
+ren auth.ts auth.tsx
+
+# 2. Ou Linux/macOS
+cd client/src/lib  
+mv auth.ts auth.tsx
+
+# 3. Reiniciar o servidor
+npm run dev
+```
+
 ### ⚠️ Erro "ENOTSUP" no Windows
 ```
 Error: listen ENOTSUP: operation not supported on socket 0.0.0.0:5000
@@ -246,9 +267,16 @@ O SQLite é rápido para desenvolvimento, mas para **produção com muitos usuá
 
 **🎉 Pronto! Sistema rodando sem PostgreSQL!**
 
-Qualquer dúvida, verifique se:
-- Node.js está instalado (v18+)
-- Executou `npm install`
-- Executou `npm run db:push`  
-- Arquivo `.env` está configurado
-- Sistema rodando em `http://localhost:5000`
+**Checklist final:**
+- ✅ Node.js instalado (v18+ ou v20+)
+- ✅ `npm install` executado
+- ✅ Arquivo `.env` criado e configurado
+- ✅ `npm run db:push` executado
+- ✅ Arquivo `client/src/lib/auth.tsx` (com extensão .tsx)
+- ✅ `npm run dev` funcionando
+- ✅ Sistema acessível em `http://localhost:5000`
+
+**Se der erro de "No matching export":**
+1. Verifique se existe `client/src/lib/auth.tsx` (não .ts)
+2. Se estiver como .ts, renomeie para .tsx
+3. Reinicie o servidor com `npm run dev`
