@@ -1,0 +1,52 @@
+The above error occurred in the <div> component:
+
+    at div
+    at div
+    at div
+    at div
+    at div
+    at div
+    at div
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-IWFJIMEQ.js?v=56faf581:42:13
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-ZJ2OXAP3.js?v=56faf581:47:7
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LHPXHTGV.js?v=56faf581:43:13
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LHPXHTGV.js?v=56faf581:20:13
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-IWFJIMEQ.js?v=56faf581:42:13
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-ZR4HSXCE.js?v=56faf581:57:5
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=56faf581:240:13
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=56faf581:163:58
+    at Presence (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-3TAXNJ3T.js?v=56faf581:24:11)
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=56faf581:154:64
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LHPXHTGV.js?v=56faf581:43:13
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LHPXHTGV.js?v=56faf581:20:13
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-IWFJIMEQ.js?v=56faf581:42:13
+    at https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-ZJ2OXAP3.js?v=56faf581:246:22
+    at Presence (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-3TAXNJ3T.js?v=56faf581:24:11)
+    at Provider (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-5AJU3CG7.js?v=56faf581:38:15)
+    at DialogPortal (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=56faf581:116:11)
+    at _c3 (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/src/components/ui/dialog.tsx:52:12)
+    at Provider (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-5AJU3CG7.js?v=56faf581:38:15)
+    at Dialog (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=56faf581:57:5)
+    at ApprovalDialog (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/src/components/checklist/approval-dialog.tsx:27:42)
+    at ChecklistDetailsDialog (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/src/components/checklist/checklist-details-dialog.tsx:55:3)
+    at div
+    at div
+    at Checklists (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/src/pages/checklists.tsx:85:20)
+    at Route (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=56faf581:323:16)
+    at Switch (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=56faf581:379:17)
+    at Router
+    at AuthProvider (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/src/lib/auth.tsx:33:32)
+    at Provider (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-5AJU3CG7.js?v=56faf581:38:15)
+    at TooltipProvider (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=56faf581:65:5)
+    at QueryClientProvider…
+Objects are not valid as a React child (found: object with keys {filename, originalName, path, mimetype, size}). If you meant to render a collection of children, use an array instead.
+at throwOnInvalidObjectType (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:9934:17)
+at reconcileChildFibers2 (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:10564:15)
+at reconcileChildren (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:14290:37)
+at updateHostComponent (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:14807:11)
+at beginWork (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:15935:22)
+at beginWork$1 (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:19753:22)
+at performUnitOfWork (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:19198:20)
+at workLoopSync (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:19137:13)
+at renderRootSync (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=56faf581:19116:15)
+at recoverFromConcurrentError (https://badbe684-24da-460b-abda-4fa6f06eae5c-00-16e9uyrom05hy.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk

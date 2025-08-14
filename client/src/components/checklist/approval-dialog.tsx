@@ -120,7 +120,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                     Nome do Analista <span className="text-red-500">*</span>
                   </Label>
                   <div className="mt-1 p-3 bg-white border rounded-md">
-                    {checklist.responses?.analystName || 'Não informado'}
+                    {typeof checklist.responses?.analystName === 'object' 
+                      ? JSON.stringify(checklist.responses.analystName) 
+                      : String(checklist.responses?.analystName || 'Não informado')
+                    }
                   </div>
                 </div>
 
@@ -129,7 +132,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                     E-mail do Analista <span className="text-red-500">*</span>
                   </Label>
                   <div className="mt-1 p-3 bg-white border rounded-md">
-                    {checklist.responses?.analystEmail || 'Não informado'}
+                    {typeof checklist.responses?.analystEmail === 'object' 
+                      ? JSON.stringify(checklist.responses.analystEmail) 
+                      : String(checklist.responses?.analystEmail || 'Não informado')
+                    }
                   </div>
                 </div>
 
@@ -192,7 +198,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                     Nome do Técnico <span className="text-red-500">*</span>
                   </Label>
                   <div className="mt-1 p-3 bg-white border rounded-md">
-                    {checklist.responses?.techName || 'Não informado'}
+                    {typeof checklist.responses?.techName === 'object' 
+                      ? JSON.stringify(checklist.responses.techName) 
+                      : String(checklist.responses?.techName || 'Não informado')
+                    }
                   </div>
                 </div>
 
@@ -201,7 +210,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                     Telefone <span className="text-red-500">*</span>
                   </Label>
                   <div className="mt-1 p-3 bg-white border rounded-md">
-                    {checklist.responses?.techPhone || 'Não informado'}
+                    {typeof checklist.responses?.techPhone === 'object' 
+                      ? JSON.stringify(checklist.responses.techPhone) 
+                      : String(checklist.responses?.techPhone || 'Não informado')
+                    }
                   </div>
                 </div>
 
@@ -210,7 +222,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                     CPF <span className="text-red-500">*</span>
                   </Label>
                   <div className="mt-1 p-3 bg-white border rounded-md">
-                    {checklist.responses?.techCPF || 'Não informado'}
+                    {typeof checklist.responses?.techCPF === 'object' 
+                      ? JSON.stringify(checklist.responses.techCPF) 
+                      : String(checklist.responses?.techCPF || 'Não informado')
+                    }
                   </div>
                 </div>
 
@@ -219,7 +234,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                     Empresa Terceirizada <span className="text-red-500">*</span>
                   </Label>
                   <div className="mt-1 p-3 bg-white border rounded-md">
-                    {checklist.responses?.contractor || 'Não informado'}
+                    {typeof checklist.responses?.contractor === 'object' 
+                      ? JSON.stringify(checklist.responses.contractor) 
+                      : String(checklist.responses?.contractor || 'Não informado')
+                    }
                   </div>
                 </div>
               </div>
@@ -254,7 +272,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                   <div>
                     <Label className="text-sm font-medium">Tipo de Conectividade</Label>
                     <div className="mt-1 p-3 bg-white border rounded-md">
-                      {checklist.responses.connectivityType}
+                      {typeof checklist.responses.connectivityType === 'object' 
+                        ? JSON.stringify(checklist.responses.connectivityType) 
+                        : String(checklist.responses.connectivityType)
+                      }
                     </div>
                   </div>
                 )}
@@ -263,7 +284,10 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
                   <div>
                     <Label className="text-sm font-medium">Teste de Velocidade (Mbps)</Label>
                     <div className="mt-1 p-3 bg-white border rounded-md">
-                      {checklist.responses.speedTest}
+                      {typeof checklist.responses.speedTest === 'object' 
+                        ? JSON.stringify(checklist.responses.speedTest) 
+                        : String(checklist.responses.speedTest)
+                      }
                     </div>
                   </div>
                 )}
