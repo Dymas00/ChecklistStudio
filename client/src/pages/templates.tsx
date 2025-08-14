@@ -16,7 +16,7 @@ import {
   Power,
   Settings,
   RefreshCw,
-  Eye,
+  FileText,
   X,
   CheckCircle,
   AlertCircle
@@ -259,7 +259,7 @@ export default function Templates() {
                           className="text-primary hover:text-primary/80 font-medium p-0"
                           onClick={() => handleViewTemplate(template)}
                         >
-                          <Eye className="w-4 h-4 mr-1" />
+                          <FileText className="w-4 h-4 mr-1" />
                           Visualizar
                         </Button>
                       </div>

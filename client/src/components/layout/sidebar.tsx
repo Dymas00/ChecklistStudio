@@ -66,11 +66,8 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
   return (
     <div className="flex flex-col h-full w-64 bg-white">
-      {/* Menu Title */}
-      <div className="flex justify-center py-4 border-b border-gray-200 w-full">
-        <h1 className="text-lg font-semibold text-gray-900">
-          Menu
-        </h1>
+      {/* Menu Spacing */}
+      <div className="py-4 border-b border-gray-200 w-full">
       </div>
 
       {/* Navigation Menu */}
