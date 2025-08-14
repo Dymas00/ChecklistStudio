@@ -777,12 +777,13 @@ export class MemStorage implements IStorage {
   }
 
   async createChecklist(insertChecklist: InsertChecklist): Promise<Checklist> {
+    const checklistNumber = await this.generateChecklistNumber();
     const checklist: Checklist = {
       id: randomUUID(),
+      checklistNumber,
       templateId: insertChecklist.templateId,
       status: insertChecklist.status || 'pendente',
       createdAt: new Date(),
-      photos: insertChecklist.photos,
       updatedAt: new Date(),
       technicianId: insertChecklist.technicianId,
       analystId: insertChecklist.analystId || null,
@@ -790,10 +791,18 @@ export class MemStorage implements IStorage {
       storeManager: insertChecklist.storeManager,
       storePhone: insertChecklist.storePhone,
       responses: insertChecklist.responses,
+      photos: insertChecklist.photos,
       signature: insertChecklist.signature || null,
       validationCode: insertChecklist.validationCode || null,
       rating: insertChecklist.rating || null,
       feedback: insertChecklist.feedback || null,
+      approvalComment: null,
+      approvedBy: null,
+      approvedAt: null,
+      clientIp: null,
+      userAgent: null,
+      geoLocation: null,
+      deviceInfo: null,
     };
     this.checklists.set(checklist.id, checklist);
     return checklist;
@@ -810,6 +819,51 @@ export class MemStorage implements IStorage {
 
   async deleteChecklist(id: string): Promise<boolean> {
     return this.checklists.delete(id);
+  }
+
+  // Missing methods implementation
+  async getChecklistByNumber(checklistNumber: string): Promise<Checklist | undefined> {
+    return Array.from(this.checklists.values()).find(c => c.checklistNumber === checklistNumber);
+  }
+
+  async getChecklistsByStore(storeCode: string): Promise<Checklist[]> {
+    return Array.from(this.checklists.values()).filter(c => c.storeCode === storeCode);
+  }
+
+  async getChecklistsByStatus(status: string): Promise<Checklist[]> {
+    return Array.from(this.checklists.values()).filter(c => c.status === status);
+  }
+
+  async getChecklistsByDateRange(startDate: Date, endDate: Date): Promise<Checklist[]> {
+    return Array.from(this.checklists.values()).filter(c => 
+      c.createdAt >= startDate && c.createdAt <= endDate
+    );
+  }
+
+  async generateChecklistNumber(): Promise<string> {
+    const now = new Date();
+    const year = now.getFullYear();
+    
+    // Get current sequence for the year
+    let sequence = this.checklistSequences.get(year);
+    if (!sequence) {
+      sequence = {
+        id: year,
+        lastNumber: 0,
+        year,
+        updatedAt: now
+      };
+    }
+    
+    // Increment counter
+    sequence.lastNumber += 1;
+    sequence.updatedAt = now;
+    
+    // Store updated sequence
+    this.checklistSequences.set(year, sequence);
+    
+    // Format: YYYY-NNNNNN (year + 6-digit padded number)
+    return `${year}-${sequence.lastNumber.toString().padStart(6, '0')}`;
   }
 }
 
