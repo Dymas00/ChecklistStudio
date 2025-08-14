@@ -318,7 +318,8 @@ export class SQLiteStorage implements IStorage {
               title: "Teste de Conectividade",
               icon: "fas fa-wifi",
               fields: [
-                { id: "connectivityTest", label: "TESTE DE CONECTIVIDADE", type: "photo", required: true }
+                { id: "connectivityTest", label: "TESTE DE CONECTIVIDADE", type: "photo", required: true },
+                { id: "connectivityComment", label: "Comentário", type: "textarea", required: false }
               ]
             },
             {
@@ -326,7 +327,8 @@ export class SQLiteStorage implements IStorage {
               title: "Teste de Speed",
               icon: "fas fa-tachometer-alt",
               fields: [
-                { id: "speedTest", label: "TESTE DE SPEED", type: "photo", required: true }
+                { id: "speedTest", label: "TESTE DE SPEED", type: "photo", required: true },
+                { id: "speedComment", label: "Comentário", type: "textarea", required: false }
               ]
             },
             {
@@ -334,7 +336,8 @@ export class SQLiteStorage implements IStorage {
               title: "Ajuste Descrição do Notes no Meraki",
               icon: "fas fa-edit",
               fields: [
-                { id: "merakiNotesAdjustment", label: "AJUSTE DESCRIÇÃO DO NOTES NO MERAKI", type: "photo", required: true }
+                { id: "merakiNotesAdjustment", label: "AJUSTE DESCRIÇÃO DO NOTES NO MERAKI", type: "photo", required: true },
+                { id: "merakiComment", label: "Comentário", type: "textarea", required: false }
               ]
             },
             {
