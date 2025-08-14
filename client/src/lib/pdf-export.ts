@@ -273,7 +273,7 @@ export class PDFExporter {
     
     // Field background for better readability
     this.pdf.setFillColor(252, 252, 252);
-    const fieldHeight = this.calculateFieldHeight(field, response, photoResponse);
+    const fieldHeight = this.calculateFieldHeight(field, response, photoResponse, responses);
     this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), fieldHeight, 'F');
     
     this.currentY += 3;
@@ -302,7 +302,9 @@ export class PDFExporter {
         break;
         
       case 'signature':
-        await this.renderSignatureFieldValue(photoResponse || response);
+        // Check multiple possible signature data sources
+        const signatureData = photoResponse || response || responses[`${field.id}_signature`] || responses[field.id + 'Signature'];
+        await this.renderSignatureFieldValue(signatureData);
         break;
         
       default:
@@ -314,7 +316,7 @@ export class PDFExporter {
   }
 
   // Helper methods for field rendering
-  private calculateFieldHeight(field: any, response: any, photoResponse: any): number {
+  private calculateFieldHeight(field: any, response: any, photoResponse: any, responses?: Record<string, any>): number {
     let height = 15; // Base height for label and padding
     
     if (field.type === 'radio' && field.options) {
@@ -328,8 +330,10 @@ export class PDFExporter {
     }
     
     if (field.type === 'signature') {
-      if (photoResponse || response) {
-        height += 65; // Space for signature
+      const signatureData = photoResponse || response || 
+        (responses && (responses[`${field.id}_signature`] || responses[field.id + 'Signature']));
+      if (signatureData) {
+        height += 85; // More space for signature with label
       }
     }
     
@@ -410,28 +414,68 @@ export class PDFExporter {
   }
 
   private async renderSignatureFieldValue(signatureData: any): Promise<void> {
+    // Try different ways to get signature data
+    let signatureToRender = null;
+    
     if (signatureData) {
-      let signatureFilename = null;
-      
       if (typeof signatureData === 'string') {
-        signatureFilename = signatureData;
+        if (signatureData.startsWith('data:image/')) {
+          // Base64 image data
+          signatureToRender = signatureData;
+        } else if (signatureData.includes('/uploads/')) {
+          // File path
+          signatureToRender = signatureData;
+        } else {
+          // Filename only
+          signatureToRender = `/uploads/${signatureData}`;
+        }
       } else if (signatureData && signatureData.filename) {
-        signatureFilename = signatureData.filename;
+        signatureToRender = `/uploads/${signatureData.filename.replace(/^uploads\//, '')}`;
+      } else if (signatureData && signatureData.path) {
+        signatureToRender = signatureData.path;
       }
+    }
+    
+    if (signatureToRender) {
+      this.pdf.setFont('helvetica', 'italic');
+      this.pdf.setFontSize(9);
+      this.pdf.text('✍️ Assinatura digital:', this.margin + 8, this.currentY);
+      this.currentY += 8;
       
-      if (signatureFilename) {
-        this.pdf.setFont('helvetica', 'italic');
-        this.pdf.setFontSize(9);
-        this.pdf.text('✍️ Assinatura digital:', this.margin + 8, this.currentY);
-        this.currentY += 8;
-        
-        const cleanFilename = signatureFilename.replace(/^uploads\//, '');
-        await this.addImage(`/uploads/${cleanFilename}`, 140, 70);
+      if (signatureToRender.startsWith('data:image/')) {
+        // Handle base64 signature
+        await this.addBase64Image(signatureToRender, 140, 70);
       } else {
-        this.renderNoSignatureMessage();
+        // Handle file path signature
+        const cleanPath = signatureToRender.replace(/^uploads\//, '');
+        await this.addImage(`/uploads/${cleanPath}`, 140, 70);
       }
     } else {
       this.renderNoSignatureMessage();
+    }
+  }
+
+  private async addBase64Image(base64Data: string, width: number, height: number): Promise<void> {
+    try {
+      this.checkPageBreak(height + 10);
+      
+      // Extract the image type and data
+      const imageType = base64Data.match(/data:image\/([^;]+)/)?.[1] || 'png';
+      
+      this.pdf.addImage(
+        base64Data,
+        imageType.toUpperCase(),
+        this.margin + 8,
+        this.currentY,
+        width,
+        height
+      );
+      
+      this.currentY += height + 5;
+    } catch (error) {
+      console.log('[PDF-DEBUG] Erro ao processar assinatura base64:', error);
+      this.addText('Erro ao processar assinatura', 8);
+      this.currentY += 10;
     }
   }
 
