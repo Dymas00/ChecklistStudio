@@ -9,8 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sidebar } from '@/components/layout/sidebar';
-import { ClipboardList, Search, Filter, Eye, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw } from 'lucide-react';
+import { ClipboardList, Search, Filter, Eye, Edit, Star, Plus, ArrowUp, Power, Settings, RefreshCw, FileDown } from 'lucide-react';
 import { Link } from 'wouter';
+import { exportChecklistToPDF } from '@/lib/pdf-export';
+import { useToast } from '@/hooks/use-toast';
 
 function getStatusBadgeClass(status: string) {
   switch (status) {
@@ -70,9 +72,11 @@ const templateColors = {
 
 export default function Checklists() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isNewChecklistDialogOpen, setIsNewChecklistDialogOpen] = useState(false);
+  const [exportingId, setExportingId] = useState<string | null>(null);
 
   const { data: checklists, isLoading } = useQuery({
     queryKey: ['/api/checklists'],
@@ -102,6 +106,55 @@ export default function Checklists() {
   const getTechnicianName = (technicianId: string) => {
     const technician = users?.find((u: any) => u.id === technicianId);
     return technician?.name || 'Técnico não encontrado';
+  };
+
+  const handleExportPDF = async (checklist: any) => {
+    if (checklist.status !== 'aprovado') {
+      toast({
+        title: 'Erro',
+        description: 'Apenas checklists aprovados podem ser exportados em PDF.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setExportingId(checklist.id);
+    
+    try {
+      // Get template data
+      const templateResponse = await fetch(`/api/templates/${checklist.templateId}`);
+      const template = await templateResponse.json();
+      
+      // Prepare checklist data for PDF export
+      const checklistData = {
+        id: checklist.id,
+        templateName: template.name || checklist.templateId,
+        technicianName: getTechnicianName(checklist.technicianId),
+        createdAt: checklist.createdAt,
+        completedAt: checklist.completedAt,
+        approvedAt: checklist.approvedAt,
+        approvedBy: checklist.approvedBy || 'Sistema',
+        status: checklist.status,
+        responses: checklist.responses || {},
+        sections: template.sections || []
+      };
+
+      await exportChecklistToPDF(checklistData);
+      
+      toast({
+        title: 'Sucesso',
+        description: 'PDF exportado com sucesso!',
+      });
+    } catch (error) {
+      console.error('Erro ao exportar PDF:', error);
+      toast({
+        title: 'Erro',
+        description: 'Falha ao exportar PDF. Tente novamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setExportingId(null);
+    }
   };
 
   if (isLoading) {
@@ -310,6 +363,21 @@ export default function Checklists() {
                           <Button variant="ghost" size="sm">
                             <Eye className="w-4 h-4" />
                           </Button>
+                          
+                          {checklist.status === 'aprovado' && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleExportPDF(checklist)}
+                              disabled={exportingId === checklist.id}
+                            >
+                              {exportingId === checklist.id ? (
+                                <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                <FileDown className="w-4 h-4" />
+                              )}
+                            </Button>
+                          )}
                           
                           {checklist.status === 'pendente' && (
                             <Link to={`/checklist/${checklist.templateId}?edit=${checklist.id}`}>
