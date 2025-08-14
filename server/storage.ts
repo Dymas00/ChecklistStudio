@@ -192,55 +192,79 @@ export class SQLiteStorage implements IStorage {
         insertUser.run(user.id, user.email, user.password, user.name, user.role, user.phone, user.cpf, user.contractor, user.active, user.created_at);
       }
 
-      // Create minimal templates
+      // Create complete templates with all sections and fields
       const templates = [
         {
           id: randomUUID(),
           name: "Upgrade",
           type: "upgrade",
-          icon: "⬆️",
-          description: "Template para upgrades de equipamentos de rede",
+          icon: "fas fa-arrow-up",
+          description: "Template para atualização de equipamentos de loja",
           sections: JSON.stringify([
             {
-              id: "dados-loja",
-              title: "Dados da Loja",
-              icon: "🏪",
-              description: "Informações básicas da loja",
+              id: 1,
+              title: "Dados do Analista",
+              icon: "fas fa-user-tie",
               fields: [
-                { id: "storeCode", type: "text", label: "Código da Loja", required: true },
-                { id: "storeManager", type: "text", label: "Gerente da Loja", required: true },
-                { id: "storePhone", type: "text", label: "Telefone da Loja", required: true }
+                { id: "analystName", label: "Nome do Analista", type: "text", required: true },
+                { id: "analystEmail", label: "E-mail do Analista", type: "email", required: true },
+                { id: "analystConsent", label: "Eu aceito que meus dados sensíveis serão armazenados.", type: "radio", required: true, options: ["SIM", "NÃO"] }
               ]
             },
             {
-              id: "dados-tecnico",
+              id: 2,
               title: "Dados do Técnico",
-              icon: "👨‍🔧",
-              description: "Informações do técnico responsável",
+              icon: "fas fa-hard-hat",
               fields: [
-                { id: "techName", type: "text", label: "Nome do Técnico", required: true },
-                { id: "techPhone", type: "text", label: "Telefone do Técnico", required: true },
-                { id: "techCPF", type: "text", label: "CPF do Técnico", required: true }
+                { id: "techConsent", label: "Eu aceito que meus dados sensíveis serão armazenados.", type: "radio", required: true, options: ["SIM", "NÃO"] },
+                { id: "techName", label: "Nome do Técnico", type: "text", required: true },
+                { id: "techPhone", label: "Telefone", type: "tel", required: true },
+                { id: "techCPF", label: "CPF", type: "text", required: true },
+                { id: "techSelfie", label: "Tire uma selfie do seu rosto.", type: "photo", required: true },
+                { id: "contractor", label: "Empreiteira/Operadora", type: "select", required: true, options: ["Global Hitss", "Claro/Telmex", "Delfia", "Outra"] },
+                { id: "otherContractor", label: "Observações para 'Outra':", type: "textarea", conditional: { field: "contractor", value: "Outra" } }
               ]
             },
             {
-              id: "teste-velocidade",
-              title: "Teste de Velocidade",
-              icon: "⚡",
-              description: "Teste de velocidade da conexão",
+              id: 3,
+              title: "Dados da Loja",
+              icon: "fas fa-store",
               fields: [
-                { id: "speedTest", type: "text", label: "Velocidade Medida (Mbps)", required: true },
-                { id: "speedTest_photo", type: "photo", label: "Evidência do Teste", required: true }
+                { id: "storeCode", label: "Código da Loja", type: "text", required: true },
+                { id: "storeManager", label: "Responsável", type: "text", required: true },
+                { id: "storePhone", label: "Telefone", type: "tel", required: true }
               ]
             },
             {
-              id: "assinatura",
-              title: "Assinatura",
-              icon: "✍️",
-              description: "Assinatura do técnico",
+              id: 4,
+              title: "Produto a ser instalado",
+              icon: "fas fa-network-wired",
               fields: [
-                { id: "signature", type: "signature", label: "Assinatura do Técnico", required: true },
-                { id: "techSelfie", type: "photo", label: "Selfie do Técnico", required: true }
+                { id: "connectivityType", label: "Tipo de Conectividade", type: "select", required: true, options: ["BLC Claro 600Mbps", "BLD Claro 50Mbps"] },
+                { id: "designation", label: "Designação", type: "text", required: true },
+                { id: "speedTest", label: "Velocidade do Speed Test (apenas números em Mbps)", type: "number", required: true },
+                { id: "speedTestPhoto", label: "Foto do Speed Test", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 5,
+              title: "Evidências",
+              icon: "fas fa-camera",
+              fields: [
+                { id: "ipWan", label: "O IP WAN no Meraki está na faixa correta?", type: "evidence", required: true },
+                { id: "vpn", label: "A VPN está fechada e há clientes conectados?", type: "evidence", required: true },
+                { id: "aps", label: "Os APs estão conectados e os Mobshop funcionando?", type: "evidence", required: true },
+                { id: "naming", label: "Todas as nomenclaturas estão corretas (network name, MX, MR, MS e MV)?", type: "evidence", required: true },
+                { id: "notes", label: "O campo Notes foi atualizado com a nova designação?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 6,
+              title: "Código de Validação",
+              icon: "fas fa-signature",
+              fields: [
+                { id: "validationCode", label: "Insira o código recebido e assine", type: "text", required: true },
+                { id: "techSignature", label: "Assinatura - Técnico", type: "signature", required: true }
               ]
             }
           ]),
@@ -252,18 +276,59 @@ export class SQLiteStorage implements IStorage {
           id: randomUUID(),
           name: "Ativação",
           type: "ativacao",
-          icon: "🟢",
-          description: "Template para ativação de novos serviços",
+          icon: "fas fa-power-off",
+          description: "Template para ativação de novos serviços e equipamentos",
           sections: JSON.stringify([
             {
-              id: "dados-loja",
-              title: "Dados da Loja",
-              icon: "🏪",
-              description: "Informações básicas da loja",
+              id: 1,
+              title: "Dados do Técnico",
+              icon: "fas fa-user-hard-hat",
               fields: [
-                { id: "storeCode", type: "text", label: "Código da Loja", required: true },
-                { id: "storeManager", type: "text", label: "Gerente da Loja", required: true },
-                { id: "storePhone", type: "text", label: "Telefone da Loja", required: true }
+                { id: "techConsent", label: "Eu aceito que meu nome, fone, cpf, foto e outros dados sensíveis utilizados nesse checklist serão armazenados nos servidores da Checklist Virtual e da Claro.", type: "radio", required: true, options: ["SIM", "NÃO"] },
+                { id: "techName", label: "Qual é o seu nome completo?(Técnico)", type: "text", required: true },
+                { id: "techPhone", label: "Qual o seu n. de telefone celular?", type: "tel", required: true },
+                { id: "techCPF", label: "Qual o seu CPF?", type: "text", required: true },
+                { id: "techSelfie", label: "Tire uma selfie do seu rosto.", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 2,
+              title: "Dados da Loja",
+              icon: "fas fa-building",
+              fields: [
+                { id: "storeCode", label: "Qual é o código da unidade que você está atendendo?(Exemplo: 21380, JC36)", type: "text", required: true },
+                { id: "storeManager", label: "Nome do Responsável da Loja", type: "text", required: true },
+                { id: "storePhone", label: "Telefone do Responsável Loja", type: "tel", required: true }
+              ]
+            },
+            {
+              id: 3,
+              title: "Equipamentos Instalados",
+              icon: "fas fa-router",
+              fields: [
+                { id: "equipmentList", label: "Liste os equipamentos instalados", type: "textarea", required: true },
+                { id: "equipmentPhoto", label: "Foto dos equipamentos instalados", type: "photo", required: true },
+                { id: "serialNumbers", label: "Números de série dos equipamentos", type: "textarea", required: true }
+              ]
+            },
+            {
+              id: 4,
+              title: "Teste de Conectividade",
+              icon: "fas fa-wifi",
+              fields: [
+                { id: "speedTest", label: "Velocidade do Speed Test (Mbps)", type: "number", required: true },
+                { id: "speedTestPhoto", label: "Foto do Speed Test", type: "photo", required: true },
+                { id: "connectivityOk", label: "Todos os dispositivos estão conectados e funcionando?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 5,
+              title: "Finalização",
+              icon: "fas fa-check-circle",
+              fields: [
+                { id: "validationCode", label: "Código de validação", type: "text", required: true },
+                { id: "techSignature", label: "Assinatura do Técnico", type: "signature", required: true },
+                { id: "observations", label: "Observações finais", type: "textarea" }
               ]
             }
           ]),
@@ -275,18 +340,71 @@ export class SQLiteStorage implements IStorage {
           id: randomUUID(),
           name: "Migração",
           type: "migracao",
-          icon: "🔄",
-          description: "Template para migração de sistemas",
+          icon: "fas fa-exchange-alt",
+          description: "Template para migração de sistemas e equipamentos conforme especificação Claro",
           sections: JSON.stringify([
             {
-              id: "dados-loja",
-              title: "Dados da Loja",
-              icon: "🏪",
-              description: "Informações básicas da loja",
+              id: 1,
+              title: "Cadastro Técnico",
+              icon: "fas fa-user-hard-hat",
               fields: [
-                { id: "storeCode", type: "text", label: "Código da Loja", required: true },
-                { id: "storeManager", type: "text", label: "Gerente da Loja", required: true },
-                { id: "storePhone", type: "text", label: "Telefone da Loja", required: true }
+                { id: "techConsent", label: "Eu aceito que meu nome, fone, cpf, foto e outros dados sensíveis utilizados nesse checklist serão armazenados nos servidores da Checklist Virtual e da Claro.", type: "radio", required: true, options: ["SIM", "NÃO"] },
+                { id: "techName", label: "Qual é o seu nome completo?(Técnico)", type: "text", required: true },
+                { id: "techPhone", label: "Qual o seu n. de telefone celular?", type: "tel", required: true },
+                { id: "techCPF", label: "Qual o seu CPF?", type: "text", required: true },
+                { id: "techSelfie", label: "Tire uma selfie do seu rosto.", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 2,
+              title: "Cadastro Unidade",
+              icon: "fas fa-building",
+              fields: [
+                { id: "storeCode", label: "Qual é o código da unidade que você está atendendo?(Exemplo: 21380, JC36)", type: "text", required: true },
+                { id: "storeManager", label: "Nome do Responsável da Loja", type: "text", required: true },
+                { id: "storePhone", label: "Telefone do Responsável Loja", type: "tel", required: true }
+              ]
+            },
+            {
+              id: 3,
+              title: "Liberação da Migração",
+              icon: "fas fa-unlock",
+              fields: [
+                { id: "systemAccess", label: "Conseguiu baixar e acessar o sistema da migração?", type: "evidence", required: true },
+                { id: "migrationReleased", label: "O check-in foi validado e a migração foi liberada?", type: "evidence", required: true },
+                { id: "rackPhotoBefore", label: "Foto do rack, com a porta aberta, antes do início das atividades.", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 4,
+              title: "Equipamentos e Configuração",
+              icon: "fas fa-cogs",
+              fields: [
+                { id: "oldEquipments", label: "Haverão equipamentos antigos sendo recolhidos?", type: "select", required: true, options: ["Apenas MX", "Apenas MR", "MX + MR", "Nenhum"] },
+                { id: "oldEquipmentsPhoto", label: "Foto dos equipamentos antigos", type: "photo", conditional: { field: "oldEquipments", notValue: "Nenhum" } },
+                { id: "newEquipmentsPhoto", label: "Foto dos novos equipamentos instalados", type: "photo", required: true },
+                { id: "cablingOk", label: "Os cabos estão organizados e funcionais?", type: "evidence", required: true }
+              ]
+            },
+            {
+              id: 5,
+              title: "Teste Final",
+              icon: "fas fa-check-double",
+              fields: [
+                { id: "speedTest", label: "Velocidade final do Speed Test (Mbps)", type: "number", required: true },
+                { id: "speedTestPhoto", label: "Foto do Speed Test final", type: "photo", required: true },
+                { id: "allSystemsOk", label: "Todos os sistemas estão funcionando corretamente?", type: "evidence", required: true },
+                { id: "rackPhotoAfter", label: "Foto final do rack organizado", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 6,
+              title: "Finalização",
+              icon: "fas fa-signature",
+              fields: [
+                { id: "validationCode", label: "Código de validação", type: "text", required: true },
+                { id: "techSignature", label: "Assinatura do Técnico", type: "signature", required: true },
+                { id: "observations", label: "Observações da migração", type: "textarea" }
               ]
             }
           ]),
@@ -298,18 +416,72 @@ export class SQLiteStorage implements IStorage {
           id: randomUUID(),
           name: "Manutenção",
           type: "manutencao",
-          icon: "🔧",
-          description: "Template para manutenção preventiva e corretiva",
+          icon: "fas fa-tools",
+          description: "Template para manutenção preventiva e corretiva de equipamentos",
           sections: JSON.stringify([
             {
-              id: "dados-loja",
-              title: "Dados da Loja",
-              icon: "🏪",
-              description: "Informações básicas da loja",
+              id: 1,
+              title: "Dados do Técnico",
+              icon: "fas fa-user-cog",
               fields: [
-                { id: "storeCode", type: "text", label: "Código da Loja", required: true },
-                { id: "storeManager", type: "text", label: "Gerente da Loja", required: true },
-                { id: "storePhone", type: "text", label: "Telefone da Loja", required: true }
+                { id: "techConsent", label: "Eu aceito que meus dados sensíveis serão armazenados.", type: "radio", required: true, options: ["SIM", "NÃO"] },
+                { id: "techName", label: "Nome do Técnico", type: "text", required: true },
+                { id: "techPhone", label: "Telefone do Técnico", type: "tel", required: true },
+                { id: "techCPF", label: "CPF do Técnico", type: "text", required: true },
+                { id: "techSelfie", label: "Selfie do Técnico", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 2,
+              title: "Dados da Loja",
+              icon: "fas fa-store-alt",
+              fields: [
+                { id: "storeCode", label: "Código da Loja", type: "text", required: true },
+                { id: "storeManager", label: "Responsável da Loja", type: "text", required: true },
+                { id: "storePhone", label: "Telefone da Loja", type: "tel", required: true }
+              ]
+            },
+            {
+              id: 3,
+              title: "Tipo de Manutenção",
+              icon: "fas fa-wrench",
+              fields: [
+                { id: "maintenanceType", label: "Tipo de manutenção", type: "select", required: true, options: ["Preventiva", "Corretiva", "Emergencial"] },
+                { id: "problemDescription", label: "Descrição do problema/atividade", type: "textarea", required: true },
+                { id: "equipmentsBefore", label: "Foto dos equipamentos antes da manutenção", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 4,
+              title: "Atividades Realizadas",
+              icon: "fas fa-tasks",
+              fields: [
+                { id: "activitiesPerformed", label: "Atividades realizadas", type: "textarea", required: true },
+                { id: "partsReplaced", label: "Peças substituídas (se houver)", type: "textarea" },
+                { id: "testPerformed", label: "Testes realizados foram bem-sucedidos?", type: "evidence", required: true },
+                { id: "speedTest", label: "Velocidade do Speed Test pós-manutenção (Mbps)", type: "number", required: true },
+                { id: "speedTestPhoto", label: "Foto do Speed Test", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 5,
+              title: "Verificações Finais",
+              icon: "fas fa-clipboard-check",
+              fields: [
+                { id: "systemsOperational", label: "Todos os sistemas estão operacionais?", type: "evidence", required: true },
+                { id: "cablingOk", label: "Cabeamento está organizado e funcionando?", type: "evidence", required: true },
+                { id: "rackCleaned", label: "Rack foi limpo e organizado?", type: "evidence", required: true },
+                { id: "equipmentsAfter", label: "Foto final dos equipamentos", type: "photo", required: true }
+              ]
+            },
+            {
+              id: 6,
+              title: "Finalização",
+              icon: "fas fa-signature",
+              fields: [
+                { id: "validationCode", label: "Código de validação", type: "text", required: true },
+                { id: "techSignature", label: "Assinatura do Técnico", type: "signature", required: true },
+                { id: "recommendations", label: "Recomendações para futuras manutenções", type: "textarea" }
               ]
             }
           ]),
