@@ -3,20 +3,25 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { 
   ClipboardCheck,
   ArrowUp,
   Power,
   Settings,
   RefreshCw,
-  Star
+  Star,
+  User,
+  LogOut,
+  Menu,
+  ClipboardList
 } from 'lucide-react';
 import { getStatusBadgeClass, getStatusLabel, formatTimeAgo } from '@/lib/templates';
 import { Link } from 'wouter';
 import Footer from '@/components/layout/footer';
 
 export default function TechnicianDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   
   const { data: templates } = useQuery({
     queryKey: ['/api/templates']
@@ -46,6 +51,56 @@ export default function TechnicianDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Top Navigation */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+              <ClipboardCheck className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">Checklist Virtual</h1>
+              <p className="text-sm text-gray-600">Portal do Técnico</p>
+            </div>
+          </div>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <User className="h-4 w-4" />
+                {user.name}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="px-2 py-1.5 text-sm text-gray-500">
+                Logado como <strong>{user.name}</strong>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/profile" className="w-full cursor-pointer">
+                  <User className="h-4 w-4 mr-2" />
+                  Meu Perfil
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/checklists" className="w-full cursor-pointer">
+                  <ClipboardList className="h-4 w-4 mr-2" />
+                  Meus Checklists
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                onClick={logout}
+                className="text-red-600 focus:text-red-600 cursor-pointer"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto p-6">
         {/* Header */}
         <div className="text-center mb-8">
