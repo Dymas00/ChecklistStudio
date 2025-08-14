@@ -71,6 +71,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log("User found, checking password for:", email);
+      console.log("User active status:", user.active);
+      console.log("Password hash length:", user.password?.length || 0);
+      
+      if (!user.active) {
+        console.log("User is inactive:", email);
+        return res.status(401).json({ message: "Usuário inativo" });
+      }
+
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         console.log("Invalid password for:", email);
