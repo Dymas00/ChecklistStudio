@@ -268,14 +268,7 @@ export default function Reports() {
       // Try to get store code from storeCode field first, then from responses
       let storeNumber = checklist.storeCode;
       
-      // Debug log to understand the data structure
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Checklist store data:', {
-          id: checklist.id,
-          storeCode: checklist.storeCode,
-          responses: checklist.responses
-        });
-      }
+
       
       if (!storeNumber && checklist.responses) {
         // Look for storeCode field in responses first

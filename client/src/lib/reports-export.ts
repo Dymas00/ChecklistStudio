@@ -169,20 +169,28 @@ export class ReportsExporter {
   }
 
   async exportReport(data: ReportExportData): Promise<void> {
-    // Header with logo area (placeholder for company branding)
+    // Header with company branding
     this.pdf.setFillColor(41, 128, 185); // Blue header
-    this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 35, 'F');
+    this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 40, 'F');
+    
+    // Add Claro Empresas text branding
+    this.pdf.setTextColor(255, 255, 255);
+    this.pdf.setFont('helvetica', 'bold');
+    this.pdf.setFontSize(24);
+    this.pdf.text('claro', this.margin, 22);
+    this.pdf.setFontSize(16);
+    this.pdf.text('empresas', this.margin, 32);
     
     this.pdf.setTextColor(255, 255, 255); // White text
     this.pdf.setFont('helvetica', 'bold');
-    this.pdf.setFontSize(20);
-    this.pdf.text('RELATÓRIO DE AVALIAÇÕES TÉCNICAS', this.margin, 22);
+    this.pdf.setFontSize(18);
+    this.pdf.text('RELATÓRIO DE AVALIAÇÕES TÉCNICAS', this.margin + 60, 18);
     
     this.pdf.setTextColor(200, 200, 200); // Light gray text
     this.pdf.setFontSize(10);
-    this.pdf.text('Sistema de Gerenciamento de Checklists - Claro Empresas', this.margin, 30);
+    this.pdf.text('Sistema de Gerenciamento de Checklists', this.margin + 60, 28);
     
-    this.currentY = 45;
+    this.currentY = 50;
     this.pdf.setTextColor(0, 0, 0); // Reset to black
     
     // Report Info
@@ -219,7 +227,7 @@ export class ReportsExporter {
     this.addLine();
 
     // Summary Statistics with visual enhancements
-    this.addTitle('📊 RESUMO EXECUTIVO', 14);
+    this.addTitle('RESUMO EXECUTIVO', 14);
     
     // Key metrics in boxes
     const metricsY = this.currentY;
@@ -263,7 +271,7 @@ export class ReportsExporter {
     this.pdf.setFont('helvetica', 'normal');
     this.pdf.setFontSize(10);
     this.addText(`✓ Checklists Aprovados: ${data.reportData.approvedCount}`, 10);
-    this.addText(`🔄 Checklists Necessário Modificar: ${data.reportData.rejectedCount}`, 10);
+    this.addText(`⚠ Checklists Necessário Modificar: ${data.reportData.rejectedCount}`, 10);
     this.addText(`⏳ Checklists Pendentes: ${data.reportData.pendingCount}`, 10);
     
     this.currentY += 10;
@@ -271,7 +279,7 @@ export class ReportsExporter {
 
     // Template Performance
     if (data.reportData.templateStats.length > 0) {
-      this.addTitle('📋 DESEMPENHO POR TEMPLATE', 14);
+      this.addTitle('DESEMPENHO POR TEMPLATE', 14);
       
       const templateHeaders = ['Template', 'Total', 'Aprovados', 'Taxa Aprovação'];
       const templateRows = data.reportData.templateStats.map(template => [
@@ -287,7 +295,7 @@ export class ReportsExporter {
 
     // Technician Performance
     if (data.reportData.technicianPerformance.length > 0) {
-      this.addTitle('👷 DESEMPENHO DOS TÉCNICOS', 14);
+      this.addTitle('DESEMPENHO DOS TÉCNICOS', 14);
       
       const techHeaders = ['Técnico', 'Total', 'Aprovados', 'Nec. Modificar', 'Taxa', 'Avaliação'];
       const techRows = data.reportData.technicianPerformance.map(tech => [
@@ -305,7 +313,7 @@ export class ReportsExporter {
 
     // Store Performance
     if (data.reportData.storeStats.length > 0) {
-      this.addTitle('📊 DESEMPENHO POR LOJA', 14);
+      this.addTitle('DESEMPENHO POR LOJA', 14);
       
       const storeHeaders = ['Loja', 'Total', 'Aprovados', 'Nec. Modificar', 'Pendentes', 'Taxa %', 'Nota'];
       const storeRows = data.reportData.storeStats.slice(0, 12).map(store => [
@@ -333,7 +341,7 @@ export class ReportsExporter {
       this.addTable(storeHeaders, storeRows, storeColWidths);
       
       if (data.reportData.storeStats.length > 12) {
-        this.addText(`📈 Exibindo top 12 lojas com maior volume (${data.reportData.storeStats.length} lojas no total)`, 8);
+        this.addText(`Exibindo top 12 lojas com maior volume (${data.reportData.storeStats.length} lojas no total)`, 8);
       }
       
       this.currentY += 5;
@@ -343,7 +351,7 @@ export class ReportsExporter {
     // Analysis and Recommendations
     this.currentY += 10;
     this.addLine();
-    this.addTitle('💡 ANÁLISE E RECOMENDAÇÕES', 14);
+    this.addTitle('ANÁLISE E RECOMENDAÇÕES', 14);
     
     if (data.reportData.approvalRate >= 90) {
       this.addText('✓ Excelente taxa de aprovação. A equipe técnica está realizando um trabalho de alta qualidade.', 10);
@@ -372,9 +380,9 @@ export class ReportsExporter {
     
     this.pdf.setTextColor(100, 100, 100);
     this.pdf.setFont('helvetica', 'normal');
-    this.addText('📄 Este relatório foi gerado automaticamente pelo Sistema de Gerenciamento de Checklists', 8);
-    this.addText(`🕒 Relatório gerado em ${format(new Date(), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}`, 8);
-    this.addText('🏢 Claro Empresas - Gestão de Qualidade Operacional', 8);
+    this.addText('Este relatório foi gerado automaticamente pelo Sistema de Gerenciamento de Checklists', 8);
+    this.addText(`Relatório gerado em ${format(new Date(), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}`, 8);
+    this.addText('Claro Empresas - Gestão de Qualidade Operacional', 8);
   }
 
   download(filename: string) {
