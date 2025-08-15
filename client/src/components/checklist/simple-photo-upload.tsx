@@ -9,7 +9,7 @@ interface SimplePhotoUploadProps {
   required?: boolean;
   className?: string;
   label?: string;
-  initialValue?: File | string; // Can be a File or URL string for existing photos
+  initialValue?: File | string | { filename: string; originalName?: string; size?: number }; // Can be a File, URL string, or photo object
 }
 
 export default function SimplePhotoUpload({ 
@@ -35,7 +35,12 @@ export default function SimplePhotoUpload({
         setHasExistingPhoto(false);
       } else if (typeof initialValue === 'string') {
         // For existing photos stored as file paths/URLs
-        setPreviewUrl(`/uploads/${initialValue}`);
+        setPreviewUrl(`/api/uploads/${initialValue}`);
+        setHasExistingPhoto(true);
+        setSelectedFile(undefined);
+      } else if (typeof initialValue === 'object' && initialValue.filename) {
+        // For existing photos stored as objects with metadata
+        setPreviewUrl(`/api/uploads/${initialValue.filename}`);
         setHasExistingPhoto(true);
         setSelectedFile(undefined);
       }
@@ -119,7 +124,13 @@ export default function SimplePhotoUpload({
               <div className="flex items-center">
                 <ImageIcon className="w-4 h-4 text-gray-400 mr-2" />
                 <span className="text-sm font-medium text-gray-700">
-                  {selectedFile ? selectedFile.name : hasExistingPhoto ? 'Foto existente' : ''}
+                  {selectedFile 
+                    ? selectedFile.name 
+                    : hasExistingPhoto 
+                      ? (typeof initialValue === 'object' && initialValue !== null && 'originalName' in initialValue 
+                         ? initialValue.originalName : 'Foto existente')
+                      : ''
+                  }
                 </span>
               </div>
               <Button

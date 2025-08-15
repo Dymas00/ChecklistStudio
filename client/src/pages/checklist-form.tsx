@@ -57,7 +57,9 @@ export default function ChecklistForm() {
   // Load existing checklist data when editing
   useEffect(() => {
     if (isEditing && existingChecklist && Object.keys(responses).length === 0) {
-      setResponses((existingChecklist as any).responses || {});
+      const existingResponses = (existingChecklist as any).responses || {};
+      console.log('Loading existing responses:', existingResponses); // Debug log
+      setResponses(existingResponses);
     }
   }, [isEditing, existingChecklist]);
 
