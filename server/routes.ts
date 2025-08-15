@@ -64,6 +64,15 @@ function requireAdminOrCoordinator(req: any, res: any, next: any) {
   next();
 }
 
+// Middleware to check roles that can create upgrade checklists
+function requireUpgradeChecklistCreation(req: any, res: any, next: any) {
+  const allowedRoles = [UserRole.ADMINISTRADOR, UserRole.COORDENADOR, UserRole.ANALISTA_MIGRACAO];
+  if (!allowedRoles.includes(req.user.role)) {
+    return res.status(403).json({ message: "Acesso negado - permissão insuficiente para criar checklists de upgrade" });
+  }
+  next();
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Authentication routes
@@ -305,8 +314,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/checklists", requireAuth, upload.any(), async (req: any, res) => {
     try {
-
-      
       let checklistData;
       
       // Handle different content types
@@ -318,6 +325,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         checklistData = req.body;
       } else {
         return res.status(400).json({ message: "Formato de dados inválido" });
+      }
+
+      // Get template to check type
+      const template = await storage.getTemplate(checklistData.templateId);
+      if (!template) {
+        return res.status(404).json({ message: "Template não encontrado" });
+      }
+
+      // Check if user can create this type of checklist
+      if (template.type === 'upgrade') {
+        const allowedRoles = [UserRole.ADMINISTRADOR, UserRole.COORDENADOR, UserRole.ANALISTA_MIGRACAO];
+        if (!allowedRoles.includes(req.user.role)) {
+          return res.status(403).json({ message: "Acesso negado - permissão insuficiente para criar checklists de upgrade" });
+        }
       }
       
       // Process file uploads from FormData
@@ -441,7 +462,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { action, approvalComment, rating, feedback } = req.body;
 
       // Verificar se o usuário pode aprovar/reprovar
-      if (!['analista', 'coordenador', 'administrador'].includes(req.user.role)) {
+      if (!['analista', 'analista_migracao', 'coordenador', 'administrador'].includes(req.user.role)) {
         return res.status(403).json({ message: "Acesso negado - permissão insuficiente" });
       }
 

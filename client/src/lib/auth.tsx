@@ -30,8 +30,10 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isTechnician: boolean;
+  isAnalystMigration: boolean;
   isCoordinator: boolean;
   canEditTemplates: boolean;
+  canCreateUpgradeChecklists: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -106,8 +108,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAuthenticated = !!user;
   const isAdmin = user?.role === UserRole.ADMINISTRADOR;
   const isTechnician = user?.role === UserRole.TECNICO;
+  const isAnalystMigration = user?.role === UserRole.ANALISTA_MIGRACAO;
   const isCoordinator = user?.role === UserRole.COORDENADOR;
   const canEditTemplates = isAdmin || isCoordinator;
+  const canCreateUpgradeChecklists = isAdmin || isCoordinator || isAnalystMigration;
 
   // Redirect logic
   useEffect(() => {
@@ -133,8 +137,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isAuthenticated,
     isAdmin,
     isTechnician,
+    isAnalystMigration,
     isCoordinator,
     canEditTemplates,
+    canCreateUpgradeChecklists,
   };
 
   return (

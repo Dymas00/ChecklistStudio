@@ -8,6 +8,15 @@ This is a comprehensive web-based checklist system designed for Claro Empresas o
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+### August 14, 2025 - ANALISTA_MIGRACAO Role Implementation
+- Added new user role "Analista Migração" with specialized permissions
+- Can visualize/approve checklists like regular analysts
+- Specifically permitted to create upgrade checklists  
+- UI updated to show dropdown selection for "Empreiteira" field with 5 company options
+- Developer credits updated to "Dymas Gomes | Victor Matheus"
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -30,7 +39,12 @@ The backend is an **Express.js** server written in **TypeScript** with ES module
 **Development Storage**: In-memory storage for development, with automatic migration to SQLite for local persistence if configured.
 
 ### Authentication and Authorization
-**Role-Based Access Control**: Four user roles: Técnico, Analista, Coordenador, and Administrador, each with distinct permissions.
+**Role-Based Access Control**: Five user roles: Técnico, Analista, Analista Migração, Coordenador, and Administrador, each with distinct permissions.
+- **Técnico**: Can create and fill all types of checklists
+- **Analista**: Can view/approve checklists and access templates  
+- **Analista Migração**: Can view/approve checklists, access templates, and create upgrade checklists specifically
+- **Coordenador**: Full template management and checklist oversight
+- **Administrador**: Complete system administration
 **Security Features**: Password hashing (bcrypt), token-based session management, protected routes with middleware, input validation.
 
 ### Form and Template System

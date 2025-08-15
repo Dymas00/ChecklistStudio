@@ -111,6 +111,7 @@ export type LoginData = z.infer<typeof loginSchema>;
 export const UserRole = {
   TECNICO: 'tecnico',
   ANALISTA: 'analista', 
+  ANALISTA_MIGRACAO: 'analista_migracao',
   COORDENADOR: 'coordenador',
   ADMINISTRADOR: 'administrador'
 } as const;

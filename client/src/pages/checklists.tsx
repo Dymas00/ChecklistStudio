@@ -280,7 +280,7 @@ export default function Checklists() {
             </p>
           </div>
           
-          {(user?.role === 'tecnico' || user?.role === 'administrador') && (
+          {(user?.role === 'tecnico' || user?.role === 'administrador' || user?.role === 'analista_migracao') && (
             <Dialog open={isNewChecklistDialogOpen} onOpenChange={setIsNewChecklistDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
@@ -302,7 +302,14 @@ export default function Checklists() {
                   </p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    {(templates as any)?.filter((template: any) => template.active).map((template: any) => {
+                    {(templates as any)?.filter((template: any) => {
+                      if (!template.active) return false;
+                      // ANALISTA_MIGRACAO pode ver apenas templates de upgrade
+                      if (user?.role === 'analista_migracao') {
+                        return template.type === 'upgrade';
+                      }
+                      return true;
+                    }).map((template: any) => {
                       const sectionsCount = Array.isArray(template.sections) ? template.sections.length : 0;
                       const Icon = templateIcons[template.type as keyof typeof templateIcons] || Settings;
                       const colors = templateColors[template.type as keyof typeof templateColors] || templateColors.upgrade;

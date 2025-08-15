@@ -28,7 +28,7 @@ import { useToast } from '@/hooks/use-toast';
 import { formatTimeAgo } from '@/lib/templates';
 
 export default function Templates() {
-  const { user, isAdmin, canEditTemplates } = useAuth();
+  const { user, isAdmin, canEditTemplates, canCreateUpgradeChecklists } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);

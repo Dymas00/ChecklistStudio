@@ -30,7 +30,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       name: 'Dashboard',
       href: '/dashboard',
       icon: BarChart3,
-      show: ['analista', 'coordenador', 'administrador'].includes(user?.role || ''),
+      show: ['analista', 'analista_migracao', 'coordenador', 'administrador'].includes(user?.role || ''),
     },
     {
       name: 'Checklists',
@@ -48,7 +48,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       name: 'Templates',
       href: '/templates',
       icon: FileText,
-      show: ['administrador', 'coordenador', 'analista'].includes(user?.role || ''),
+      show: ['administrador', 'coordenador', 'analista', 'analista_migracao'].includes(user?.role || ''),
     },
     {
       name: 'Usuários',
