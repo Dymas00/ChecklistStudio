@@ -265,32 +265,57 @@ export default function Reports() {
     // Store statistics
     const storeStats = new Map();
     filteredChecklists.forEach((checklist: any) => {
-      const storeNumber = checklist.responses ? Object.values(checklist.responses).find((value: any) => 
-        typeof value === 'string' && /^\d+$/.test(value) && value.length >= 3
-      ) : null;
+      // Try to get store code from storeCode field first, then from responses
+      let storeNumber = checklist.storeCode;
+      
+      // Debug log to understand the data structure
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Checklist store data:', {
+          id: checklist.id,
+          storeCode: checklist.storeCode,
+          responses: checklist.responses
+        });
+      }
+      
+      if (!storeNumber && checklist.responses) {
+        // Look for storeCode field in responses first
+        storeNumber = checklist.responses.storeCode;
+        
+        // If not found, look for any numeric value that could be a store code
+        if (!storeNumber) {
+          storeNumber = Object.values(checklist.responses).find((value: any) => 
+            typeof value === 'string' && /^\d+$/.test(value) && value.length >= 3 && value.length <= 6
+          );
+        }
+      }
       
       if (storeNumber) {
-        if (!storeStats.has(storeNumber)) {
-          storeStats.set(storeNumber, {
-            storeNumber: String(storeNumber),
-            storeName: formatStoreNumber(Number(storeNumber)),
-            total: 0,
-            approved: 0,
-            rejected: 0,
-            pending: 0,
-            ratings: []
-          });
-        }
+        // Clean the store number - remove any non-digit characters and limit length
+        const cleanStoreNumber = String(storeNumber).replace(/\D/g, '').substring(0, 6);
         
-        const stats = storeStats.get(storeNumber);
-        stats.total++;
-        if (checklist.status === 'aprovado') {
-          stats.approved++;
-          if (checklist.rating) stats.ratings.push(checklist.rating);
-        } else if (checklist.status === 'rejeitado' || (checklist.rejectionCount && checklist.rejectionCount > 0)) {
-          stats.rejected++;
-        } else if (checklist.status === 'pendente') {
-          stats.pending++;
+        if (cleanStoreNumber.length >= 3) {
+          if (!storeStats.has(cleanStoreNumber)) {
+            storeStats.set(cleanStoreNumber, {
+              storeNumber: cleanStoreNumber,
+              storeName: formatStoreNumber(cleanStoreNumber),
+              total: 0,
+              approved: 0,
+              rejected: 0,
+              pending: 0,
+              ratings: []
+            });
+          }
+          
+          const stats = storeStats.get(cleanStoreNumber);
+          stats.total++;
+          if (checklist.status === 'aprovado') {
+            stats.approved++;
+            if (checklist.rating) stats.ratings.push(checklist.rating);
+          } else if (checklist.status === 'rejeitado' || (checklist.rejectionCount && checklist.rejectionCount > 0)) {
+            stats.rejected++;
+          } else if (checklist.status === 'pendente') {
+            stats.pending++;
+          }
         }
       }
     });
