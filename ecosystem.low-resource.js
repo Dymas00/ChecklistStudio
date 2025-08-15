@@ -1,6 +1,6 @@
 module.exports = {
   apps: [{
-    name: 'checklist-system',
+    name: 'ChecklistStudio',
     script: 'server/index.ts',
     interpreter: 'npx',
     interpreter_args: 'tsx',

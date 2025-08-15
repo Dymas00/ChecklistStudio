@@ -1,4 +1,4 @@
-# Resumo - Instalação Otimizada para 1CPU/2GB/8GB
+# Resumo - Instalação Otimizada ChecklistStudio para 1CPU/2GB/8GB
 
 ## 📋 O que foi otimizado:
 
@@ -72,13 +72,13 @@ Seguir o arquivo `INSTALACAO_SERVIDOR_LIMITADO.md` passo a passo.
 pm2 status
 
 # Ver logs
-pm2 logs checklist-system
+pm2 logs ChecklistStudio
 
 # Monitorar recursos
 ./monitor.sh
 
 # Reiniciar aplicação
-pm2 restart checklist-system
+pm2 restart ChecklistStudio
 
 # Limpeza manual
 /opt/cleanup-system.sh
@@ -106,25 +106,25 @@ free -h
 
 ### Aplicação não inicia:
 ```bash
-pm2 logs checklist-system --lines 50
+pm2 logs ChecklistStudio --lines 50
 ```
 
 ### Pouco espaço:
 ```bash
 /opt/cleanup-system.sh
-du -h /opt/checklist-system | head -10
+du -h /opt/ChecklistStudio | head -10
 ```
 
 ### Muita memória:
 ```bash
-pm2 restart checklist-system
+pm2 restart ChecklistStudio
 free -h
 ```
 
 ### CPU alta:
 ```bash
 htop
-sudo renice 10 $(pgrep -f checklist-system)
+sudo renice 10 $(pgrep -f ChecklistStudio)
 ```
 
 Esta configuração é perfeita para:

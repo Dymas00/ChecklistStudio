@@ -77,20 +77,20 @@ fi
 
 # 6. CRIAR DIRETÓRIOS
 log "Configurando diretórios..."
-sudo mkdir -p /opt/checklist-system/{data,logs}
-sudo chown -R $USER:$USER /opt/checklist-system
+sudo mkdir -p /opt/ChecklistStudio/{data,logs}
+sudo chown -R $USER:$USER /opt/ChecklistStudio
 
 # 7. CLONAR PROJETO (assumindo que já existe)
-if [ -d "/opt/checklist-system/.git" ]; then
+if [ -d "/opt/ChecklistStudio/.git" ]; then
     log "Projeto já existe, fazendo pull..."
-    cd /opt/checklist-system
+    cd /opt/ChecklistStudio
     git pull origin main || warn "Falha no git pull"
 else
-    log "Por favor, copie os arquivos do projeto para /opt/checklist-system/"
-    log "Ou clone manualmente: git clone [seu-repo] /opt/checklist-system"
+    log "Por favor, copie os arquivos do projeto para /opt/ChecklistStudio/"
+    log "Ou clone manualmente: git clone [seu-repo] /opt/ChecklistStudio"
 fi
 
-cd /opt/checklist-system || error "Falha ao entrar no diretório do projeto"
+cd /opt/ChecklistStudio || error "Falha ao entrar no diretório do projeto"
 
 # 8. INSTALAR DEPENDÊNCIAS
 log "Instalando dependências do Node.js..."
@@ -170,7 +170,7 @@ log "Instalando e configurando Nginx..."
 sudo apt install -y nginx
 
 # Configuração otimizada do Nginx
-sudo tee /etc/nginx/sites-available/checklist-system > /dev/null << 'EOF'
+sudo tee /etc/nginx/sites-available/ChecklistStudio > /dev/null << 'EOF'
 server {
     listen 80;
     server_name _;
@@ -206,7 +206,7 @@ server {
 EOF
 
 # Ativar site
-sudo ln -sf /etc/nginx/sites-available/checklist-system /etc/nginx/sites-enabled/
+sudo ln -sf /etc/nginx/sites-available/ChecklistStudio /etc/nginx/sites-enabled/
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl restart nginx
 sudo systemctl enable nginx
@@ -221,7 +221,7 @@ sudo ufw allow 80
 log "Criando script de limpeza automática..."
 sudo tee /opt/cleanup-system.sh > /dev/null << 'EOF'
 #!/bin/bash
-find /opt/checklist-system/logs -name "*.log" -mtime +7 -delete 2>/dev/null
+find /opt/ChecklistStudio/logs -name "*.log" -mtime +7 -delete 2>/dev/null
 sudo apt autoremove -y >/dev/null 2>&1
 sudo apt autoclean >/dev/null 2>&1
 npm cache clean --force >/dev/null 2>&1
@@ -237,18 +237,18 @@ sudo chmod +x /opt/cleanup-system.sh
 
 # 17. CRIAR SCRIPT DE MONITORAMENTO
 log "Criando script de monitoramento..."
-tee /opt/checklist-system/monitor.sh > /dev/null << 'EOF'
+tee /opt/ChecklistStudio/monitor.sh > /dev/null << 'EOF'
 #!/bin/bash
 echo "=== Status do Sistema - $(date) ==="
 echo "RAM: $(free -m | awk 'NR==2{printf "Usado: %sMB (%.1f%%)", $3, $3*100/$2 }')"
 echo "Disco: $(df -h / | awk 'NR==2{print "Usado: " $3 " (" $5 ")"}')"
 echo "CPU: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | awk -F'%' '{print "Uso: " $1 "%"}')"
-echo "Aplicação: $(pm2 list | grep checklist-system | awk '{print $2 ": " $10}')"
+echo "Aplicação: $(pm2 list | grep ChecklistStudio | awk '{print $2 ": " $10}')"
 echo "Uptime: $(uptime -p)"
 echo "=================================="
 EOF
 
-chmod +x /opt/checklist-system/monitor.sh
+chmod +x /opt/ChecklistStudio/monitor.sh
 
 # 18. CRIAR USUÁRIO ADMINISTRADOR
 log "Criando usuário administrador..."
@@ -325,15 +325,15 @@ echo "  - Limpeza manual: /opt/cleanup-system.sh"
 echo ""
 
 # Verificar se a aplicação está rodando
-if pm2 list | grep -q "checklist-system.*online"; then
+if pm2 list | grep -q "ChecklistStudio.*online"; then
     echo -e "${GREEN}✓ Aplicação está rodando!${NC}"
 else
     echo -e "${RED}✗ Aplicação não está rodando. Verifique os logs:${NC}"
-    echo "  pm2 logs checklist-system"
+    echo "  pm2 logs ChecklistStudio"
 fi
 
 echo ""
 echo "💾 Uso de Recursos Atual:"
-/opt/checklist-system/monitor.sh
+/opt/ChecklistStudio/monitor.sh
 
 log "Instalação concluída! Acesse o sistema pelo navegador."

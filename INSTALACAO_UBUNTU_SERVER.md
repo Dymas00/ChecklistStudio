@@ -1,4 +1,4 @@
-# Instalação do Sistema de Checklists - Ubuntu Server
+# Instalação do ChecklistStudio - Ubuntu Server
 
 ## Pré-requisitos
 
@@ -65,11 +65,11 @@ sudo apt install git -y
 cd /opt
 
 # Clonar o projeto (substitua pela URL do seu repositório)
-sudo git clone https://github.com/seu-usuario/checklist-system.git
-cd checklist-system
+sudo git clone https://github.com/seu-usuario/ChecklistStudio.git
+cd ChecklistStudio
 
 # Dar permissões ao usuário atual
-sudo chown -R $USER:$USER /opt/checklist-system
+sudo chown -R $USER:$USER /opt/ChecklistStudio
 ```
 
 ### 2. Instalar dependências

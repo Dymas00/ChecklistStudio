@@ -1,4 +1,4 @@
-# Instalação Otimizada - Servidor com Recursos Limitados
+# Instalação Otimizada ChecklistStudio - Servidor com Recursos Limitados
 ## Configuração: 1 CPU, 2GB RAM, 8GB HD
 
 ## Otimizações Implementadas
@@ -50,9 +50,9 @@ mkdir -p /opt/checklist-system/data
 ```bash
 # Clonar projeto
 cd /opt
-sudo git clone [seu-repositorio] checklist-system
-cd checklist-system
-sudo chown -R $USER:$USER /opt/checklist-system
+sudo git clone [seu-repositorio] ChecklistStudio
+cd ChecklistStudio
+sudo chown -R $USER:$USER /opt/ChecklistStudio
 
 # Instalar apenas dependências de produção
 npm ci --only=production
@@ -93,7 +93,7 @@ Arquivo `ecosystem.config.js`:
 ```javascript
 module.exports = {
   apps: [{
-    name: 'checklist-system',
+    name: 'ChecklistStudio',
     script: 'server/index.ts',
     interpreter: 'npx',
     interpreter_args: 'tsx',
@@ -114,9 +114,9 @@ module.exports = {
     
     // Configurações de log para economizar espaço em disco
     log_date_format: 'YYYY-MM-DD HH:mm Z',
-    error_file: '/opt/checklist-system/logs/err.log',
-    out_file: '/opt/checklist-system/logs/out.log',
-    log_file: '/opt/checklist-system/logs/combined.log',
+    error_file: '/opt/ChecklistStudio/logs/err.log',
+    out_file: '/opt/ChecklistStudio/logs/out.log',
+    log_file: '/opt/ChecklistStudio/logs/combined.log',
     max_size: '10M',
     max_files: 3
   }]
@@ -129,7 +129,7 @@ module.exports = {
 sudo apt install nginx -y
 
 # Configuração otimizada
-sudo nano /etc/nginx/sites-available/checklist-system
+sudo nano /etc/nginx/sites-available/ChecklistStudio
 ```
 
 Configuração Nginx otimizada:
@@ -199,7 +199,7 @@ http {
 ### 8. Limpeza e Otimização de Espaço
 ```bash
 # Criar diretório de logs
-mkdir -p /opt/checklist-system/logs
+mkdir -p /opt/ChecklistStudio/logs
 
 # Script de limpeza automática
 sudo nano /opt/cleanup-system.sh
@@ -210,7 +210,7 @@ Script de limpeza:
 #!/bin/bash
 
 # Limpeza de logs antigos
-find /opt/checklist-system/logs -name "*.log" -mtime +7 -delete
+find /opt/ChecklistStudio/logs -name "*.log" -mtime +7 -delete
 
 # Limpeza do sistema
 sudo apt autoremove -y
@@ -248,7 +248,7 @@ echo "=== Status do Sistema - $(date) ==="
 echo "CPU: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | awk -F'%' '{print $1}')"
 echo "RAM: $(free -m | awk 'NR==2{printf "%.1f%%", $3*100/$2 }')"
 echo "Disco: $(df -h / | awk 'NR==2{print $5}')"
-echo "Aplicação: $(pm2 list | grep checklist-system)"
+echo "Aplicação: $(pm2 list | grep ChecklistStudio)"
 ```
 
 ### 10. Inicialização Otimizada
@@ -265,7 +265,7 @@ pm2 startup
 
 # Ativar nginx
 sudo systemctl enable nginx
-sudo ln -s /etc/nginx/sites-available/checklist-system /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/ChecklistStudio /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 
