@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Star, User, Phone, Clock, CheckCircle, XCircle, MessageSquare } from 'lucide-react';
+import { Star, User, Phone, Clock, CheckCircle, XCircle, MessageSquare, Edit } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import ApprovalDialog from './approval-dialog';
 import ChecklistFilledForm from '@/components/checklist/checklist-filled-form';
+import { Link } from 'wouter';
 
 interface ChecklistDetailsDialogProps {
   checklist: any;
@@ -213,6 +214,19 @@ export default function ChecklistDetailsDialog({
               <Button variant="outline" onClick={onClose}>
                 Fechar
               </Button>
+              
+              {/* Botão de edição para técnicos */}
+              {user?.role === 'tecnico' && checklist.technicianId === user.id && (
+                <Link to={`/checklist/${checklist.templateId}?edit=${checklist.id}`}>
+                  <Button 
+                    variant="outline"
+                    className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Editar
+                  </Button>
+                </Link>
+              )}
               
               {canApprove && isPending && (
                 <>

@@ -15,7 +15,7 @@ import SignatureCanvas from '@/components/checklist/signature-canvas';
 import EvidenceItem from '@/components/checklist/evidence-item';
 import ConditionalField from '@/components/checklist/conditional-field';
 import SimplePhotoUpload from '@/components/checklist/simple-photo-upload';
-import { ArrowLeft, Check, AlertCircle, Save } from 'lucide-react';
+import { ArrowLeft, Check, AlertCircle, Save, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { validateFormResponses, TemplateSection } from '@/lib/templates';
@@ -405,6 +405,59 @@ export default function ChecklistForm() {
                     : 'Preencha todos os campos obrigatórios (*) para concluir o checklist.'
                   }
                 </p>
+                
+                {/* Status Information Banner for Editing */}
+                {isEditing && existingChecklist && (existingChecklist as any).status && (
+                  <div className={`mt-4 p-4 rounded-lg border-l-4 ${
+                    (existingChecklist as any).status === 'aprovado' 
+                      ? 'bg-green-50 border-green-400' 
+                      : (existingChecklist as any).status === 'rejeitado'
+                      ? 'bg-red-50 border-red-400'
+                      : 'bg-yellow-50 border-yellow-400'
+                  }`}>
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0">
+                        {(existingChecklist as any).status === 'aprovado' && (
+                          <CheckCircle className="w-5 h-5 text-green-400" />
+                        )}
+                        {(existingChecklist as any).status === 'rejeitado' && (
+                          <XCircle className="w-5 h-5 text-red-400" />
+                        )}
+                        {(existingChecklist as any).status === 'pendente' && (
+                          <Clock className="w-5 h-5 text-yellow-400" />
+                        )}
+                      </div>
+                      <div className="ml-3">
+                        <h3 className={`text-sm font-medium ${
+                          (existingChecklist as any).status === 'aprovado' 
+                            ? 'text-green-800' 
+                            : (existingChecklist as any).status === 'rejeitado'
+                            ? 'text-red-800'
+                            : 'text-yellow-800'
+                        }`}>
+                          Checklist {(existingChecklist as any).status === 'aprovado' ? 'Aprovado' : (existingChecklist as any).status === 'rejeitado' ? 'Rejeitado' : 'Pendente'}
+                        </h3>
+                        <p className={`text-sm mt-1 ${
+                          (existingChecklist as any).status === 'aprovado' 
+                            ? 'text-green-700' 
+                            : (existingChecklist as any).status === 'rejeitado'
+                            ? 'text-red-700'
+                            : 'text-yellow-700'
+                        }`}>
+                          {(existingChecklist as any).status === 'aprovado' && 
+                            'Este checklist já foi aprovado. Ao fazer alterações e reenviar, ele voltará ao status pendente para nova análise.'
+                          }
+                          {(existingChecklist as any).status === 'rejeitado' && 
+                            `Motivo da rejeição: ${(existingChecklist as any).approvalComment || 'Não informado'}. Faça as correções necessárias antes de reenviar.`
+                          }
+                          {(existingChecklist as any).status === 'pendente' && 
+                            'Este checklist está aguardando aprovação. Você pode fazer correções antes da análise.'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             

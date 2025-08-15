@@ -484,9 +484,20 @@ export default function Checklists() {
                             </Button>
                           )}
                           
-                          {checklist.status === 'pendente' && (
+                          {/* Técnicos podem editar qualquer checklist, outros apenas pendentes */}
+                          {(user?.role === 'tecnico' || checklist.status === 'pendente') && (
                             <Link to={`/checklist/${checklist.templateId}?edit=${checklist.id}`}>
-                              <Button variant="ghost" size="sm">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                title={
+                                  checklist.status === 'aprovado' 
+                                    ? 'Editar checklist aprovado para reenvio'
+                                    : checklist.status === 'rejeitado'
+                                    ? 'Editar checklist rejeitado para reenvio'
+                                    : 'Editar checklist'
+                                }
+                              >
                                 <Edit className="w-4 h-4" />
                               </Button>
                             </Link>
