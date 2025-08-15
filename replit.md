@@ -21,6 +21,9 @@ Preferred communication style: Simple, everyday language.
 - Updated store list to include all 4,172 stores from the complete JSON file
 - Added image zoom modal functionality for better photo visualization in checklist details
 - Fixed template editing bug where specific templates couldn't be edited properly
+- Created optimized installation for low-resource servers (1 CPU, 2GB RAM, 8GB HD)
+- Developed automated installation script with SQLite optimization
+- Added system monitoring and automatic cleanup scripts
 
 ## System Architecture
 
