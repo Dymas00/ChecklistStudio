@@ -128,7 +128,7 @@ export default function FieldPalette({ onAddField, compact = false }: FieldPalet
           Clique em um tipo para adicioná-lo à seção ativa
         </p>
       </CardHeader>
-      <CardContent className="pt-0 max-h-96 overflow-y-auto">
+      <CardContent className="pt-0">
         <div className="space-y-2">
           {fieldTypes.map((fieldType) => {
             const Icon = fieldType.icon;

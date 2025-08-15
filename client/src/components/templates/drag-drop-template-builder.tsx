@@ -541,9 +541,9 @@ export default function DragDropTemplateBuilder({
   const isValid = template.name && template.type && template.sections.length > 0;
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-screen">
       {/* Main Content */}
-      <div className="flex-1 p-6 space-y-6">
+      <div className="flex-1 p-6 space-y-6 overflow-y-auto">
         {/* Header */}
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -696,8 +696,8 @@ export default function DragDropTemplateBuilder({
       </div>
 
       {/* Sidebar with Field Palette */}
-      <div className="w-96 border-l border-gray-200 bg-gray-50 overflow-y-auto max-h-screen">
-        <div className="p-4">
+      <div className="w-96 border-l border-gray-200 bg-gray-50 h-screen flex flex-col">
+        <div className="p-4 flex-1 overflow-y-auto">
           <FieldPalette onAddField={addFieldFromPalette} />
           
           {activeSection && (
