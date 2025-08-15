@@ -700,7 +700,7 @@ export default function Reports() {
                   <tbody>
                     {reportData.storeStats.slice(0, 20).map((store, index) => (
                       <tr key={index} className="border-b">
-                        <td className="py-2 font-medium">{store.storeNumber}</td>
+                        <td className="py-2 font-medium">{store.storeName}</td>
                         <td className="text-center py-2">{store.total}</td>
                         <td className="text-center py-2 text-green-600">{store.approved}</td>
                         <td className="text-center py-2 text-red-600">{store.rejected}</td>
