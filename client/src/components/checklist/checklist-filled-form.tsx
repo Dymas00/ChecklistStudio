@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,17 +8,28 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatStoreNumber } from '@shared/stores';
+import ImageZoomModal from '@/components/ui/image-zoom-modal';
 
 interface ChecklistFilledFormProps {
   checklist: any;
 }
 
 export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormProps) {
+  const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
+  
   // Fetch template data to render the original form structure
   const { data: templates } = useQuery({
     queryKey: ['/api/templates'],
     staleTime: 10 * 60 * 1000,
   });
+
+  const openImageModal = (src: string, alt: string) => {
+    setSelectedImage({ src, alt });
+  };
+
+  const closeImageModal = () => {
+    setSelectedImage(null);
+  };
 
   if (!checklist) {
     return (
@@ -50,7 +62,7 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                   </Label>
                   <Input
                     value={key.toLowerCase().includes('loja') || key.toLowerCase().includes('store')
-                      ? formatStoreNumber(value)
+                      ? formatStoreNumber(value as string | number)
                       : (typeof value === 'object' && value !== null 
                         ? JSON.stringify(value) 
                         : String(value || '')
@@ -85,8 +97,8 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                         <img
                           src={`/uploads/${filename}`}
                           alt={`Foto ${index + 1}`}
-                          className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                          onClick={() => window.open(`/uploads/${filename}`, '_blank')}
+                          className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow hover:scale-105"
+                          onClick={() => openImageModal(`/uploads/${filename}`, `Foto ${index + 1}`)}
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                             const errorDiv = document.createElement('div');
@@ -194,8 +206,8 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                             <img
                               src={`/uploads/${typeof response === 'object' && response !== null ? response.filename : response}`}
                               alt="Foto enviada pelo técnico"
-                              className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                              onClick={() => window.open(`/uploads/${typeof response === 'object' && response !== null ? response.filename : response}`, '_blank')}
+                              className="max-w-full max-h-96 object-contain rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow hover:scale-105"
+                              onClick={() => openImageModal(`/uploads/${typeof response === 'object' && response !== null ? response.filename : response}`, "Foto enviada pelo técnico")}
                             />
                             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                               📷 Foto anexada
@@ -255,7 +267,7 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                                     errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar evidência</p>`;
                                     e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
                                   }}
-                                  onClick={() => window.open(`/uploads/${response.photo}`, '_blank')}
+                                  onClick={() => openImageModal(`/uploads/${response.photo}`, "Evidência fotográfica")}
                                 />
                                 <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                                   📷 Evidência fotográfica anexada
@@ -286,7 +298,7 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                                       errorDiv.innerHTML = `<p class="text-red-600 text-sm">❌ Erro ao carregar evidência</p>`;
                                       e.currentTarget.parentNode?.insertBefore(errorDiv, e.currentTarget);
                                     }}
-                                    onClick={() => window.open(`/uploads/${photoFilename}`, '_blank')}
+                                    onClick={() => openImageModal(`/uploads/${photoFilename}`, "Evidência fotográfica")}
                                   />
                                   <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                                     📷 Evidência fotográfica anexada
@@ -359,8 +371,8 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                       <img
                         src={`/uploads/${filename}`}
                         alt={`Foto ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                        onClick={() => window.open(`/uploads/${filename}`, '_blank')}
+                        className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow hover:scale-105"
+                        onClick={() => openImageModal(`/uploads/${filename}`, `Foto ${index + 1}`)}
                         onError={(e) => {
                           const target = e.currentTarget as HTMLImageElement;
                           target.style.display = 'none';
@@ -381,6 +393,16 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
           </Card>
         )}
       </div>
+      
+      {/* Image Zoom Modal */}
+      {selectedImage && (
+        <ImageZoomModal
+          src={selectedImage.src}
+          alt={selectedImage.alt}
+          isOpen={!!selectedImage}
+          onClose={closeImageModal}
+        />
+      )}
     </div>
   );
 }
