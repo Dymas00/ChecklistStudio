@@ -256,7 +256,9 @@ export default function Reports() {
         date: format(date, 'dd/MM', { locale: ptBR }),
         total: dayChecklists.length,
         approved: dayChecklists.filter((c: any) => c.status === 'aprovado').length,
-        rejected: dayChecklists.filter((c: any) => c.status === 'rejeitado').length
+        rejected: dayChecklists.filter((c: any) => 
+          c.status === 'rejeitado' || (c.rejectionCount && c.rejectionCount > 0)
+        ).length
       });
     }
 
