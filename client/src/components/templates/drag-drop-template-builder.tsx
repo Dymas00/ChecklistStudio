@@ -204,9 +204,11 @@ interface SortableSectionProps {
   onUpdate: (section: TemplateSection) => void;
   onRemove: () => void;
   onDuplicate: () => void;
+  isActive?: boolean;
+  onSetActive?: () => void;
 }
 
-function SortableSection({ section, onUpdate, onRemove, onDuplicate }: SortableSectionProps) {
+function SortableSection({ section, onUpdate, onRemove, onDuplicate, isActive, onSetActive }: SortableSectionProps) {
   const {
     attributes,
     listeners,
@@ -283,7 +285,14 @@ function SortableSection({ section, onUpdate, onRemove, onDuplicate }: SortableS
       style={style}
       className={`${isDragging ? 'opacity-50' : ''}`}
     >
-      <Card className="border-2 border-dashed border-blue-200 bg-blue-50/30">
+      <Card 
+        className={`border-2 border-dashed transition-all cursor-pointer ${
+          isActive 
+            ? 'border-blue-500 bg-blue-100/50 shadow-md' 
+            : 'border-blue-200 bg-blue-50/30 hover:border-blue-300'
+        }`}
+        onClick={onSetActive}
+      >
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -291,9 +300,15 @@ function SortableSection({ section, onUpdate, onRemove, onDuplicate }: SortableS
                 {...attributes}
                 {...listeners}
                 className="cursor-grab active:cursor-grabbing p-2 hover:bg-blue-100 rounded-lg"
+                onClick={(e) => e.stopPropagation()}
               >
                 <Move className="w-5 h-5 text-blue-600" />
               </div>
+              {isActive && (
+                <Badge className="bg-blue-500 text-white">
+                  Seção Ativa
+                </Badge>
+              )}
               <div className="flex-1">
                 <Input
                   value={section.title}
@@ -391,8 +406,19 @@ export default function DragDropTemplateBuilder({
   useEffect(() => {
     if (initialData) {
       setTemplate(initialData);
+      // Auto-select first section if available
+      if (initialData.sections && initialData.sections.length > 0 && !activeSection) {
+        setActiveSection(initialData.sections[0].id);
+      }
     }
   }, [initialData]);
+
+  // Auto-select first section when sections are added but none is active
+  useEffect(() => {
+    if (template.sections.length > 0 && !activeSection) {
+      setActiveSection(template.sections[0].id);
+    }
+  }, [template.sections.length, activeSection]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -439,8 +465,10 @@ export default function DragDropTemplateBuilder({
     if (activeSection && template.sections.find(s => s.id === activeSection)) {
       addFieldToSection(activeSection, fieldType);
     } else if (template.sections.length > 0) {
-      // Add to the first section if no active section
-      addFieldToSection(template.sections[0].id, fieldType);
+      // Auto-select first section and add field there
+      const firstSection = template.sections[0];
+      setActiveSection(firstSection.id);
+      addFieldToSection(firstSection.id, fieldType);
     }
   };
 
@@ -456,6 +484,12 @@ export default function DragDropTemplateBuilder({
       ...prev,
       sections: prev.sections.filter(s => s.id !== sectionId)
     }));
+    
+    // If we're removing the active section, clear activeSection
+    if (activeSection === sectionId) {
+      const remainingSections = template.sections.filter(s => s.id !== sectionId);
+      setActiveSection(remainingSections.length > 0 ? remainingSections[0].id : null);
+    }
   };
 
   const duplicateSection = (sectionId: number) => {
@@ -595,6 +629,8 @@ export default function DragDropTemplateBuilder({
                 <SortableSection
                   key={section.id}
                   section={section}
+                  isActive={activeSection === section.id}
+                  onSetActive={() => setActiveSection(section.id)}
                   onUpdate={(updatedSection) => updateSection(section.id, updatedSection)}
                   onRemove={() => removeSection(section.id)}
                   onDuplicate={() => duplicateSection(section.id)}
@@ -674,6 +710,17 @@ export default function DragDropTemplateBuilder({
               </p>
               <p className="text-xs text-blue-500 mt-1">
                 Clique em um tipo de campo para adicionar à esta seção
+              </p>
+            </div>
+          )}
+
+          {!activeSection && template.sections.length > 0 && (
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm text-yellow-800 font-medium mb-1">
+                Selecione uma Seção
+              </p>
+              <p className="text-xs text-yellow-600">
+                Clique em uma seção para torná-la ativa antes de adicionar campos
               </p>
             </div>
           )}
