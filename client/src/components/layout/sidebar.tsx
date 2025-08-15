@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import claroLogo from '@/assets/claro-empresas-logo-final.png';
 import { Link, useLocation } from 'wouter';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 function SidebarContent({ onClose }: { onClose?: () => void }) {
   const { user, logout, isAdmin } = useAuth();
@@ -65,12 +66,13 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
   if (!user) return null;
 
   return (
-    <div className="flex flex-col h-full w-64 bg-white">
+    <div className="flex flex-col h-full w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
       {/* Menu Title */}
-      <div className="flex justify-center py-4 border-b border-gray-200 w-full">
-        <h1 className="text-lg font-semibold text-gray-900">
+      <div className="flex items-center justify-between py-4 px-4 border-b border-gray-200 dark:border-gray-700 w-full">
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Checklist Virtual
         </h1>
+        <ThemeToggle />
       </div>
 
       {/* Navigation Menu */}
@@ -88,7 +90,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                   className={`w-full justify-start px-4 py-3 text-sm font-medium transition-colors ${
                     active
                       ? 'text-primary bg-primary/10 hover:bg-primary/15'
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
                   onClick={handleLinkClick}
                 >
@@ -101,16 +103,16 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </nav>
 
       {/* User Profile Section */}
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t border-gray-200 dark:border-gray-700 p-4">
         <div className="flex items-center mb-4">
-          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-3">
-            <User className="w-5 h-5 text-gray-600" />
+          <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mr-3">
+            <User className="w-5 h-5 text-gray-600 dark:text-gray-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
               {user.name}
             </p>
-            <p className="text-xs text-gray-600 truncate">
+            <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
               {user.role === 'administrador' ? 'Administrador' :
                user.role === 'coordenador' ? 'Coordenador' :
                user.role === 'analista' ? 'Analista' : 'Técnico'}
@@ -127,7 +129,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
             className={`w-full justify-start mb-1 ${
               isActive('/profile')
                 ? 'bg-primary/10 text-primary font-medium'
-                : 'text-gray-600 hover:text-primary hover:bg-primary/5'
+                : 'text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-primary/5'
             }`}
           >
             <User className="w-4 h-4 mr-2" />
@@ -142,7 +144,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
             logout();
             handleLinkClick();
           }}
-          className="w-full justify-start text-gray-600 hover:text-red-600 hover:bg-red-50"
+          className="w-full justify-start text-gray-600 dark:text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
         >
           <LogOut className="w-4 h-4 mr-2" />
           Sair
@@ -151,8 +153,8 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         <Separator className="my-3" />
         
         <div className="text-center">
-          <p className="text-xs text-gray-400 mb-1">Desenvolvido por</p>
-          <p className="text-xs font-medium text-gray-500">
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">Desenvolvido por</p>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
             Dymas Gomes | Victor Matheus
           </p>
         </div>
@@ -170,12 +172,12 @@ export function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-64 lg:overflow-y-auto lg:bg-white lg:shadow-lg">
+      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-64 lg:overflow-y-auto lg:bg-white dark:bg-gray-900 lg:shadow-lg">
         <SidebarContent />
       </div>
 
       {/* Mobile Header with Menu Button */}
-      <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:hidden">
+      <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:hidden">
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="sm" className="lg:hidden">
@@ -193,7 +195,7 @@ export function Sidebar() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-3">
               <ClipboardCheck className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-lg font-semibold text-gray-900">
+            <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Checklist Virtual
             </h1>
           </div>
