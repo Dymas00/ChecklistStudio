@@ -150,8 +150,9 @@ cp ecosystem.low-resource.cjs ecosystem.config.cjs 2>/dev/null || {
 module.exports = {
   apps: [{
     name: 'ChecklistStudio',
-    script: 'dist/index.js',
-    interpreter: 'node',
+    script: 'server/production.ts',
+    interpreter: 'npx',
+    interpreter_args: 'tsx',
     instances: 1,
     autorestart: true,
     watch: false,

@@ -10,7 +10,7 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### August 15, 2025 - Enhanced Role-Based Permissions & PDF Reports
+### August 15, 2025 - Production Deployment & Enhanced Features
 - Implemented differentiated checklist creation permissions:
   - Técnicos: Can create ALL types of checklists (including upgrades)
   - Analistas Migração: Restricted to create ONLY upgrade checklists
@@ -24,6 +24,9 @@ Preferred communication style: Simple, everyday language.
 - Created optimized installation for low-resource servers (1 CPU, 2GB RAM, 8GB HD)
 - Developed automated installation script with SQLite optimization
 - Added system monitoring and automatic cleanup scripts
+- Fixed PM2 production deployment issues with dedicated production.ts server
+- Resolved Vite dependency conflicts in production environment
+- Created troubleshooting tools and update scripts for server management
 
 ## System Architecture
 

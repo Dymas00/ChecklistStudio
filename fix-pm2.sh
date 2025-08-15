@@ -19,10 +19,10 @@ pm2 flush
 echo -e "\n5. Verificando porta 3000:"
 sudo netstat -tlnp | grep :3000 || echo "Porta 3000 livre"
 
-echo -e "\n6. Verificando build:"
+echo -e "\n6. Verificando build frontend:"
 cd /opt/ChecklistStudio
-if [ ! -f "dist/index.js" ]; then
-    echo "Build não encontrado, executando build..."
+if [ ! -d "dist/public" ]; then
+    echo "Build frontend não encontrado, executando build..."
     npm run build
 fi
 

@@ -80,7 +80,8 @@ sudo systemctl status nginx
 ## Problemas Comuns
 
 1. **Processo não inicia**: Verificar se o arquivo ecosystem.config.cjs existe
-2. **Porta ocupada**: Matar processo na porta 3000
-3. **Permissões**: Verificar se usuário tem acesso aos arquivos
-4. **Memória**: Verificar se não está sem RAM (máximo 400MB por processo)
-5. **Dependências**: Executar `npm install` se algo estiver faltando
+2. **Porta ocupada**: Matar processo na porta 3000  
+3. **Build faltando**: Executar `npm run build` para gerar dist/public
+4. **Permissões**: Verificar se usuário tem acesso aos arquivos
+5. **Memória**: Verificar se não está sem RAM (máximo 400MB por processo)
+6. **Dependências**: Verificar se tsx está disponível via npx
