@@ -41,15 +41,15 @@ Teste se está funcionando:
 
 ```bash
 # Teste da API
-curl http://localhost:3000/api/auth/me
+curl http://18.228.156.152:3000/api/auth/me
 
 # Teste do frontend
-curl http://localhost:3000
+curl http://18.228.156.152:3000
 ```
 
 ## Acesso
 
-- **URL**: http://IP_DO_SERVIDOR
+- **URL**: http://18.228.156.152
 - **Login**: admin@empresa.com
 - **Senha**: admin123
 

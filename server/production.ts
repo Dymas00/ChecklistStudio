@@ -48,7 +48,7 @@ const startServer = async () => {
 
   server.listen(PORT, '0.0.0.0', () => {
     console.log(`[express] serving on port ${PORT}`);
-    console.log(`[production] Frontend available at: http://localhost:${PORT}`);
+    console.log(`[production] Frontend available at: http://18.228.156.152:${PORT}`);
   });
 };
 

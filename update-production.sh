@@ -31,6 +31,6 @@ pm2 logs ChecklistStudio --lines 5
 
 # Teste de conectividade
 echo "7. Testando conectividade..."
-curl -I http://localhost:3000 2>/dev/null && echo "✓ Aplicação respondendo!" || echo "✗ Problemas de conectividade"
+curl -I http://18.228.156.152:3000 2>/dev/null && echo "✓ Aplicação respondendo!" || echo "✗ Problemas de conectividade"
 
 echo "=== Atualização completa ==="

@@ -20,15 +20,15 @@ ls -la dist/public/ | head -5
 
 echo ""
 echo "5. Testando conectividade..."
-curl -v http://localhost:3000 2>&1 | head -10
+curl -v http://18.228.156.152:3000 2>&1 | head -10
 
 echo ""
 echo "6. Verificando conteúdo do index.html..."
-curl -s http://localhost:3000 | head -15
+curl -s http://18.228.156.152:3000 | head -15
 
 echo ""
 echo "7. Testando asset específico..."
-curl -I http://localhost:3000/assets/index-Cv3lstv-.js
+curl -I http://18.228.156.152:3000/assets/index-Cv3lstv-.js
 
 echo ""
 echo "=== Fim do Diagnóstico ==="

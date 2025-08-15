@@ -44,17 +44,17 @@ pm2 status
 
 # Teste de conectividade
 echo "7. Testando servidor..."
-curl -I http://localhost:3000 2>/dev/null && echo "✓ Servidor respondendo!" || echo "✗ Problemas de conectividade"
+curl -I http://18.228.156.152:3000 2>/dev/null && echo "✓ Servidor respondendo!" || echo "✗ Problemas de conectividade"
 
 echo ""
 echo "8. Testando se assets estão disponíveis..."
-curl -I http://localhost:3000/assets/index-Cv3lstv-.js 2>/dev/null && echo "✓ JavaScript disponível!" || echo "✗ Assets não encontrados"
+curl -I http://18.228.156.152:3000/assets/index-Cv3lstv-.js 2>/dev/null && echo "✓ JavaScript disponível!" || echo "✗ Assets não encontrados"
 
 echo ""
 echo "9. Testando se HTML está sendo servido..."
-curl -s http://localhost:3000 | grep -o '<title>.*</title>' || echo "✗ HTML não está sendo servido"
+curl -s http://18.228.156.152:3000 | grep -o '<title>.*</title>' || echo "✗ HTML não está sendo servido"
 
 echo ""
 echo "=== Correção finalizada ==="
-echo "Acesse: http://IP_DO_SERVIDOR"
+echo "Acesse: http://18.228.156.152"
 echo "Login: admin@empresa.com / admin123"
