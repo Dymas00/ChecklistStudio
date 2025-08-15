@@ -53,7 +53,23 @@ export class PDFExporter {
     this.checkPageBreak(size + 5);
     this.pdf.setFontSize(size);
     this.pdf.setFont('helvetica', 'bold');
-    this.pdf.text(text, this.margin, this.currentY);
+    
+    // Clean title from encoding issues
+    const cleanTitle = text
+      .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII
+      .replace(/Ï/g, '')
+      .replace(/%/g, '')
+      .replace(/Ã/g, 'A')
+      .replace(/[àáâãäåæ]/gi, 'A')
+      .replace(/[èéêë]/gi, 'E') 
+      .replace(/[ìíîï]/gi, 'I')
+      .replace(/[òóôõö]/gi, 'O')
+      .replace(/[ùúûü]/gi, 'U')
+      .replace(/[ñ]/gi, 'N')
+      .replace(/[ç]/gi, 'C')
+      .trim();
+      
+    this.pdf.text(cleanTitle, this.margin, this.currentY);
     this.currentY += size + 5;
   }
 
@@ -175,8 +191,9 @@ export class PDFExporter {
       return translations[sectionName];
     }
 
-    // Remover caracteres especiais e formatar
+    // Remover caracteres especiais e formatar - mais agressivo
     return sectionName
+      .replace(/[^\x00-\x7F]/g, '') // Remove all non-ASCII first
       .replace(/[àáâãäåæ]/gi, 'A')
       .replace(/[èéêë]/gi, 'E')
       .replace(/[ìíîï]/gi, 'I')
@@ -185,8 +202,11 @@ export class PDFExporter {
       .replace(/[ñ]/gi, 'N')
       .replace(/[ç]/gi, 'C')
       .replace(/[ý]/gi, 'Y')
+      .replace(/Ã/g, 'A')   // Common encoding issues
+      .replace(/Ï/g, '')    // Remove problematic Ï
+      .replace(/%/g, '')    // Remove % symbols  
       .replace(/_/g, ' ')
-      .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special chars
+      .replace(/[^a-zA-Z0-9\s]/g, '') // Remove remaining special chars
       .toUpperCase()
       .trim();
   }
@@ -380,7 +400,7 @@ export class PDFExporter {
   // Enhanced method to render sections matching template layout
   private async renderTemplateSections(sections: any[], responses: Record<string, any>): Promise<void> {
     for (const section of sections) {
-      this.currentY += 15; // Extra space between sections
+      this.currentY += 8; // Reduced space between sections
       
       // Professional section header with gradient-like effect
       this.checkPageBreak(30);
@@ -398,11 +418,22 @@ export class PDFExporter {
       this.pdf.setFontSize(11); // Reduced font size
       this.pdf.setFont('helvetica', 'bold');
       
-      // Use translated section name with icon
+      // Use translated section name with icon - clean encoding
       const translatedTitle = this.translateSectionName(section.title || 'SECAO');
-      this.pdf.text(`● ${translatedTitle}`, this.margin + 8, this.currentY + 13);
+      // Remove any remaining special characters that might cause encoding issues
+      const cleanTitle = translatedTitle
+        .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII characters
+        .replace(/[àáâãäåæ]/gi, 'A')
+        .replace(/[èéêë]/gi, 'E') 
+        .replace(/[ìíîï]/gi, 'I')
+        .replace(/[òóôõö]/gi, 'O')
+        .replace(/[ùúûü]/gi, 'U')
+        .replace(/[ñ]/gi, 'N')
+        .replace(/[ç]/gi, 'C')
+        .trim();
+      this.pdf.text(`${cleanTitle}`, this.margin + 8, this.currentY + 13);
       
-      this.currentY += 25;
+      this.currentY += 18; // Reduced section header height
       this.pdf.setTextColor(0, 0, 0); // Reset to black
       
       if (section.fields && Array.isArray(section.fields)) {
@@ -414,7 +445,7 @@ export class PDFExporter {
         this.addText('Seção sem campos configurados', 10);
       }
       
-      this.currentY += 5; // Space after section
+      this.currentY += 3; // Reduced space after section
     }
   }
 
@@ -450,8 +481,9 @@ export class PDFExporter {
     this.pdf.setFont('helvetica', 'bold');
     this.pdf.setTextColor(80, 80, 80);
     
-    // Clean field label of special characters
+    // Clean field label of special characters completely
     const cleanLabel = field.label
+      .replace(/[^\x00-\x7F]/g, '') // Remove all non-ASCII first
       .replace(/[àáâãäåæ]/gi, 'a')
       .replace(/[èéêë]/gi, 'e')
       .replace(/[ìíîï]/gi, 'i')
@@ -459,7 +491,11 @@ export class PDFExporter {
       .replace(/[ùúûü]/gi, 'u')
       .replace(/[ñ]/gi, 'n')
       .replace(/[ç]/gi, 'c')
-      .replace(/[ý]/gi, 'y');
+      .replace(/[ý]/gi, 'y')
+      .replace(/Ã/g, 'A')  // Common encoding issue
+      .replace(/Ï/g, '')   // Remove problematic characters
+      .replace(/%/g, '')   // Remove % symbols
+      .trim();
       
     const labelText = `${cleanLabel}${field.required ? ' *' : ''}`;
     this.pdf.text(labelText, this.margin + 8, this.currentY);
@@ -541,7 +577,16 @@ export class PDFExporter {
       this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 8);
       
       this.pdf.setTextColor(50, 50, 50);
-      this.pdf.text(String(response), this.margin + 12, this.currentY + 3); // Adjusted position
+      
+      // Clean response text from encoding issues
+      const cleanResponse = String(response)
+        .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII
+        .replace(/Ï/g, '')
+        .replace(/%/g, '')
+        .replace(/Ã/g, 'A')
+        .trim();
+      
+      this.pdf.text(cleanResponse, this.margin + 12, this.currentY + 3); // Adjusted position
     } else {
       this.pdf.setFillColor(252, 252, 252);
       this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 8, 'F'); // Reduced height
@@ -586,7 +631,7 @@ export class PDFExporter {
         const radioSymbol = isSelected ? '●' : '○';
         this.pdf.text(`${radioSymbol} ${option}`, this.margin + 15, this.currentY + 3); // Adjusted position
         
-        this.currentY += 10; // Smaller spacing
+        this.currentY += 8; // More compact spacing
       });
     } else if (response) {
       // Single selected option - smaller
@@ -595,7 +640,7 @@ export class PDFExporter {
       this.pdf.setTextColor(255, 255, 255);
       this.pdf.setFont('helvetica', 'bold');
       this.pdf.text(`● ${response}`, this.margin + 15, this.currentY + 3);
-      this.currentY += 10;
+      this.currentY += 8;
     }
     
     if (!response && (!field.options || field.options.length === 0)) {
@@ -604,7 +649,7 @@ export class PDFExporter {
       this.pdf.setTextColor(150, 150, 150);
       this.pdf.setFont('helvetica', 'italic');
       this.pdf.text('○ Nenhuma opcao selecionada', this.margin + 15, this.currentY + 3);
-      this.currentY += 10;
+      this.currentY += 8;
     }
     
     this.pdf.setTextColor(0, 0, 0);
