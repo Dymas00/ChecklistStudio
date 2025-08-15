@@ -1,0 +1,91 @@
+cd /opt/ChecklistStudio
+./update-production.sh
+=== Atualizando ChecklistStudio para Produção ===
+1. Parando aplicação...
+[PM2] Applying action deleteProcessId on app [ChecklistStudio](ids: [ 0 ])
+[PM2] [ChecklistStudio](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+2. Atualizando código...
+From https://github.com/Dymas00/ChecklistStudio
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+3. Verificando build...
+4. Atualizando configuração PM2...
+5. Iniciando aplicação...
+[PM2][WARN] Applications ChecklistStudio not running, starting...
+[PM2] App [ChecklistStudio] launched (1 instances)
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ ChecklistStudio    │ fork     │ 0    │ online    │ 0%       │ 19.1mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /home/ubuntu/.pm2/dump.pm2
+6. Verificando status...
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ ChecklistStudio    │ fork     │ 0    │ online    │ 0%       │ 88.1mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[TAILING] Tailing last 5 lines for [ChecklistStudio] process (change the value with --lines option)
+/opt/ChecklistStudio/logs/err-0.log last 5 lines:
+0|Checklis | 2025-08-15 22:43 +00:00: designed for a production environment, as it will leak
+0|Checklis | 2025-08-15 22:43 +00:00: memory, and will not scale past a single process.
+0|Checklis | 2025-08-15 22:45 +00:00: Warning: connect.session() MemoryStore is not
+0|Checklis | 2025-08-15 22:45 +00:00: designed for a production environment, as it will leak
+0|Checklis | 2025-08-15 22:45 +00:00: memory, and will not scale past a single process.
+
+/opt/ChecklistStudio/logs/out-0.log last 5 lines:
+0|Checklis | 2025-08-15 22:43 +00:00: [express] serving on port 3000
+0|Checklis | 2025-08-15 22:43 +00:00: [express] serving on port 3000
+0|Checklis | 2025-08-15 22:45 +00:00: [express] serving on port 3000
+
+^[[A^[[A
+
+^C
+ubuntu@ip-172-31-4-15:/opt/ChecklistStudio$ ./update-production.sh
+=== Atualizando ChecklistStudio para Produção ===
+1. Parando aplicação...
+[PM2] Applying action deleteProcessId on app [ChecklistStudio](ids: [ 0 ])
+[PM2] [ChecklistStudio](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+2. Atualizando código...
+From https://github.com/Dymas00/ChecklistStudio
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+3. Verificando build...
+4. Atualizando configuração PM2...
+5. Iniciando aplicação...
+[PM2][WARN] Applications ChecklistStudio not running, starting...
+[PM2] App [ChecklistStudio] launched (1 instances)
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ ChecklistStudio    │ fork     │ 0    │ online    │ 0%       │ 25.3mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /home/ubuntu/.pm2/dump.pm2
+6. Verificando status...
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ ChecklistStudio    │ fork     │ 0    │ online    │ 0%       │ 85.6mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[TAILING] Tailing last 5 lines for [ChecklistStudio] process (change the value with --lines option)
+/opt/ChecklistStudio/logs/err-0.log last 5 lines:
+0|Checklis | 2025-08-15 22:45 +00:00: designed for a production environment, as it will leak
+0|Checklis | 2025-08-15 22:45 +00:00: memory, and will not scale past a single process.
+0|Checklis | 2025-08-15 22:48 +00:00: Warning: connect.session() MemoryStore is not
+0|Checklis | 2025-08-15 22:48 +00:00: designed for a production environment, as it will leak
+0|Checklis | 2025-08-15 22:48 +00:00: memory, and will not scale past a single process.
+
+/opt/ChecklistStudio/logs/out-0.log last 5 lines:
+0|Checklis | 2025-08-15 22:43 +00:00: [express] serving on port 3000
+0|Checklis | 2025-08-15 22:43 +00:00: [express] serving on port 3000
+0|Checklis | 2025-08-15 22:45 +00:00: [express] serving on port 3000
+0|Checklis | 2025-08-15 22:48 +00:00: [express] serving on port 3000
+

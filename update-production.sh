@@ -10,12 +10,9 @@ pm2 delete ChecklistStudio 2>/dev/null || true
 echo "2. Atualizando código..."
 git pull origin main
 
-# Verificar e executar build se necessário
-echo "3. Verificando build..."
-if [ ! -d "dist/public" ]; then
-    echo "Executando build do frontend..."
-    npm run build
-fi
+# Executar build do frontend
+echo "3. Executando build do frontend..."
+npm run build
 
 # Atualizar configuração do PM2
 echo "4. Atualizando configuração PM2..."
