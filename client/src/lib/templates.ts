@@ -87,7 +87,8 @@ export function validateFormResponses(template: Template, responses: Record<stri
           } else if (value === 'sim') {
             // Check if photo is provided for SIM answers
             const photoField = `${field.id}_photo`;
-            if (!responses[photoField]) {
+            const photoValue = responses[photoField];
+            if (!photoValue || (!(photoValue instanceof File) && !(typeof photoValue === 'object' && photoValue?.filename))) {
               errors.push(`${field.label} - foto comprobatória é obrigatória para resposta SIM`);
             }
           } else if (value === 'nao') {
@@ -104,7 +105,7 @@ export function validateFormResponses(template: Template, responses: Record<stri
           }
           
           // Special validation for file fields
-          if (field.type === 'photo' && !(value instanceof File)) {
+          if (field.type === 'photo' && !(value instanceof File) && !(typeof value === 'object' && value?.filename)) {
             errors.push(`${field.label} - arquivo de imagem é obrigatório`);
           }
           

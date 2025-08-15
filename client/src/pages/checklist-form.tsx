@@ -61,7 +61,7 @@ export default function ChecklistForm() {
       console.log('Loading existing responses:', existingResponses); // Debug log
       setResponses(existingResponses);
     }
-  }, [isEditing, existingChecklist]);
+  }, [isEditing, existingChecklist, responses]);
 
   const submitMutation = useMutation({
     mutationFn: async (data: FormData | any) => {
@@ -151,6 +151,7 @@ export default function ChecklistForm() {
     // Validate form
     const errors = validateFormResponses((template as any), responses);
     if (errors.length > 0) {
+      console.log('Validation errors:', errors); // Debug log
       toast({
         title: "Campos obrigatórios",
         description: errors.slice(0, 3).join(', ') + (errors.length > 3 ? '...' : ''),
@@ -241,7 +242,6 @@ export default function ChecklistForm() {
             <StoreSelector
               value={value}
               onValueChange={(val) => handleInputChange(field.id, val)}
-              required={field.required}
               placeholder="Selecione uma loja"
             />
           );
@@ -252,7 +252,6 @@ export default function ChecklistForm() {
             type={field.type}
             value={value}
             onChange={(e) => handleInputChange(field.id, e.target.value)}
-            required={field.required}
             className="w-full"
             placeholder={field.label}
           />
@@ -263,7 +262,6 @@ export default function ChecklistForm() {
           <Textarea
             value={value}
             onChange={(e) => handleInputChange(field.id, e.target.value)}
-            required={field.required}
             rows={3}
             className="w-full"
             placeholder="Digite suas observações..."
@@ -272,7 +270,7 @@ export default function ChecklistForm() {
 
       case 'select':
         return (
-          <Select onValueChange={(val) => handleInputChange(field.id, val)} required={field.required} value={value}>
+          <Select onValueChange={(val) => handleInputChange(field.id, val)} value={value}>
             <SelectTrigger>
               <SelectValue placeholder="Selecione uma opção" />
             </SelectTrigger>
@@ -292,7 +290,6 @@ export default function ChecklistForm() {
             value={value}
             onValueChange={(val) => handleInputChange(field.id, val)}
             className="flex space-x-6"
-            required={field.required}
           >
             {field.options?.map((option: string) => (
               <div key={option} className="flex items-center space-x-2">
