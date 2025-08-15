@@ -123,7 +123,6 @@ export class SQLiteStorage implements IStorage {
         approval_comment TEXT,
         approved_by TEXT,
         approved_at TEXT,
-        rejection_count INTEGER DEFAULT 0,
         client_ip TEXT,
         user_agent TEXT,
         geo_location TEXT,

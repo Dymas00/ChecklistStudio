@@ -37,7 +37,7 @@ function getStatusLabel(status: string) {
     case 'aprovado':
       return 'Aprovado';
     case 'rejeitado':
-      return 'Necessário Modificar';
+      return 'Rejeitado';
     case 'pendente':
       return 'Pendente';
     default:

@@ -99,12 +99,12 @@ export default function ApprovalDialog({ checklist, isOpen, onClose, action }: A
             ) : (
               <>
                 <XCircle className="w-5 h-5 text-red-600" />
-                Solicitar Modificação
+                Reprovar Checklist
               </>
             )}
           </DialogTitle>
           <DialogDescription>
-            Revise os dados preenchidos pelo técnico e {action === 'approve' ? 'aprove' : 'solicite modificação do'} checklist
+            Revise os dados preenchidos pelo técnico e {action === 'approve' ? 'aprove' : 'rejeite'} o checklist
           </DialogDescription>
         </DialogHeader>
 
