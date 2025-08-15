@@ -22,6 +22,17 @@ Preferred communication style: Simple, everyday language.
 - Added image zoom modal functionality for better photo visualization in checklist details
 - Fixed template editing bug where specific templates couldn't be edited properly
 
+### August 15, 2025 (Evening) - Project Cleanup & Optimization  
+- Removed unnecessary files to optimize project size and maintain cleaner structure:
+  - Deleted attached_assets folder (temporary user uploads)
+  - Cleaned uploads folder (keeping structure for new uploads)
+  - Removed unused documentation files (EXECUCAO_SIMPLES.md, SETUP_LOCAL.md)
+  - Deleted scripts folder and migration utilities
+  - Removed unused logo assets (keeping only claro-empresas-logo-final.png)
+  - Removed development artifacts (database.db, dist folder, Python dependencies)
+- Fixed PDF reports emoji rendering issues by replacing all emoji characters with text equivalents
+- Updated README.md to reflect current clean project structure
+
 ## System Architecture
 
 ### Frontend Architecture

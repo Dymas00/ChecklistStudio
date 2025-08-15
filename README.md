@@ -46,25 +46,20 @@ http://localhost:5000
 ```
 ├── client/          # Interface React
 ├── server/          # API Express
-├── shared/          # Tipos TypeScript
+├── shared/          # Tipos TypeScript compartilhados
 ├── uploads/         # Arquivos dos usuários
-├── database.db      # Banco SQLite
-└── SETUP_LOCAL.md   # Guia detalhado
+└── lojas_lista.json # Lista de lojas Claro
 ```
 
 ## 🔧 Desenvolvimento
 
-O projeto já está configurado para rodar localmente:
+O projeto está configurado para rodar localmente:
 
-- Banco SQLite criado automaticamente
+- Banco PostgreSQL (produção) / SQLite (desenvolvimento)
 - Usuários padrão inseridos na primeira execução
 - Templates pré-configurados para todos os tipos
 - Sistema de uploads funcionando
-- Variáveis de ambiente configuradas
-
-## 📋 Documentação Completa
-
-Para instruções detalhadas, consulte [SETUP_LOCAL.md](./SETUP_LOCAL.md)
+- 4.172 lojas Claro carregadas automaticamente
 
 ---
 
