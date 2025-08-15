@@ -174,6 +174,9 @@ module.exports = {
 EOF
 }
 
+# Parar qualquer instância existente
+pm2 delete ChecklistStudio 2>/dev/null || true
+
 # Iniciar aplicação  
 pm2 start ecosystem.config.cjs
 pm2 save
@@ -304,6 +307,9 @@ try {
 
 # 19. INICIAR APLICAÇÃO
 log "Iniciando aplicação com PM2..."
+# Parar qualquer instância existente
+pm2 delete ChecklistStudio 2>/dev/null || true
+
 pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup | tail -1 | bash || warn "Configure manualmente: pm2 startup"

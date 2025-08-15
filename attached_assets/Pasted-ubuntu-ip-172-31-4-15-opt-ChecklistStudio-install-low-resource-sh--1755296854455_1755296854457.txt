@@ -1,0 +1,327 @@
+ubuntu@ip-172-31-4-15:/opt/ChecklistStudio$ ./install-low-resource.sh
+======================================
+INSTALAÇÃO OTIMIZADA PARA RECURSOS LIMITADOS
+1 CPU | 2GB RAM | 8GB HD
+======================================
+[INFO] Iniciando instalação otimizada...
+[INFO] Configurando swap de 1GB...
+[WARN] Swap já existe, pulando...
+[INFO] Atualizando sistema...
+All packages are up to date.
+The following packages were automatically installed and are no longer required:
+  linux-aws-headers-6.8.0-1029 linux-aws-tools-6.8.0-1029 linux-headers-6.8.0-1029-aws linux-image-6.8.0-1029-aws
+  linux-modules-6.8.0-1029-aws linux-tools-6.8.0-1029-aws
+Use 'sudo apt autoremove' to remove them.
+Get another security update through Ubuntu Pro with 'esm-apps' enabled:
+  gh
+Learn more about Ubuntu Pro on AWS at https://ubuntu.com/aws/pro
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[INFO] Instalando dependências básicas...
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+curl is already the newest version (8.5.0-2ubuntu10.6).
+wget is already the newest version (1.21.4-1ubuntu4.1).
+gnupg2 is already the newest version (2.4.4-2ubuntu17.3).
+software-properties-common is already the newest version (0.99.49.3).
+sqlite3 is already the newest version (3.45.1-1ubuntu2.4).
+htop is already the newest version (3.3.0-4build1).
+The following packages were automatically installed and are no longer required:
+  linux-aws-headers-6.8.0-1029 linux-aws-tools-6.8.0-1029 linux-headers-6.8.0-1029-aws linux-image-6.8.0-1029-aws
+  linux-modules-6.8.0-1029-aws linux-tools-6.8.0-1029-aws
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[INFO] Instalando Node.js LTS...
+[WARN] Node.js já instalado: v20.19.4
+[INFO] Instalando PM2...
+[WARN] PM2 já instalado
+[INFO] Configurando diretórios...
+[INFO] Projeto já existe, fazendo pull...
+From https://github.com/Dymas00/ChecklistStudio
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[INFO] Instalando dependências do Node.js...
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 597 packages, and audited 598 packages in 12s
+
+78 packages are looking for funding
+  run `npm fund` for details
+
+3 low severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+[INFO] Configurando ambiente...
+[INFO] Arquivo .env configurado
+[INFO] Configurando banco de dados...
+
+> rest-express@1.0.0 db:push
+> drizzle-kit push
+
+sh: 1: drizzle-kit: not found
+[WARN] Falha na migração do banco (pode ser normal na primeira execução)
+[INFO] Construindo projeto...
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+
+added 97 packages, and audited 695 packages in 5s
+
+90 packages are looking for funding
+  run `npm fund` for details
+
+11 vulnerabilities (3 low, 8 moderate)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (7) src/lib/queryClient.tsBrowserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 3081 modules transformed.
+../dist/public/index.html                                         2.25 kB │ gzip:   0.89 kB
+../dist/public/assets/claro-empresas-logo-final-Dkp0mDED.png    170.18 kB
+../dist/public/assets/index-Cr5GGJnZ.css                         84.81 kB │ gzip:  14.14 kB
+../dist/public/assets/purify.es-BFmuJLeH.js                      21.93 kB │ gzip:   8.62 kB
+../dist/public/assets/index.es-DlNnHtge.js                      150.53 kB │ gzip:  51.48 kB
+../dist/public/assets/html2canvas.esm-CBrSDip1.js               201.42 kB │ gzip:  48.03 kB
+../dist/public/assets/index-Cv3lstv-.js                       1,189.54 kB │ gzip: 364.92 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 19.11s
+
+  dist/index.js  77.2kb
+
+⚡ Done in 44ms
+[INFO] Build concluído com sucesso
+
+up to date, audited 598 packages in 3s
+
+78 packages are looking for funding
+  run `npm fund` for details
+
+3 low severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+[INFO] Limpando dependências de desenvolvimento...
+
+up to date, audited 598 packages in 2s
+
+78 packages are looking for funding
+  run `npm fund` for details
+
+3 low severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+[INFO] Configurando PM2...
+[PM2] Applying action restartProcessId on app [ChecklistStudio](ids: [ 0 ])
+[PM2][ERROR] Process 0 not found
+Process 0 not found
+/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/API.js:1719
+        acted.push(proc.pm2_env ? proc.pm2_env.pm_id : proc.pm_id)
+                        ^
+
+TypeError: Cannot read properties of undefined (reading 'pm2_env')
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/API.js:1719:25
+    at Array.forEach (<anonymous>)
+    at API.speedList (/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/API.js:1718:18)
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/binaries/CLI.js:308:15
+    at wrapper (/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at replenish (/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/node_modules/async/internal/eachOfLimit.js:76:25)
+    at iterateeCallback (/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/node_modules/async/internal/eachOfLimit.js:65:17)
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/binaries/CLI.js:299:11
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/API.js:330:21
+
+Node.js v20.19.4
+[PM2] Saving current process list...
+[PM2] Successfully saved in /home/ubuntu/.pm2/dump.pm2
+[PM2] Init System found: systemd
+Platform systemd
+Template
+[Unit]
+Description=PM2 process manager
+Documentation=https://pm2.keymetrics.io/
+After=network.target
+
+[Service]
+Type=forking
+User=ubuntu
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/ubuntu/.nvm/versions/node/v20.19.4/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+Environment=PM2_HOME=/home/ubuntu/.pm2
+PIDFile=/home/ubuntu/.pm2/pm2.pid
+Restart=on-failure
+
+ExecStart=/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/bin/pm2 resurrect
+ExecReload=/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/bin/pm2 reload all
+ExecStop=/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/bin/pm2 kill
+
+[Install]
+WantedBy=multi-user.target
+
+Target path
+/etc/systemd/system/pm2-ubuntu.service
+Command list
+[ 'systemctl enable pm2-ubuntu' ]
+[PM2] Writing init configuration in /etc/systemd/system/pm2-ubuntu.service
+[PM2] Making script booting at startup...
+[PM2] [-] Executing: systemctl enable pm2-ubuntu...
+[PM2] [v] Command successfully executed.
++---------------------------------------+
+[PM2] Freeze a process list on reboot via:
+$ pm2 save
+
+[PM2] Remove init script via:
+$ pm2 unstartup systemd
+[INFO] Instalando e configurando Nginx...
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+nginx is already the newest version (1.24.0-2ubuntu7.4).
+The following packages were automatically installed and are no longer required:
+  linux-aws-headers-6.8.0-1029 linux-aws-tools-6.8.0-1029 linux-headers-6.8.0-1029-aws linux-image-6.8.0-1029-aws
+  linux-modules-6.8.0-1029-aws linux-tools-6.8.0-1029-aws
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+Synchronizing state of nginx.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable nginx
+[INFO] Configurando firewall...
+Firewall is active and enabled on system startup
+Skipping adding existing rule
+Skipping adding existing rule (v6)
+Skipping adding existing rule
+Skipping adding existing rule (v6)
+[INFO] Criando script de limpeza automática...
+[INFO] Criando script de monitoramento...
+[INFO] Criando usuário administrador...
+✓ Usuário administrador criado!
+  Email: admin@empresa.com
+  Senha: admin123
+  ⚠️  ALTERE A SENHA APÓS O PRIMEIRO LOGIN!
+[INFO] Iniciando aplicação com PM2...
+[PM2] Applying action restartProcessId on app [ChecklistStudio](ids: [ 0 ])
+[PM2][ERROR] Process 0 not found
+Process 0 not found
+/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/API.js:1719
+        acted.push(proc.pm2_env ? proc.pm2_env.pm_id : proc.pm_id)
+                        ^
+
+TypeError: Cannot read properties of undefined (reading 'pm2_env')
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/API.js:1719:25
+    at Array.forEach (<anonymous>)
+    at API.speedList (/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/API.js:1718:18)
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/binaries/CLI.js:308:15
+    at wrapper (/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at replenish (/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/node_modules/async/internal/eachOfLimit.js:76:25)
+    at iterateeCallback (/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/node_modules/async/internal/eachOfLimit.js:65:17)
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/binaries/CLI.js:299:11
+    at /home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/lib/API.js:330:21
+
+Node.js v20.19.4
+[PM2] Saving current process list...
+[PM2] Successfully saved in /home/ubuntu/.pm2/dump.pm2
+[PM2] Init System found: systemd
+Platform systemd
+Template
+[Unit]
+Description=PM2 process manager
+Documentation=https://pm2.keymetrics.io/
+After=network.target
+
+[Service]
+Type=forking
+User=ubuntu
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+Environment=PATH=/home/ubuntu/.nvm/versions/node/v20.19.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.nvm/versions/node/v20.19.4/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+Environment=PM2_HOME=/home/ubuntu/.pm2
+PIDFile=/home/ubuntu/.pm2/pm2.pid
+Restart=on-failure
+
+ExecStart=/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/bin/pm2 resurrect
+ExecReload=/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/bin/pm2 reload all
+ExecStop=/home/ubuntu/.nvm/versions/node/v20.19.4/lib/node_modules/pm2/bin/pm2 kill
+
+[Install]
+WantedBy=multi-user.target
+
+Target path
+/etc/systemd/system/pm2-ubuntu.service
+Command list
+[ 'systemctl enable pm2-ubuntu' ]
+[PM2] Writing init configuration in /etc/systemd/system/pm2-ubuntu.service
+[PM2] Making script booting at startup...
+[PM2] [-] Executing: systemctl enable pm2-ubuntu...
+[PM2] [v] Command successfully executed.
++---------------------------------------+
+[PM2] Freeze a process list on reboot via:
+$ pm2 save
+
+[PM2] Remove init script via:
+$ pm2 unstartup systemd
+[INFO] Verificando status da instalação...
+
+======================================
+INSTALAÇÃO CONCLUÍDA!
+======================================
+📊 Status do Sistema:
+  - Aplicação: http://localhost ou http://172.31.4.15
+  - Porta: 3000 (interna) / 80 (externa)
+  - Banco: SQLite em ./data/database.db
+
+🔐 Login Inicial:
+  - Email: admin@empresa.com
+  - Senha: admin123
+  - ⚠️  ALTERE A SENHA APÓS O PRIMEIRO LOGIN!
+
+📋 Comandos Úteis:
+  - Status: pm2 status
+  - Logs: pm2 logs checklist-system
+  - Monitor: ./monitor.sh
+  - Reiniciar: pm2 restart checklist-system
+  - Parar: pm2 stop checklist-system
+
+🧹 Manutenção:
+  - Limpeza automática: Domingos às 2h
+  - Limpeza manual: /opt/cleanup-system.sh
+
+✗ Aplicação não está rodando. Verifique os logs:
+  pm2 logs ChecklistStudio
+
+💾 Uso de Recursos Atual:
+=== Status do Sistema - Fri Aug 15 22:27:16 UTC 2025 ===
+RAM: Usado: 325MB (34.0%)
+Disco: Usado: 5.0G (75%)
+CPU: Uso: 0.0%
+Aplicação: 0: fork
+Uptime: up 46 minutes
+==================================
+[INFO] Instalação concluída! Acesse o sistema pelo navegador.
+ubuntu@ip-172-31-4-15:/opt/ChecklistStudio$
