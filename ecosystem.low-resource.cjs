@@ -1,9 +1,8 @@
 module.exports = {
   apps: [{
     name: 'ChecklistStudio',
-    script: 'server/index.ts',
-    interpreter: 'npx',
-    interpreter_args: 'tsx',
+    script: 'dist/index.js',
+    interpreter: 'node',
     
     // Configurações otimizadas para recursos limitados
     instances: 1, // Apenas 1 instância para economizar RAM

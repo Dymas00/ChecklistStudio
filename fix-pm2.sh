@@ -19,19 +19,25 @@ pm2 flush
 echo -e "\n5. Verificando porta 3000:"
 sudo netstat -tlnp | grep :3000 || echo "Porta 3000 livre"
 
-echo -e "\n6. Iniciando aplicação:"
+echo -e "\n6. Verificando build:"
 cd /opt/ChecklistStudio
+if [ ! -f "dist/index.js" ]; then
+    echo "Build não encontrado, executando build..."
+    npm run build
+fi
+
+echo -e "\n7. Iniciando aplicação:"
 pm2 start ecosystem.config.cjs
 
-echo -e "\n7. Verificando novo status:"
+echo -e "\n8. Verificando novo status:"
 sleep 5
 pm2 status
 pm2 logs ChecklistStudio --lines 5
 
-echo -e "\n8. Testando conectividade:"
+echo -e "\n9. Testando conectividade:"
 curl -I http://localhost:3000 2>/dev/null || echo "Aplicação não responde na porta 3000"
 
-echo -e "\n9. Status nginx:"
+echo -e "\n10. Status nginx:"
 sudo systemctl status nginx --no-pager -l
 
 echo -e "\n=== Diagnóstico completo ==="
