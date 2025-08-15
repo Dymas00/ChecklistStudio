@@ -10,12 +10,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### August 14, 2025 - ANALISTA_MIGRACAO Role Implementation
-- Added new user role "Analista Migração" with specialized permissions
-- Can visualize/approve checklists like regular analysts
-- Specifically permitted to create upgrade checklists  
-- UI updated to show dropdown selection for "Empreiteira" field with 5 company options
-- Developer credits updated to "Dymas Gomes | Victor Matheus"
+### August 15, 2025 - Enhanced Role-Based Permissions & PDF Reports
+- Implemented differentiated checklist creation permissions:
+  - Técnicos: Can create ALL types of checklists (including upgrades)
+  - Analistas Migração: Restricted to create ONLY upgrade checklists
+- Enhanced PDF export system with professional Claro Empresas branding
+- Added comprehensive store performance reporting with visual metrics
+- Implemented colored sections, metric boxes, and alternating row tables in PDFs
+- Store names now display properly formatted as "Loja [código]" in reports
 
 ## System Architecture
 
@@ -40,9 +42,9 @@ The backend is an **Express.js** server written in **TypeScript** with ES module
 
 ### Authentication and Authorization
 **Role-Based Access Control**: Five user roles: Técnico, Analista, Analista Migração, Coordenador, and Administrador, each with distinct permissions.
-- **Técnico**: Can create and fill all types of checklists
+- **Técnico**: Can create and fill all types of checklists (including upgrade checklists)
 - **Analista**: Can view/approve checklists and access templates  
-- **Analista Migração**: Can view/approve checklists, access templates, and create upgrade checklists specifically
+- **Analista Migração**: Can view/approve checklists, access templates, and create ONLY upgrade checklists (restricted to upgrade type)
 - **Coordenador**: Full template management and checklist oversight
 - **Administrador**: Complete system administration
 **Security Features**: Password hashing (bcrypt), token-based session management, protected routes with middleware, input validation.

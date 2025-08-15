@@ -335,7 +335,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user can create this type of checklist
       if (template.type === 'upgrade') {
-        const allowedRoles = [UserRole.ADMINISTRADOR, UserRole.COORDENADOR, UserRole.ANALISTA_MIGRACAO];
+        const allowedRoles = [UserRole.ADMINISTRADOR, UserRole.COORDENADOR, UserRole.ANALISTA_MIGRACAO, UserRole.TECNICO];
         if (!allowedRoles.includes(req.user.role)) {
           return res.status(403).json({ message: "Acesso negado - permissão insuficiente para criar checklists de upgrade" });
         }
