@@ -89,7 +89,7 @@ npm prune --production
 ```
 
 ### 6. Configuração PM2 Otimizada
-Arquivo `ecosystem.config.js`:
+Arquivo `ecosystem.config.cjs`:
 ```javascript
 module.exports = {
   apps: [{
@@ -254,7 +254,7 @@ echo "Aplicação: $(pm2 list | grep ChecklistStudio)"
 ### 10. Inicialização Otimizada
 ```bash
 # Iniciar aplicação
-pm2 start ecosystem.config.js
+pm2 start ecosystem.config.cjs
 
 # Salvar configuração
 pm2 save

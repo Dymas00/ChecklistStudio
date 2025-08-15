@@ -144,9 +144,9 @@ npm prune --omit=dev
 
 # 13. CONFIGURAR PM2
 log "Configurando PM2..."
-cp ecosystem.low-resource.js ecosystem.config.js 2>/dev/null || {
+cp ecosystem.low-resource.cjs ecosystem.config.cjs 2>/dev/null || {
     log "Criando configuração do PM2..."
-    cat > ecosystem.config.js << 'EOF'
+    cat > ecosystem.config.cjs << 'EOF'
 module.exports = {
   apps: [{
     name: 'ChecklistStudio',
@@ -175,7 +175,7 @@ EOF
 }
 
 # Iniciar aplicação  
-pm2 start ecosystem.config.js
+pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup | tail -1 | sudo sh || warn "Configure manualmente: pm2 startup"
 
@@ -304,7 +304,7 @@ try {
 
 # 19. INICIAR APLICAÇÃO
 log "Iniciando aplicação com PM2..."
-pm2 start ecosystem.config.js
+pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup | tail -1 | bash || warn "Configure manualmente: pm2 startup"
 
