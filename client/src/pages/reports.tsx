@@ -96,7 +96,19 @@ export default function Reports() {
   
   const [isExporting, setIsExporting] = useState(false);
 
-  // Check permissions
+  const { data: checklists, isLoading: loadingChecklists } = useQuery({
+    queryKey: ['/api/checklists']
+  });
+
+  const { data: users } = useQuery({
+    queryKey: ['/api/users']
+  });
+
+  const { data: templates } = useQuery({
+    queryKey: ['/api/templates']
+  });
+
+  // Check permissions after hooks
   if (!user || !['administrador', 'coordenador'].includes(user.role)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -114,18 +126,6 @@ export default function Reports() {
       </div>
     );
   }
-
-  const { data: checklists, isLoading: loadingChecklists } = useQuery({
-    queryKey: ['/api/checklists']
-  });
-
-  const { data: users } = useQuery({
-    queryKey: ['/api/users']
-  });
-
-  const { data: templates } = useQuery({
-    queryKey: ['/api/templates']
-  });
 
   // Generate report data based on filters
   const generateReportData = (): ReportData => {
