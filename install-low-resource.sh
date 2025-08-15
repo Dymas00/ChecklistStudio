@@ -127,7 +127,16 @@ npm run db:push || warn "Falha na migração do banco (pode ser normal na primei
 
 # 11. BUILD DO PROJETO
 log "Construindo projeto..."
-npm run build || warn "Build falhou - verificar se o comando existe"
+# Instalar dependências de desenvolvimento temporariamente para o build
+npm install --include=dev --no-save
+if npm run build; then
+    log "Build concluído com sucesso"
+    # Remover dependências de dev após o build
+    npm prune --omit=dev
+else
+    warn "Build falhou - aplicação será executada em modo desenvolvimento"
+    npm prune --omit=dev
+fi
 
 # 12. LIMPAR DEPENDÊNCIAS DESNECESSÁRIAS
 log "Limpando dependências de desenvolvimento..."
@@ -140,7 +149,7 @@ cp ecosystem.low-resource.js ecosystem.config.js 2>/dev/null || {
     cat > ecosystem.config.js << 'EOF'
 module.exports = {
   apps: [{
-    name: 'checklist-system',
+    name: 'ChecklistStudio',
     script: 'server/index.ts',
     interpreter: 'npx',
     interpreter_args: 'tsx',
@@ -164,6 +173,11 @@ module.exports = {
 };
 EOF
 }
+
+# Iniciar aplicação  
+pm2 start ecosystem.config.js
+pm2 save
+pm2 startup | tail -1 | sudo sh || warn "Configure manualmente: pm2 startup"
 
 # 14. INSTALAR NGINX
 log "Instalando e configurando Nginx..."
