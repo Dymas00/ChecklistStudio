@@ -247,25 +247,30 @@ export class PDFExporter {
     this.addTemplateFooter(data);
   }
 
-  // Enhanced header with Claro branding
+  // Enhanced header with Claro branding - clean white/red design
   private async addTemplateHeader(data: ChecklistData): Promise<void> {
-    // Claro Red branding header
-    this.pdf.setFillColor(232, 17, 35); // Claro red color
-    this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 35, 'F');
+    // White background base
+    this.pdf.setFillColor(255, 255, 255); // White background
+    this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 40, 'F');
+    
+    // Red header bar
+    this.pdf.setFillColor(232, 17, 35); // Claro red
+    this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 25, 'F');
     
     // White text on red background
     this.pdf.setTextColor(255, 255, 255);
-    this.pdf.setFontSize(20);
+    this.pdf.setFontSize(18);
     this.pdf.setFont('helvetica', 'bold');
-    this.pdf.text('CLARO EMPRESAS', this.margin, 20);
+    this.pdf.text('CLARO EMPRESAS', this.margin, 18);
     
-    // Subtitle in smaller text
-    this.pdf.setFontSize(12);
+    // Subtitle in red text on white background
+    this.pdf.setTextColor(232, 17, 35);
+    this.pdf.setFontSize(11);
     this.pdf.setFont('helvetica', 'normal');
-    this.pdf.text('Checklist Virtual - Sistema de Gestao Operacional', this.margin, 30);
+    this.pdf.text('Checklist Virtual - Sistema de Gestao Operacional', this.margin, 35);
     
     // Reset position after header
-    this.currentY = 45;
+    this.currentY = 50;
     
     // Document title box
     this.pdf.setFillColor(248, 249, 250); // Very light gray background
@@ -625,11 +630,28 @@ export class PDFExporter {
         this.pdf.setLineWidth(0.5);
         this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 80, 8, 2, 2, 'D'); // Smaller height
         
-        // Radio symbol and text
+        // Radio symbol and text - clean option text
         this.pdf.setTextColor(textColor[0], textColor[1], textColor[2]);
         this.pdf.setFont('helvetica', isSelected ? 'bold' : 'normal');
         const radioSymbol = isSelected ? '●' : '○';
-        this.pdf.text(`${radioSymbol} ${option}`, this.margin + 15, this.currentY + 3); // Adjusted position
+        
+        // Clean option text from encoding issues
+        const cleanOption = option
+          .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII
+          .replace(/Ï/g, '')
+          .replace(/%/g, '')
+          .replace(/Ã/g, 'A')
+          .replace(/[àáâãäåæ]/gi, 'A')
+          .replace(/[èéêë]/gi, 'E')
+          .replace(/[ìíîï]/gi, 'I')
+          .replace(/[òóôõö]/gi, 'O')
+          .replace(/[ùúûü]/gi, 'U')
+          .replace(/[ñ]/gi, 'N')
+          .replace(/[ç]/gi, 'C')
+          .replace(/NÃO/g, 'NAO')
+          .trim();
+        
+        this.pdf.text(`${radioSymbol} ${cleanOption}`, this.margin + 15, this.currentY + 3);
         
         this.currentY += 8; // More compact spacing
       });
@@ -639,7 +661,15 @@ export class PDFExporter {
       this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 100, 8, 2, 2, 'F'); // Smaller size
       this.pdf.setTextColor(255, 255, 255);
       this.pdf.setFont('helvetica', 'bold');
-      this.pdf.text(`● ${response}`, this.margin + 15, this.currentY + 3);
+      // Clean single response option
+      const cleanSingleResponse = response
+        .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII
+        .replace(/Ï/g, '')
+        .replace(/%/g, '')
+        .replace(/Ã/g, 'A')
+        .replace(/NÃO/g, 'NAO')
+        .trim();
+      this.pdf.text(`● ${cleanSingleResponse}`, this.margin + 15, this.currentY + 3);
       this.currentY += 8;
     }
     
