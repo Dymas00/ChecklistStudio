@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -386,6 +386,13 @@ export default function DragDropTemplateBuilder({
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<number | null>(null);
+
+  // Sync state with initialData when it changes
+  useEffect(() => {
+    if (initialData) {
+      setTemplate(initialData);
+    }
+  }, [initialData]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),

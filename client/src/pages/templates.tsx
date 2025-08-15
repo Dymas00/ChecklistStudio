@@ -68,8 +68,7 @@ export default function Templates() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/templates'] });
-      setIsEditDialogOpen(false);
-      setEditingTemplate(null);
+      handleCloseEditDialog();
       toast({
         title: "Sucesso",
         description: "Template atualizado com sucesso",
@@ -118,6 +117,14 @@ export default function Templates() {
   const handleEditTemplate = (template: any) => {
     setEditingTemplate(template);
     setIsEditDialogOpen(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setIsEditDialogOpen(false);
+    // Add small delay to allow dialog to close before clearing data
+    setTimeout(() => {
+      setEditingTemplate(null);
+    }, 150);
   };
 
   const handleCreateTemplate = (templateData: TemplateData) => {
@@ -415,7 +422,7 @@ export default function Templates() {
         </Dialog>
 
         {/* Edit Template Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <Dialog open={isEditDialogOpen} onOpenChange={handleCloseEditDialog}>
           <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto p-0">
             <DialogHeader className="px-6 pt-6 pb-2">
               <DialogTitle>Editar Template</DialogTitle>
@@ -426,6 +433,7 @@ export default function Templates() {
             
             {editingTemplate && (
               <DragDropTemplateBuilder
+                key={`edit-${editingTemplate.id}`}
                 initialData={{
                   name: editingTemplate.name,
                   type: editingTemplate.type,
@@ -434,10 +442,7 @@ export default function Templates() {
                   sections: editingTemplate.sections || []
                 }}
                 onSave={handleUpdateTemplate}
-                onCancel={() => {
-                  setIsEditDialogOpen(false);
-                  setEditingTemplate(null);
-                }}
+                onCancel={handleCloseEditDialog}
                 isLoading={updateMutation.isPending}
               />
             )}

@@ -20,6 +20,7 @@ Preferred communication style: Simple, everyday language.
 - Store names now display properly formatted as "Loja [código]" in reports
 - Updated store list to include all 4,172 stores from the complete JSON file
 - Added image zoom modal functionality for better photo visualization in checklist details
+- Fixed template editing bug where specific templates couldn't be edited properly
 
 ## System Architecture
 
