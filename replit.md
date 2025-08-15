@@ -18,6 +18,8 @@ Preferred communication style: Simple, everyday language.
 - Added comprehensive store performance reporting with visual metrics
 - Implemented colored sections, metric boxes, and alternating row tables in PDFs
 - Store names now display properly formatted as "Loja [código]" in reports
+- Updated store list to include all 4,172 stores from the complete JSON file
+- Added image zoom modal functionality for better photo visualization in checklist details
 
 ## System Architecture
 
