@@ -1058,7 +1058,7 @@ export class SQLiteStorage implements IStorage {
       UPDATE checklists SET 
         status = ?, responses = ?, photos = ?, signature = ?, validation_code = ?, 
         rating = ?, feedback = ?, approval_comment = ?, approved_by = ?, approved_at = ?, 
-        updated_at = ?
+        rejection_count = ?, updated_at = ?
       WHERE id = ?
     `).run(
       updatedChecklist.status, 
@@ -1071,6 +1071,7 @@ export class SQLiteStorage implements IStorage {
       updatedChecklist.approvalComment,
       updatedChecklist.approvedBy,
       updatedChecklist.approvedAt?.toISOString(),
+      updatedChecklist.rejectionCount || 0,
       updatedChecklist.updatedAt.toISOString(),
       id
     );
@@ -1150,6 +1151,7 @@ export class SQLiteStorage implements IStorage {
       approvalComment: row.approval_comment,
       approvedBy: row.approved_by,
       approvedAt: row.approved_at ? new Date(row.approved_at) : null,
+      rejectionCount: row.rejection_count || 0,
       clientIp: row.client_ip,
       userAgent: row.user_agent,
       geoLocation: row.geo_location,
