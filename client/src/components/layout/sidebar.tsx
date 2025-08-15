@@ -153,7 +153,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         <div className="text-center">
           <p className="text-xs text-gray-400 mb-1">Desenvolvido por</p>
           <p className="text-xs font-medium text-gray-500">
-            Dymas Gomes | Victor Mateus
+            Dymas Gomes | Victor Matheus
           </p>
         </div>
       </div>
