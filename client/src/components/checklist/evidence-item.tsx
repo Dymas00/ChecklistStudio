@@ -62,7 +62,6 @@ export default function EvidenceItem({
         value={answer}
         onValueChange={handleAnswerChange}
         className="flex space-x-6 mb-4"
-        required={required}
       >
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="sim" id={`${question}-sim`} />
@@ -90,7 +89,6 @@ export default function EvidenceItem({
           <SimplePhotoUpload
             onFileSelect={handlePhotoChange}
             fieldId={`${question}-photo`}
-            required={required}
             label="Anexar Foto"
           />
         </div>
@@ -111,7 +109,6 @@ export default function EvidenceItem({
             rows={3}
             className="w-full"
             placeholder="Descreva detalhadamente o problema encontrado, suas possíveis causas e ações recomendadas..."
-            required={required && answer === 'nao'}
           />
           <p className="text-xs text-gray-500 mt-1">
             Seja específico sobre o problema para facilitar a análise posterior

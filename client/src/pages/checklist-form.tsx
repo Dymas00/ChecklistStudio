@@ -305,7 +305,6 @@ export default function ChecklistForm() {
           <SimplePhotoUpload
             onFileSelect={(file) => handleInputChange(field.id, file)}
             fieldId={field.id}
-            required={field.required}
             label={field.label}
             initialValue={value}
           />
@@ -315,7 +314,6 @@ export default function ChecklistForm() {
         return (
           <SignatureCanvas
             onSignature={(signature) => handleInputChange(field.id, signature)}
-            required={field.required}
           />
         );
 
@@ -324,7 +322,6 @@ export default function ChecklistForm() {
           <EvidenceItem
             question={field.label}
             onResponseChange={(response) => handleEvidenceChange(field.id, response)}
-            required={field.required}
           />
         );
 

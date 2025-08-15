@@ -88,7 +88,6 @@ export default function SimplePhotoUpload({
         accept="image/*"
         onChange={handleFileSelect}
         className="hidden"
-        required={required}
       />
       
       {!selectedFile && !hasExistingPhoto ? (
