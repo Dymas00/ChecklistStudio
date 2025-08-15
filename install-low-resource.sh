@@ -94,7 +94,11 @@ cd /opt/checklist-system || error "Falha ao entrar no diretório do projeto"
 
 # 8. INSTALAR DEPENDÊNCIAS
 log "Instalando dependências do Node.js..."
-npm ci --only=production || error "Falha ao instalar dependências"
+if [ -f "package-lock.json" ]; then
+    npm ci --omit=dev || error "Falha ao instalar dependências com npm ci"
+else
+    npm install --omit=dev || error "Falha ao instalar dependências com npm install"
+fi
 
 # 9. CONFIGURAR AMBIENTE
 log "Configurando ambiente..."
@@ -127,7 +131,7 @@ npm run build || warn "Build falhou - verificar se o comando existe"
 
 # 12. LIMPAR DEPENDÊNCIAS DESNECESSÁRIAS
 log "Limpando dependências de desenvolvimento..."
-npm prune --production
+npm prune --omit=dev
 
 # 13. CONFIGURAR PM2
 log "Configurando PM2..."
