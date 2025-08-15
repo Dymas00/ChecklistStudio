@@ -256,7 +256,7 @@ export default function Reports() {
         date: format(date, 'dd/MM', { locale: ptBR }),
         total: dayChecklists.length,
         approved: dayChecklists.filter((c: any) => c.status === 'aprovado').length,
-        rejected: dayChecklists.filter((c: any) => c.status === 'rejeitado').length
+        rejected: dayChecklists.filter((c: any) => c.status === 'rejeitado' || (c.rejectionCount && c.rejectionCount > 0)).length
       });
     }
 
@@ -487,7 +487,7 @@ export default function Reports() {
                   <SelectContent>
                     <SelectItem value="all">Todos os status</SelectItem>
                     <SelectItem value="aprovado">Aprovado</SelectItem>
-                    <SelectItem value="rejeitado">Rejeitado</SelectItem>
+                    <SelectItem value="rejeitado">Necessário Modificar</SelectItem>
                     <SelectItem value="pendente">Pendente</SelectItem>
                   </SelectContent>
                 </Select>
@@ -601,7 +601,7 @@ export default function Reports() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                    <span className="text-sm text-gray-600">Rejeitados</span>
+                    <span className="text-sm text-gray-600">Necessário Modificar</span>
                   </div>
                   <span className="font-semibold">{reportData.rejectedCount}</span>
                 </div>
@@ -651,7 +651,7 @@ export default function Reports() {
                     <th className="text-left py-2">Técnico</th>
                     <th className="text-center py-2">Total</th>
                     <th className="text-center py-2">Aprovados</th>
-                    <th className="text-center py-2">Rejeitados</th>
+                    <th className="text-center py-2">Necessário Modificar</th>
                     <th className="text-center py-2">Pendentes</th>
                     <th className="text-center py-2">Taxa</th>
                     <th className="text-center py-2">Avaliação</th>
@@ -698,7 +698,7 @@ export default function Reports() {
                       <th className="text-left py-2">Loja</th>
                       <th className="text-center py-2">Total</th>
                       <th className="text-center py-2">Aprovados</th>
-                      <th className="text-center py-2">Rejeitados</th>
+                      <th className="text-center py-2">Necessário Modificar</th>
                       <th className="text-center py-2">Pendentes</th>
                       <th className="text-center py-2">Taxa de Aprovação</th>
                       <th className="text-center py-2">Avaliação Média</th>
