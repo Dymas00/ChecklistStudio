@@ -28,6 +28,8 @@ import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { exportReportToPDF } from '@/lib/reports-export';
 import { useToast } from '@/hooks/use-toast';
+import StoreSelector from '@/components/checklist/store-selector';
+import { formatStoreNumber } from '@shared/stores';
 
 interface ReportFilters {
   dateFrom: Date | null;
@@ -35,6 +37,7 @@ interface ReportFilters {
   templateType: string;
   status: string;
   technician: string;
+  storeNumber: string;
 }
 
 interface ReportData {
@@ -66,6 +69,16 @@ interface ReportData {
     approved: number;
     rejected: number;
   }>;
+  storeStats: Array<{
+    storeNumber: string;
+    storeName: string;
+    total: number;
+    approved: number;
+    rejected: number;
+    pending: number;
+    approvalRate: number;
+    averageRating: number;
+  }>;
 }
 
 export default function Reports() {
@@ -77,7 +90,8 @@ export default function Reports() {
     dateTo: new Date(),
     templateType: 'all',
     status: 'all',
-    technician: 'all'
+    technician: 'all',
+    storeNumber: 'all'
   });
   
   const [isExporting, setIsExporting] = useState(false);
@@ -124,7 +138,8 @@ export default function Reports() {
       averageRating: 0,
       technicianPerformance: [],
       templateStats: [],
-      dailyStats: []
+      dailyStats: [],
+      storeStats: []
     };
 
     let filteredChecklists = Array.isArray(checklists) ? checklists.filter((checklist: any) => {
@@ -142,6 +157,14 @@ export default function Reports() {
       
       // Technician filter
       if (filters.technician !== 'all' && checklist.technicianId !== filters.technician) return false;
+      
+      // Store filter - get store number from responses
+      if (filters.storeNumber !== 'all') {
+        const storeNumber = checklist.responses ? Object.values(checklist.responses).find((value: any) => 
+          typeof value === 'string' && /^\d+$/.test(value) && value.length >= 3
+        ) : null;
+        if (storeNumber !== filters.storeNumber) return false;
+      }
       
       return true;
     }) : [];
@@ -230,6 +253,45 @@ export default function Reports() {
       });
     }
 
+    // Store statistics
+    const storeStats = new Map();
+    filteredChecklists.forEach((checklist: any) => {
+      const storeNumber = checklist.responses ? Object.values(checklist.responses).find((value: any) => 
+        typeof value === 'string' && /^\d+$/.test(value) && value.length >= 3
+      ) : null;
+      
+      if (storeNumber) {
+        if (!storeStats.has(storeNumber)) {
+          storeStats.set(storeNumber, {
+            storeNumber: String(storeNumber),
+            storeName: formatStoreNumber(Number(storeNumber)),
+            total: 0,
+            approved: 0,
+            rejected: 0,
+            pending: 0,
+            ratings: []
+          });
+        }
+        
+        const stats = storeStats.get(storeNumber);
+        stats.total++;
+        if (checklist.status === 'aprovado') {
+          stats.approved++;
+          if (checklist.rating) stats.ratings.push(checklist.rating);
+        } else if (checklist.status === 'rejeitado') {
+          stats.rejected++;
+        } else if (checklist.status === 'pendente') {
+          stats.pending++;
+        }
+      }
+    });
+
+    const storeStatsArray = Array.from(storeStats.values()).map((stats: any) => ({
+      ...stats,
+      approvalRate: stats.total > 0 ? (stats.approved / stats.total) * 100 : 0,
+      averageRating: stats.ratings.length > 0 ? stats.ratings.reduce((sum: number, rating: number) => sum + rating, 0) / stats.ratings.length : 0
+    })).sort((a, b) => b.total - a.total); // Sort by total descending
+
     return {
       totalChecklists,
       approvedCount,
@@ -239,7 +301,8 @@ export default function Reports() {
       averageRating,
       technicianPerformance,
       templateStats: templateStatsArray,
-      dailyStats
+      dailyStats,
+      storeStats: storeStatsArray
     };
   };
 
@@ -326,7 +389,7 @@ export default function Reports() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
               {/* Date From */}
               <div className="space-y-2">
                 <Label>Data Inicial</Label>
@@ -439,6 +502,16 @@ export default function Reports() {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Store Number */}
+              <div className="space-y-2">
+                <Label>Loja</Label>
+                <StoreSelector
+                  value={filters.storeNumber === 'all' ? '' : filters.storeNumber}
+                  onValueChange={(value) => setFilters(prev => ({ ...prev, storeNumber: value || 'all' }))}
+                  placeholder="Todas as lojas"
+                />
               </div>
             </div>
           </CardContent>
@@ -598,6 +671,61 @@ export default function Reports() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Store Performance Statistics */}
+        {reportData.storeStats.length > 0 && (
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                📊 Desempenho por Loja
+                <Badge variant="secondary" className="ml-2">
+                  {reportData.storeStats.length} lojas
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-2">Loja</th>
+                      <th className="text-center py-2">Total</th>
+                      <th className="text-center py-2">Aprovados</th>
+                      <th className="text-center py-2">Rejeitados</th>
+                      <th className="text-center py-2">Pendentes</th>
+                      <th className="text-center py-2">Taxa de Aprovação</th>
+                      <th className="text-center py-2">Avaliação Média</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reportData.storeStats.slice(0, 20).map((store, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="py-2 font-medium">{store.storeName}</td>
+                        <td className="text-center py-2">{store.total}</td>
+                        <td className="text-center py-2 text-green-600">{store.approved}</td>
+                        <td className="text-center py-2 text-red-600">{store.rejected}</td>
+                        <td className="text-center py-2 text-yellow-600">{store.pending}</td>
+                        <td className="text-center py-2">
+                          <Badge variant={store.approvalRate >= 80 ? 'default' : store.approvalRate >= 60 ? 'secondary' : 'destructive'}>
+                            {store.approvalRate.toFixed(0)}%
+                          </Badge>
+                        </td>
+                        <td className="text-center py-2">
+                          {store.averageRating > 0 ? store.averageRating.toFixed(1) : '-'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {reportData.storeStats.length > 20 && (
+                  <div className="mt-4 text-center text-sm text-gray-500">
+                    Mostrando top 20 lojas. Use filtros para ver lojas específicas.
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
       <Footer />
     </div>
