@@ -499,6 +499,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...(action === 'approve' && {
           rating: parseInt(rating),
           feedback: feedback?.trim() || null
+        }),
+        ...(action === 'reject' && {
+          rejectionCount: (checklist.rejectionCount || 0) + 1
         })
       };
 

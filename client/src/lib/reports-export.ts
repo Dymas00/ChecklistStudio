@@ -263,7 +263,7 @@ export class ReportsExporter {
     this.pdf.setFont('helvetica', 'normal');
     this.pdf.setFontSize(10);
     this.addText(`✓ Checklists Aprovados: ${data.reportData.approvedCount}`, 10);
-    this.addText(`✗ Checklists Rejeitados: ${data.reportData.rejectedCount}`, 10);
+    this.addText(`🔄 Checklists Necessário Modificar: ${data.reportData.rejectedCount}`, 10);
     this.addText(`⏳ Checklists Pendentes: ${data.reportData.pendingCount}`, 10);
     
     this.currentY += 10;
@@ -289,7 +289,7 @@ export class ReportsExporter {
     if (data.reportData.technicianPerformance.length > 0) {
       this.addTitle('👷 DESEMPENHO DOS TÉCNICOS', 14);
       
-      const techHeaders = ['Técnico', 'Total', 'Aprovados', 'Rejeitados', 'Taxa', 'Avaliação'];
+      const techHeaders = ['Técnico', 'Total', 'Aprovados', 'Nec. Modificar', 'Taxa', 'Avaliação'];
       const techRows = data.reportData.technicianPerformance.map(tech => [
         tech.technicianName,
         tech.total.toString(),
@@ -307,7 +307,7 @@ export class ReportsExporter {
     if (data.reportData.storeStats.length > 0) {
       this.addTitle('📊 DESEMPENHO POR LOJA', 14);
       
-      const storeHeaders = ['Loja', 'Total', 'Aprovados', 'Rejeitados', 'Pendentes', 'Taxa %', 'Nota'];
+      const storeHeaders = ['Loja', 'Total', 'Aprovados', 'Nec. Modificar', 'Pendentes', 'Taxa %', 'Nota'];
       const storeRows = data.reportData.storeStats.slice(0, 12).map(store => [
         store.storeName,
         store.total.toString(),

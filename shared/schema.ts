@@ -47,6 +47,7 @@ export const checklists = sqliteTable("checklists", {
   approvalComment: text("approval_comment"), // comentário do analista na aprovação/reprovação
   approvedBy: text("approved_by").references(() => users.id), // quem aprovou/reprovou
   approvedAt: integer("approved_at", { mode: 'timestamp' }), // quando foi aprovado/reprovado
+  rejectionCount: integer("rejection_count").default(0), // número de vezes que foi reprovado
   // Campos para auditoria e rastreamento
   clientIp: text("client_ip"), // IP do cliente que criou o checklist
   userAgent: text("user_agent"), // User agent do navegador

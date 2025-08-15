@@ -171,7 +171,10 @@ export default function Reports() {
 
     const totalChecklists = filteredChecklists.length;
     const approvedCount = filteredChecklists.filter((c: any) => c.status === 'aprovado').length;
-    const rejectedCount = filteredChecklists.filter((c: any) => c.status === 'rejeitado').length;
+    // Conta todos que foram rejeitados OU que têm histórico de rejeição (rejectionCount > 0)
+    const rejectedCount = filteredChecklists.filter((c: any) => 
+      c.status === 'rejeitado' || (c.rejectionCount && c.rejectionCount > 0)
+    ).length;
     const pendingCount = filteredChecklists.filter((c: any) => c.status === 'pendente').length;
     const approvalRate = totalChecklists > 0 ? (approvedCount / totalChecklists) * 100 : 0;
     
@@ -199,8 +202,12 @@ export default function Reports() {
       
       const stats = technicianStats.get(techId);
       stats.total++;
-      if (stats[checklist.status] !== undefined) {
-        stats[checklist.status]++;
+      if (checklist.status === 'aprovado') {
+        stats.approved++;
+      } else if (checklist.status === 'rejeitado' || (checklist.rejectionCount && checklist.rejectionCount > 0)) {
+        stats.rejected++;
+      } else if (checklist.status === 'pendente') {
+        stats.pending++;
       }
       // Only count ratings from approved checklists
       if (checklist.rating && checklist.status === 'aprovado') {
@@ -278,7 +285,7 @@ export default function Reports() {
         if (checklist.status === 'aprovado') {
           stats.approved++;
           if (checklist.rating) stats.ratings.push(checklist.rating);
-        } else if (checklist.status === 'rejeitado') {
+        } else if (checklist.status === 'rejeitado' || (checklist.rejectionCount && checklist.rejectionCount > 0)) {
           stats.rejected++;
         } else if (checklist.status === 'pendente') {
           stats.pending++;
