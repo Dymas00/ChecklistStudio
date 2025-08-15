@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import claroLogo from '@/assets/claro-empresas-logo-final.png';
 
 export interface ChecklistData {
   id: string;
@@ -40,6 +41,43 @@ export class PDFExporter {
     this.currentY = this.margin;
   }
 
+  // Centralized method to clean text for PDF generation
+  private cleanTextForPDF(text: string): string {
+    if (!text || typeof text !== 'string') return '';
+    
+    return text
+      // Step 1: Remove non-printable ASCII and problematic chars
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\xFF]/g, '')
+      .replace(/[^\x20-\x7E]/g, '') // Keep only standard printable ASCII
+      
+      // Step 2: Remove specific problematic sequences
+      .replace(/%Ï/g, '') // Remove %Ï completely
+      .replace(/%Ë/g, '') // Remove %Ë completely  
+      .replace(/Ï/g, '')  // Remove lone Ï
+      .replace(/Ë/g, '')  // Remove lone Ë
+      .replace(/%/g, '')  // Remove % symbols
+      .replace(/Ã/g, 'A') // Replace Ã with A
+      
+      // Step 3: Replace accented characters with base letters
+      .replace(/[àáâãäåæ]/gi, 'A')
+      .replace(/[èéêë]/gi, 'E')
+      .replace(/[ìíîï]/gi, 'I')
+      .replace(/[òóôõöø]/gi, 'O')
+      .replace(/[ùúûü]/gi, 'U')
+      .replace(/[ñ]/gi, 'N')
+      .replace(/[ç]/gi, 'C')
+      .replace(/[ý]/gi, 'Y')
+      
+      // Step 4: Specific Portuguese replacements
+      .replace(/NÃO/gi, 'NAO')
+      .replace(/São/gi, 'SAO')
+      .replace(/não/gi, 'nao')
+      
+      // Step 5: Clean up and normalize
+      .replace(/\s+/g, ' ') // Multiple spaces to single
+      .trim();
+  }
+
   private checkPageBreak(neededHeight: number = 15) {
     if (this.currentY + neededHeight > this.pageHeight - this.margin) {
       this.pdf.addPage();
@@ -55,19 +93,7 @@ export class PDFExporter {
     this.pdf.setFont('helvetica', 'bold');
     
     // Clean title from encoding issues
-    const cleanTitle = text
-      .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII
-      .replace(/Ï/g, '')
-      .replace(/%/g, '')
-      .replace(/Ã/g, 'A')
-      .replace(/[àáâãäåæ]/gi, 'A')
-      .replace(/[èéêë]/gi, 'E') 
-      .replace(/[ìíîï]/gi, 'I')
-      .replace(/[òóôõö]/gi, 'O')
-      .replace(/[ùúûü]/gi, 'U')
-      .replace(/[ñ]/gi, 'N')
-      .replace(/[ç]/gi, 'C')
-      .trim();
+    const cleanTitle = this.cleanTextForPDF(text);
       
     this.pdf.text(cleanTitle, this.margin, this.currentY);
     this.currentY += size + 5;
@@ -247,30 +273,57 @@ export class PDFExporter {
     this.addTemplateFooter(data);
   }
 
-  // Enhanced header with Claro branding - clean white/red design
+  // Enhanced header with Claro branding - clean white/red design with logo
   private async addTemplateHeader(data: ChecklistData): Promise<void> {
-    // White background base
-    this.pdf.setFillColor(255, 255, 255); // White background
-    this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 40, 'F');
-    
-    // Red header bar
-    this.pdf.setFillColor(232, 17, 35); // Claro red
-    this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 25, 'F');
-    
-    // White text on red background
-    this.pdf.setTextColor(255, 255, 255);
-    this.pdf.setFontSize(18);
-    this.pdf.setFont('helvetica', 'bold');
-    this.pdf.text('CLARO EMPRESAS', this.margin, 18);
-    
-    // Subtitle in red text on white background
-    this.pdf.setTextColor(232, 17, 35);
-    this.pdf.setFontSize(11);
-    this.pdf.setFont('helvetica', 'normal');
-    this.pdf.text('Checklist Virtual - Sistema de Gestao Operacional', this.margin, 35);
-    
-    // Reset position after header
-    this.currentY = 50;
+    try {
+      // White background base
+      this.pdf.setFillColor(255, 255, 255); // White background
+      this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 45, 'F');
+      
+      // Red header bar
+      this.pdf.setFillColor(232, 17, 35); // Claro red
+      this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 28, 'F');
+      
+      // Add Claro logo
+      try {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = claroLogo;
+        });
+        
+        // Add logo on the red background (white logo should show)
+        this.pdf.addImage(img, 'PNG', this.margin, 8, 60, 12);
+        
+        // Subtitle in white text on red background, positioned after logo
+        this.pdf.setTextColor(255, 255, 255);
+        this.pdf.setFontSize(10);
+        this.pdf.setFont('helvetica', 'normal');
+        this.pdf.text('Checklist Virtual - Sistema de Gestao Operacional', this.margin + 70, 18);
+        
+      } catch (error) {
+        console.warn('Could not load Claro logo, using text fallback:', error);
+        // Fallback to text-only header
+        this.pdf.setTextColor(255, 255, 255);
+        this.pdf.setFontSize(18);
+        this.pdf.setFont('helvetica', 'bold');
+        this.pdf.text('CLARO EMPRESAS', this.margin, 18);
+        
+        // Subtitle in white on red background
+        this.pdf.setFontSize(10);
+        this.pdf.setFont('helvetica', 'normal');
+        this.pdf.text('Checklist Virtual - Sistema de Gestao Operacional', this.margin, 25);
+      }
+      
+      // Reset position after header
+      this.currentY = 55;
+    } catch (headerError) {
+      console.error('Error in header creation:', headerError);
+      this.currentY = 50;
+    }
     
     // Document title box
     this.pdf.setFillColor(248, 249, 250); // Very light gray background
@@ -584,12 +637,7 @@ export class PDFExporter {
       this.pdf.setTextColor(50, 50, 50);
       
       // Clean response text from encoding issues
-      const cleanResponse = String(response)
-        .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII
-        .replace(/Ï/g, '')
-        .replace(/%/g, '')
-        .replace(/Ã/g, 'A')
-        .trim();
+      const cleanResponse = this.cleanTextForPDF(String(response));
       
       this.pdf.text(cleanResponse, this.margin + 12, this.currentY + 3); // Adjusted position
     } else {
@@ -635,21 +683,8 @@ export class PDFExporter {
         this.pdf.setFont('helvetica', isSelected ? 'bold' : 'normal');
         const radioSymbol = isSelected ? '●' : '○';
         
-        // Clean option text from encoding issues
-        const cleanOption = option
-          .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII
-          .replace(/Ï/g, '')
-          .replace(/%/g, '')
-          .replace(/Ã/g, 'A')
-          .replace(/[àáâãäåæ]/gi, 'A')
-          .replace(/[èéêë]/gi, 'E')
-          .replace(/[ìíîï]/gi, 'I')
-          .replace(/[òóôõö]/gi, 'O')
-          .replace(/[ùúûü]/gi, 'U')
-          .replace(/[ñ]/gi, 'N')
-          .replace(/[ç]/gi, 'C')
-          .replace(/NÃO/g, 'NAO')
-          .trim();
+        // Clean option text from encoding issues - aggressive cleaning
+        const cleanOption = this.cleanTextForPDF(option);
         
         this.pdf.text(`${radioSymbol} ${cleanOption}`, this.margin + 15, this.currentY + 3);
         
@@ -662,13 +697,7 @@ export class PDFExporter {
       this.pdf.setTextColor(255, 255, 255);
       this.pdf.setFont('helvetica', 'bold');
       // Clean single response option
-      const cleanSingleResponse = response
-        .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII
-        .replace(/Ï/g, '')
-        .replace(/%/g, '')
-        .replace(/Ã/g, 'A')
-        .replace(/NÃO/g, 'NAO')
-        .trim();
+      const cleanSingleResponse = this.cleanTextForPDF(response);
       this.pdf.text(`● ${cleanSingleResponse}`, this.margin + 15, this.currentY + 3);
       this.currentY += 8;
     }
