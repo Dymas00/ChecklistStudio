@@ -193,8 +193,8 @@ export class PDFExporter {
       responsesKeys: Object.keys(data.responses || {})
     });
 
-    // Header matching template design
-    this.addTemplateHeader(data);
+    // Enhanced header with Claro branding
+    await this.addTemplateHeader(data);
     
     // Template-based sections rendering with exact layout
     if (data.sections && Array.isArray(data.sections) && data.sections.length > 0) {
@@ -221,80 +221,151 @@ export class PDFExporter {
     this.addTemplateFooter(data);
   }
 
-  // Template-style header matching the original form
-  private addTemplateHeader(data: ChecklistData): void {
-    // Main title with Claro branding style
-    this.pdf.setFillColor(220, 220, 220); // Light gray background
-    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 25, 'F');
+  // Enhanced header with Claro branding
+  private async addTemplateHeader(data: ChecklistData): Promise<void> {
+    // Claro Red branding header
+    this.pdf.setFillColor(232, 17, 35); // Claro red color
+    this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 35, 'F');
+    
+    // White text on red background
+    this.pdf.setTextColor(255, 255, 255);
+    this.pdf.setFontSize(20);
+    this.pdf.setFont('helvetica', 'bold');
+    this.pdf.text('CLARO EMPRESAS', this.margin, 20);
+    
+    // Subtitle in smaller text
+    this.pdf.setFontSize(12);
+    this.pdf.setFont('helvetica', 'normal');
+    this.pdf.text('Checklist Virtual - Sistema de Gestão Operacional', this.margin, 30);
+    
+    // Reset position after header
+    this.currentY = 45;
+    
+    // Document title box
+    this.pdf.setFillColor(248, 249, 250); // Very light gray background
+    this.pdf.setDrawColor(232, 17, 35); // Red border
+    this.pdf.setLineWidth(2);
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 25, 'FD');
     
     this.currentY += 8;
-    this.pdf.setTextColor(0, 0, 0); // Ensure black text
-    this.addTitle(`CHECKLIST - ${data.templateName.toUpperCase()}`, 16);
-    this.pdf.setTextColor(60, 60, 60); // Dark gray for subtitle
-    this.addText(`Checklist Virtual - Claro Empresas`, 10);
-    this.pdf.setTextColor(0, 0, 0); // Reset to black
-    this.currentY += 5;
+    this.pdf.setTextColor(0, 0, 0);
+    this.pdf.setFontSize(18);
+    this.pdf.setFont('helvetica', 'bold');
+    this.pdf.text(`CHECKLIST - ${data.templateName.toUpperCase()}`, this.margin + 10, this.currentY);
     
-    // Helper function to translate status to Portuguese
-    const getStatusLabel = (status: string) => {
+    this.currentY += 8;
+    this.pdf.setFontSize(10);
+    this.pdf.setFont('helvetica', 'normal');
+    this.pdf.setTextColor(100, 100, 100);
+    this.pdf.text(`Documento ID: ${data.id}`, this.margin + 10, this.currentY);
+    
+    this.currentY += 15;
+    
+    // Status badge with colors
+    const getStatusInfo = (status: string) => {
       switch (status) {
-        case 'aprovado': return 'APROVADO';
-        case 'rejeitado': return 'REJEITADO';
-        case 'pendente': return 'PENDENTE';
-        case 'em_analise': return 'EM ANÁLISE';
-        default: return status.toUpperCase();
+        case 'aprovado': return { label: 'APROVADO', color: [34, 197, 94] }; // Green
+        case 'rejeitado': return { label: 'REJEITADO', color: [239, 68, 68] }; // Red
+        case 'pendente': return { label: 'PENDENTE', color: [251, 191, 36] }; // Yellow
+        case 'em_analise': return { label: 'EM ANÁLISE', color: [59, 130, 246] }; // Blue
+        default: return { label: status.toUpperCase(), color: [107, 114, 128] }; // Gray
       }
     };
 
-    // Info box similar to template header
-    const infoItems: string[] = [
-      `Técnico: ${data.technicianName}`,
-      `Criado em: ${new Date(data.createdAt).toLocaleString('pt-BR')}`,
-      `Status: ${getStatusLabel(data.status)}`
-    ];
+    const statusInfo = getStatusInfo(data.status);
     
-    if (data.completedAt) {
-      infoItems.splice(2, 0, `Concluído em: ${new Date(data.completedAt).toLocaleString('pt-BR')}`);
-    }
+    // Professional information cards layout
+    this.currentY += 10;
     
-    this.addSectionBox('INFORMAÇÕES DO CHECKLIST', infoItems);
+    // First row - Basic info
+    this.addInfoCard('INFORMAÇÕES BÁSICAS', [
+      { label: 'Técnico Responsável', value: data.technicianName },
+      { label: 'Data de Criação', value: new Date(data.createdAt).toLocaleString('pt-BR') },
+      { label: 'Última Modificação', value: data.completedAt ? new Date(data.completedAt).toLocaleString('pt-BR') : 'Em andamento' }
+    ]);
+    
+    // Status badge
+    this.currentY += 5;
+    this.pdf.setFillColor(...statusInfo.color);
+    this.pdf.roundedRect(this.margin, this.currentY, 60, 12, 3, 3, 'F');
+    this.pdf.setTextColor(255, 255, 255);
+    this.pdf.setFontSize(9);
+    this.pdf.setFont('helvetica', 'bold');
+    this.pdf.text(statusInfo.label, this.margin + 8, this.currentY + 8);
+    this.pdf.setTextColor(0, 0, 0);
+    
+    this.currentY += 20;
   }
 
-  // Template footer with approval information  
+  // Professional footer with approval information
   private addTemplateFooter(data: ChecklistData): void {
     this.currentY += 15;
     
     if (data.approvedAt && data.approvedBy) {
-      this.addSectionBox('INFORMAÇÕES DE APROVAÇÃO', [
-        `Aprovado em: ${new Date(data.approvedAt).toLocaleString('pt-BR')}`,
-        `Aprovado por: ${data.approvedBy}`
+      this.addInfoCard('INFORMAÇÕES DE APROVAÇÃO', [
+        { label: 'Aprovado em', value: new Date(data.approvedAt).toLocaleString('pt-BR') },
+        { label: 'Aprovado por', value: data.approvedBy }
       ]);
     }
 
-    this.currentY += 10;
+    // Professional footer
+    this.currentY = this.pageHeight - 30;
+    this.pdf.setDrawColor(232, 17, 35);
+    this.pdf.setLineWidth(1);
+    this.pdf.line(this.margin, this.currentY, this.pdf.internal.pageSize.width - this.margin, this.currentY);
+    
+    this.currentY += 8;
+    this.pdf.setFillColor(248, 249, 250);
+    this.pdf.rect(0, this.currentY, this.pdf.internal.pageSize.width, 20, 'F');
+    
     this.pdf.setFontSize(8);
-    this.pdf.setFont('helvetica', 'italic');
-    this.addText(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, 8);
-    this.addText('Checklist Virtual - Claro Empresas', 8);
+    this.pdf.setFont('helvetica', 'normal');
+    this.pdf.setTextColor(100, 100, 100);
+    this.pdf.text(`Documento gerado automaticamente em ${new Date().toLocaleString('pt-BR')}`, this.margin, this.currentY + 8);
+    this.pdf.text('Checklist Virtual - Claro Empresas © 2025', this.pdf.internal.pageSize.width - this.margin - 80, this.currentY + 8);
+    
+    // Page number
+    this.pdf.text(`Página ${this.pdf.getCurrentPageInfo().pageNumber}`, this.pdf.internal.pageSize.width - this.margin - 20, this.currentY + 15);
   }
 
-  // Helper method to create boxed sections like in the template
-  private addSectionBox(title: string, items: string[]): void {
-    this.checkPageBreak(30 + (items.length * 7));
+  // Professional info card design
+  private addInfoCard(title: string, items: Array<{label: string, value: string}>): void {
+    this.checkPageBreak(35 + (items.length * 8));
     
-    // Box background
-    this.pdf.setFillColor(248, 249, 250); // Very light gray
-    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 8 + (items.length * 7), 'F');
+    // Card shadow effect
+    this.pdf.setFillColor(235, 235, 235);
+    this.pdf.rect(this.margin + 2, this.currentY + 2, this.pdf.internal.pageSize.width - (2 * this.margin), 15 + (items.length * 8), 'F');
     
-    // Box border
-    this.pdf.setDrawColor(200, 200, 200);
-    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 8 + (items.length * 7));
+    // Card background
+    this.pdf.setFillColor(255, 255, 255);
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 15 + (items.length * 8), 'F');
+    
+    // Card border
+    this.pdf.setDrawColor(232, 17, 35); // Claro red
+    this.pdf.setLineWidth(1);
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 15 + (items.length * 8));
+    
+    // Title bar
+    this.pdf.setFillColor(232, 17, 35);
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 15, 'F');
     
     this.currentY += 5;
-    this.addText(title, 10, true);
+    this.pdf.setTextColor(255, 255, 255);
+    this.pdf.setFontSize(11);
+    this.pdf.setFont('helvetica', 'bold');
+    this.pdf.text(title, this.margin + 8, this.currentY + 6);
+    
+    this.currentY += 10;
+    this.pdf.setTextColor(0, 0, 0);
+    this.pdf.setFont('helvetica', 'normal');
+    this.pdf.setFontSize(9);
     
     items.forEach(item => {
-      this.addText(`  ${item}`, 9);
+      this.pdf.setFont('helvetica', 'bold');
+      this.pdf.text(`${item.label}:`, this.margin + 8, this.currentY + 5);
+      this.pdf.setFont('helvetica', 'normal');
+      this.pdf.text(item.value, this.margin + 8 + this.pdf.getTextWidth(`${item.label}: `), this.currentY + 5);
+      this.currentY += 8;
     });
     
     this.currentY += 5;
@@ -303,21 +374,30 @@ export class PDFExporter {
   // Enhanced method to render sections matching template layout
   private async renderTemplateSections(sections: any[], responses: Record<string, any>): Promise<void> {
     for (const section of sections) {
-      this.currentY += 8; // Extra space between sections
+      this.currentY += 15; // Extra space between sections
       
-      // Section header with background (like in template)
-      this.checkPageBreak(25);
-      this.pdf.setFillColor(240, 244, 248); // Light blue background
-      this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 18, 'F');
+      // Professional section header with gradient-like effect
+      this.checkPageBreak(30);
       
-      this.currentY += 6;
-      this.pdf.setFontSize(14);
+      // Section shadow
+      this.pdf.setFillColor(220, 220, 220);
+      this.pdf.rect(this.margin + 1, this.currentY + 1, this.pdf.internal.pageSize.width - (2 * this.margin), 22, 'F');
+      
+      // Section background with Claro branding
+      this.pdf.setFillColor(232, 17, 35); // Claro red
+      this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), 20, 'F');
+      
+      // White text on red background
+      this.pdf.setTextColor(255, 255, 255);
+      this.pdf.setFontSize(13);
       this.pdf.setFont('helvetica', 'bold');
       
-      // Use translated section name - never use section.id as title
+      // Use translated section name with icon
       const translatedTitle = this.translateSectionName(section.title || 'Seção');
-      this.pdf.text(`📋 ${translatedTitle.toUpperCase()}`, this.margin + 5, this.currentY);
-      this.currentY += 12;
+      this.pdf.text(`● ${translatedTitle.toUpperCase()}`, this.margin + 8, this.currentY + 13);
+      
+      this.currentY += 25;
+      this.pdf.setTextColor(0, 0, 0); // Reset to black
       
       if (section.fields && Array.isArray(section.fields)) {
         // Render fields maintaining template order and structure
@@ -338,22 +418,42 @@ export class PDFExporter {
     const response = responses[fieldId];
     const photoResponse = responses[`${fieldId}_photo`] || responses[`${fieldId}Photo`];
     
-    // Field container with subtle border (like form fields)
-    this.checkPageBreak(20);
+    // Professional field container
+    this.checkPageBreak(25);
     
-    // Field background for better readability
-    this.pdf.setFillColor(252, 252, 252);
+    // Field container with shadow and border
     const fieldHeight = this.calculateFieldHeight(field, response, photoResponse, responses);
+    
+    // Shadow effect
+    this.pdf.setFillColor(240, 240, 240);
+    this.pdf.rect(this.margin + 1, this.currentY + 1, this.pdf.internal.pageSize.width - (2 * this.margin), fieldHeight, 'F');
+    
+    // Field background
+    this.pdf.setFillColor(255, 255, 255);
     this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), fieldHeight, 'F');
     
-    this.currentY += 3;
+    // Field border
+    this.pdf.setDrawColor(220, 220, 220);
+    this.pdf.setLineWidth(0.5);
+    this.pdf.rect(this.margin, this.currentY, this.pdf.internal.pageSize.width - (2 * this.margin), fieldHeight);
     
-    // Field label with required indicator
-    this.pdf.setFontSize(11);
+    this.currentY += 5;
+    
+    // Field label with required indicator and professional styling
+    this.pdf.setFontSize(10);
     this.pdf.setFont('helvetica', 'bold');
+    this.pdf.setTextColor(80, 80, 80);
     const labelText = `${field.label}${field.required ? ' *' : ''}`;
-    this.pdf.text(labelText, this.margin + 5, this.currentY);
+    this.pdf.text(labelText, this.margin + 8, this.currentY);
+    
+    // Required asterisk in red if present
+    if (field.required) {
+      this.pdf.setTextColor(232, 17, 35);
+      this.pdf.text(' *', this.margin + 8 + this.pdf.getTextWidth(field.label), this.currentY);
+    }
+    
     this.currentY += 8;
+    this.pdf.setTextColor(0, 0, 0); // Reset to black
     
     // Handle different field types with template styling
     switch (field.type) {
@@ -415,44 +515,82 @@ export class PDFExporter {
     this.pdf.setFontSize(10);
     
     if (response) {
-      // Text field with border (like input field)
+      // Professional text field styling
+      this.pdf.setFillColor(248, 249, 250);
+      this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 10, 'F');
       this.pdf.setDrawColor(200, 200, 200);
-      this.pdf.rect(this.margin + 5, this.currentY - 3, this.pdf.internal.pageSize.width - (2 * this.margin) - 10, 8);
-      this.pdf.text(String(response), this.margin + 8, this.currentY + 2);
+      this.pdf.setLineWidth(0.5);
+      this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 10);
+      
+      this.pdf.setTextColor(50, 50, 50);
+      this.pdf.text(String(response), this.margin + 12, this.currentY + 4);
     } else {
+      this.pdf.setFillColor(252, 252, 252);
+      this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 10, 'F');
+      this.pdf.setDrawColor(220, 220, 220);
+      this.pdf.setLineWidth(0.5);
+      this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 10);
+      
       this.pdf.setTextColor(150, 150, 150);
-      this.pdf.text('Não preenchido', this.margin + 8, this.currentY + 2);
-      this.pdf.setTextColor(0, 0, 0);
+      this.pdf.setFont('helvetica', 'italic');
+      this.pdf.text('Não preenchido', this.margin + 12, this.currentY + 4);
+      this.pdf.setFont('helvetica', 'normal');
     }
     
-    this.currentY += 10;
+    this.pdf.setTextColor(0, 0, 0);
+    this.currentY += 12;
   }
 
   private renderRadioFieldValue(field: any, response: any): void {
     this.pdf.setFont('helvetica', 'normal');
-    this.pdf.setFontSize(10);
+    this.pdf.setFontSize(9);
     
     if (field.options && Array.isArray(field.options)) {
-      field.options.forEach((option: string) => {
+      // Professional radio option layout
+      field.options.forEach((option: string, index: number) => {
         const isSelected = option === response;
-        const radioSymbol = isSelected ? '●' : '○';
         
-        // Radio button styling
+        // Option background
+        const bgColor = isSelected ? [232, 17, 35] : [250, 250, 250];
+        const textColor = isSelected ? [255, 255, 255] : [80, 80, 80];
+        
+        this.pdf.setFillColor(...bgColor);
+        this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 80, 8, 2, 2, 'F');
+        
+        // Option border
+        this.pdf.setDrawColor(isSelected ? 232 : 200, isSelected ? 17 : 200, isSelected ? 35 : 200);
+        this.pdf.setLineWidth(0.5);
+        this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 80, 8, 2, 2, 'D');
+        
+        // Radio symbol and text
+        this.pdf.setTextColor(...textColor);
         this.pdf.setFont('helvetica', isSelected ? 'bold' : 'normal');
-        this.pdf.text(`${radioSymbol} ${option}`, this.margin + 8, this.currentY);
-        this.currentY += 6;
+        const radioSymbol = isSelected ? '●' : '○';
+        this.pdf.text(`${radioSymbol} ${option}`, this.margin + 15, this.currentY + 3);
+        
+        this.currentY += 10;
       });
     } else if (response) {
-      this.pdf.text(`● ${response}`, this.margin + 8, this.currentY);
-      this.currentY += 6;
+      // Single selected option
+      this.pdf.setFillColor(232, 17, 35);
+      this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 100, 8, 2, 2, 'F');
+      this.pdf.setTextColor(255, 255, 255);
+      this.pdf.setFont('helvetica', 'bold');
+      this.pdf.text(`● ${response}`, this.margin + 15, this.currentY + 3);
+      this.currentY += 10;
     }
     
     if (!response && (!field.options || field.options.length === 0)) {
+      this.pdf.setFillColor(252, 252, 252);
+      this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 120, 8, 2, 2, 'F');
       this.pdf.setTextColor(150, 150, 150);
-      this.pdf.text('Nenhuma opção selecionada', this.margin + 8, this.currentY);
-      this.pdf.setTextColor(0, 0, 0);
-      this.currentY += 6;
+      this.pdf.setFont('helvetica', 'italic');
+      this.pdf.text('○ Nenhuma opção selecionada', this.margin + 15, this.currentY + 3);
+      this.currentY += 10;
     }
+    
+    this.pdf.setTextColor(0, 0, 0);
+    this.pdf.setFont('helvetica', 'normal');
   }
 
   private async renderEvidenceFieldValue(photoData: any): Promise<void> {
@@ -468,13 +606,25 @@ export class PDFExporter {
       }
       
       if (photoFilename) {
-        this.pdf.setFont('helvetica', 'italic');
-        this.pdf.setFontSize(9);
-        this.pdf.text('📷 Evidência fotográfica:', this.margin + 8, this.currentY);
-        this.currentY += 8;
+        // Professional evidence header
+        this.pdf.setFillColor(240, 248, 255); // Light blue background
+        this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 12, 'F');
+        this.pdf.setDrawColor(59, 130, 246); // Blue border
+        this.pdf.setLineWidth(0.5);
+        this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 12);
         
+        this.pdf.setFont('helvetica', 'bold');
+        this.pdf.setFontSize(9);
+        this.pdf.setTextColor(59, 130, 246);
+        this.pdf.text('📷 EVIDÊNCIA FOTOGRÁFICA ANEXADA', this.margin + 12, this.currentY + 4);
+        this.currentY += 15;
+        
+        // Add image with border
         const cleanFilename = photoFilename.replace(/^uploads\//, '');
-        await this.addImage(`/uploads/${cleanFilename}`, 120, 90);
+        this.pdf.setDrawColor(200, 200, 200);
+        this.pdf.setLineWidth(1);
+        this.pdf.rect(this.margin + 10, this.currentY, 140, 105); // Border around image area
+        await this.addImage(`/uploads/${cleanFilename}`, 135, 100);
       } else {
         this.renderNoEvidenceMessage();
       }
@@ -507,19 +657,44 @@ export class PDFExporter {
     }
     
     if (signatureToRender) {
-      this.pdf.setFont('helvetica', 'italic');
+      // Professional signature box
+      this.pdf.setFillColor(252, 252, 252); // Very light gray background
+      this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 12, 'F');
+      this.pdf.setDrawColor(232, 17, 35); // Claro red border
+      this.pdf.setLineWidth(1);
+      this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 12);
+      
+      this.pdf.setFont('helvetica', 'bold');
       this.pdf.setFontSize(9);
-      this.pdf.text('✍️ Assinatura digital:', this.margin + 8, this.currentY);
-      this.currentY += 8;
+      this.pdf.setTextColor(232, 17, 35);
+      this.pdf.text('✍️ ASSINATURA DIGITAL DO TÉCNICO', this.margin + 12, this.currentY + 4);
+      this.currentY += 15;
+      
+      // Signature border
+      this.pdf.setDrawColor(200, 200, 200);
+      this.pdf.setLineWidth(1);
+      this.pdf.rect(this.margin + 10, this.currentY, 160, 80); // Border around signature area
       
       if (signatureToRender.startsWith('data:image/')) {
         // Handle base64 signature
-        await this.addBase64Image(signatureToRender, 140, 70);
+        await this.addBase64Image(signatureToRender, 155, 75);
       } else {
         // Handle file path signature
         const cleanPath = signatureToRender.replace(/^uploads\//, '');
-        await this.addImage(`/uploads/${cleanPath}`, 140, 70);
+        await this.addImage(`/uploads/${cleanPath}`, 155, 75);
       }
+      
+      // Signature validation line
+      this.currentY += 10;
+      this.pdf.setDrawColor(150, 150, 150);
+      this.pdf.setLineWidth(0.5);
+      this.pdf.line(this.margin + 15, this.currentY, this.margin + 165, this.currentY);
+      this.currentY += 8;
+      this.pdf.setFont('helvetica', 'normal');
+      this.pdf.setFontSize(8);
+      this.pdf.setTextColor(100, 100, 100);
+      this.pdf.text('Assinatura Digital Válida - Checklist Virtual Claro Empresas', this.margin + 15, this.currentY);
+      
     } else {
       this.renderNoSignatureMessage();
     }
@@ -535,7 +710,7 @@ export class PDFExporter {
       this.pdf.addImage(
         base64Data,
         imageType.toUpperCase(),
-        this.margin + 8,
+        this.margin + 12, // Adjusted position for professional layout
         this.currentY,
         width,
         height
@@ -544,27 +719,45 @@ export class PDFExporter {
       this.currentY += height + 5;
     } catch (error) {
       console.log('[PDF-DEBUG] Erro ao processar assinatura base64:', error);
-      this.addText('Erro ao processar assinatura', 8);
+      this.pdf.setTextColor(239, 68, 68);
+      this.pdf.setFont('helvetica', 'italic');
+      this.pdf.text('Erro ao processar assinatura digital', this.margin + 12, this.currentY);
+      this.pdf.setTextColor(0, 0, 0);
+      this.pdf.setFont('helvetica', 'normal');
       this.currentY += 10;
     }
   }
 
   private renderNoEvidenceMessage(): void {
+    // Professional "no evidence" box
+    this.pdf.setFillColor(255, 250, 250); // Very light red background
+    this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 12, 'F');
+    this.pdf.setDrawColor(239, 68, 68); // Light red border
+    this.pdf.setLineWidth(0.5);
+    this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 12);
+    
     this.pdf.setFont('helvetica', 'italic');
-    this.pdf.setFontSize(10);
-    this.pdf.setTextColor(150, 150, 150);
-    this.pdf.text('📷 Nenhuma evidência anexada', this.margin + 8, this.currentY);
+    this.pdf.setFontSize(9);
+    this.pdf.setTextColor(239, 68, 68);
+    this.pdf.text('📷 NENHUMA EVIDÊNCIA ANEXADA', this.margin + 12, this.currentY + 4);
     this.pdf.setTextColor(0, 0, 0);
-    this.currentY += 8;
+    this.currentY += 15;
   }
 
   private renderNoSignatureMessage(): void {
+    // Professional "no signature" box
+    this.pdf.setFillColor(255, 250, 250); // Very light red background
+    this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 12, 'F');
+    this.pdf.setDrawColor(239, 68, 68); // Light red border
+    this.pdf.setLineWidth(0.5);
+    this.pdf.rect(this.margin + 10, this.currentY - 2, this.pdf.internal.pageSize.width - (2 * this.margin) - 20, 12);
+    
     this.pdf.setFont('helvetica', 'italic');
-    this.pdf.setFontSize(10);
-    this.pdf.setTextColor(150, 150, 150);
-    this.pdf.text('✍️ Não assinado', this.margin + 8, this.currentY);
+    this.pdf.setFontSize(9);
+    this.pdf.setTextColor(239, 68, 68);
+    this.pdf.text('✍️ ASSINATURA NÃO FORNECIDA', this.margin + 12, this.currentY + 4);
     this.pdf.setTextColor(0, 0, 0);
-    this.currentY += 8;
+    this.currentY += 15;
   }
 
   // Legacy method for backward compatibility
