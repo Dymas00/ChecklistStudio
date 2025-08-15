@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { formatStoreNumber } from '@shared/stores';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -219,7 +220,12 @@ export default function ChecklistFormView({ checklist }: ChecklistFormViewProps)
                         </div>
                       ) : (
                         <div className="bg-white rounded p-3 border">
-                          <span className="text-gray-700">{response}</span>
+                          <span className="text-gray-700">
+                            {field.label?.toLowerCase().includes('loja') || field.label?.toLowerCase().includes('store') 
+                              ? formatStoreNumber(response) 
+                              : response
+                            }
+                          </span>
                         </div>
                       )}
                     </div>

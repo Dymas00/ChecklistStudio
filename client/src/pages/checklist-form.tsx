@@ -22,6 +22,7 @@ import { validateFormResponses, TemplateSection } from '@/lib/templates';
 import { Link } from 'wouter';
 import Footer from '@/components/layout/footer';
 import { useFormPersistence } from '@/hooks/useFormPersistence';
+import StoreSelector from '@/components/checklist/store-selector';
 
 export default function ChecklistForm() {
   const { user } = useAuth();
@@ -232,6 +233,18 @@ export default function ChecklistForm() {
       case 'email':
       case 'tel':
       case 'number':
+        // Check if this is a store number field
+        if (field.label?.toLowerCase().includes('loja') || field.label?.toLowerCase().includes('store')) {
+          return (
+            <StoreSelector
+              value={value}
+              onValueChange={(val) => handleInputChange(field.id, val)}
+              required={field.required}
+              placeholder="Selecione uma loja"
+            />
+          );
+        }
+        
         return (
           <Input
             type={field.type}

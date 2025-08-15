@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatStoreNumber } from '@shared/stores';
 
 interface ChecklistFilledFormProps {
   checklist: any;
@@ -48,9 +49,12 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                     {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                   </Label>
                   <Input
-                    value={typeof value === 'object' && value !== null 
-                      ? JSON.stringify(value) 
-                      : String(value || '')
+                    value={key.toLowerCase().includes('loja') || key.toLowerCase().includes('store')
+                      ? formatStoreNumber(value)
+                      : (typeof value === 'object' && value !== null 
+                        ? JSON.stringify(value) 
+                        : String(value || '')
+                      )
                     }
                     disabled
                     className="bg-gray-50 cursor-not-allowed"
@@ -135,7 +139,10 @@ export default function ChecklistFilledForm({ checklist }: ChecklistFilledFormPr
                     
                     {field.type === 'text' || field.type === 'email' || field.type === 'tel' || field.type === 'url' ? (
                       <Input
-                        value={response || ''}
+                        value={field.label?.toLowerCase().includes('loja') || field.label?.toLowerCase().includes('store') 
+                          ? formatStoreNumber(response) 
+                          : (response || '')
+                        }
                         disabled
                         className="bg-gray-50 cursor-not-allowed"
                       />
