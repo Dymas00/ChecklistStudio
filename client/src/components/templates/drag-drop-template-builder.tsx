@@ -696,8 +696,8 @@ export default function DragDropTemplateBuilder({
       </div>
 
       {/* Sidebar with Field Palette */}
-      <div className="w-96 border-l border-gray-200 bg-gray-50">
-        <div className="p-4 sticky top-0">
+      <div className="w-96 border-l border-gray-200 bg-gray-50 overflow-y-auto max-h-screen">
+        <div className="p-4">
           <FieldPalette onAddField={addFieldFromPalette} />
           
           {activeSection && (

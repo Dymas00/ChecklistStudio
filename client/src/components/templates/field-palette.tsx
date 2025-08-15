@@ -118,7 +118,7 @@ export default function FieldPalette({ onAddField, compact = false }: FieldPalet
   }
 
   return (
-    <Card className="w-80">
+    <Card className="w-full">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center">
           <Plus className="w-5 h-5 mr-2 text-blue-600" />
@@ -128,7 +128,7 @@ export default function FieldPalette({ onAddField, compact = false }: FieldPalet
           Clique em um tipo para adicioná-lo à seção ativa
         </p>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 max-h-96 overflow-y-auto">
         <div className="space-y-2">
           {fieldTypes.map((fieldType) => {
             const Icon = fieldType.icon;
@@ -136,19 +136,19 @@ export default function FieldPalette({ onAddField, compact = false }: FieldPalet
               <Button
                 key={fieldType.value}
                 variant="outline"
-                className={`w-full h-auto p-4 border-2 ${fieldType.color} hover:shadow-md transition-all group text-left`}
+                className={`w-full h-auto p-3 border-2 ${fieldType.color} hover:shadow-md transition-all group text-left`}
                 onClick={() => onAddField?.(fieldType.value)}
               >
                 <div className="flex items-center space-x-3 w-full">
-                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <Icon className="w-4 h-4 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-sm">{fieldType.label}</span>
                       <Badge variant="secondary" className="text-xs opacity-70 group-hover:opacity-100">
-                        Adicionar
+                        +
                       </Badge>
                     </div>
-                    <p className="text-xs opacity-70 group-hover:opacity-90 mt-1">
+                    <p className="text-xs opacity-70 group-hover:opacity-90 mt-1 truncate">
                       {fieldType.description}
                     </p>
                   </div>
