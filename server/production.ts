@@ -29,23 +29,26 @@ app.use(session({
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Serve static files from dist/public in production
+const publicPath = path.resolve(__dirname, '../dist/public');
+console.log(`[production] Serving static files from: ${publicPath}`);
+app.use(express.static(publicPath));
+
 // Register API routes and setup
 const startServer = async () => {
   const server = await registerRoutes(app);
   
-  // Serve static files from dist/public in production
-  const publicPath = path.resolve(__dirname, '../dist/public');
-  app.use(express.static(publicPath));
-
   // Handle client-side routing - serve index.html for all non-API routes
   app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
+      console.log(`[production] Serving index.html for route: ${req.path}`);
       res.sendFile(path.join(publicPath, 'index.html'));
     }
   });
 
   server.listen(PORT, '0.0.0.0', () => {
     console.log(`[express] serving on port ${PORT}`);
+    console.log(`[production] Frontend available at: http://localhost:${PORT}`);
   });
 };
 

@@ -1,15 +1,16 @@
 # 🔧 Instruções para Corrigir Tela Branca
 
 ## Problema Identificado
-A aplicação está rodando na porta 3000, mas o frontend não foi corretamente compilado para produção.
+A aplicação está rodando na porta 3000, mas há problemas com o servidor de arquivos estáticos em produção. O frontend foi compilado mas não está sendo servido corretamente.
 
 ## Solução Rápida
 
-Execute no servidor:
+Execute no servidor para diagnóstico e correção:
 
 ```bash
 cd /opt/ChecklistStudio
-./fix-white-screen.sh
+./diagnose-server.sh    # Para diagnóstico
+./fix-white-screen.sh   # Para correção automática
 ```
 
 ## Solução Manual
@@ -56,6 +57,14 @@ curl http://localhost:3000
 
 Se ainda não funcionar:
 
-1. Verifique se o nginx está redirecionando corretamente
-2. Confirme se a porta 3000 está aberta
-3. Execute `./fix-pm2.sh` para diagnóstico completo
+1. **Teste servidor simples**: `node simple-server.js` (deve servir na porta 3000)
+2. **Verifique nginx**: Se configurado, confirme proxy para porta 3000
+3. **Diagnóstico completo**: Execute `./diagnose-server.sh`
+4. **Logs detalhados**: `pm2 logs ChecklistStudio --lines 20`
+5. **Reset completo**: Execute `./fix-pm2.sh`
+
+## Arquivos de Teste Criados
+
+- `simple-server.js`: Servidor Express básico para teste
+- `diagnose-server.sh`: Script de diagnóstico completo
+- `fix-white-screen.sh`: Correção automatizada
