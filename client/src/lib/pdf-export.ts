@@ -273,16 +273,17 @@ export class PDFExporter {
     this.addTemplateFooter(data);
   }
 
-  // Enhanced header with Claro branding - clean white/red design with logo
+  // Enhanced header with Claro branding - white header with red text
   private async addTemplateHeader(data: ChecklistData): Promise<void> {
     try {
-      // White background base
+      // White header bar
       this.pdf.setFillColor(255, 255, 255); // White background
-      this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 45, 'F');
+      this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 30, 'F');
       
-      // Red header bar
-      this.pdf.setFillColor(232, 17, 35); // Claro red
-      this.pdf.rect(0, 0, this.pdf.internal.pageSize.width, 28, 'F');
+      // Add subtle border at bottom of white header
+      this.pdf.setDrawColor(232, 17, 35); // Red border
+      this.pdf.setLineWidth(2);
+      this.pdf.line(0, 30, this.pdf.internal.pageSize.width, 30);
       
       // Add Claro logo
       try {
@@ -295,31 +296,31 @@ export class PDFExporter {
           img.src = claroLogo;
         });
         
-        // Add logo on the red background (white logo should show)
-        this.pdf.addImage(img, 'PNG', this.margin, 8, 60, 12);
+        // Add logo on white background
+        this.pdf.addImage(img, 'PNG', this.margin, 8, 60, 14);
         
-        // Subtitle in white text on red background, positioned after logo
-        this.pdf.setTextColor(255, 255, 255);
-        this.pdf.setFontSize(10);
+        // Subtitle in red text on white background, positioned after logo
+        this.pdf.setTextColor(232, 17, 35);
+        this.pdf.setFontSize(11);
         this.pdf.setFont('helvetica', 'normal');
         this.pdf.text('Checklist Virtual - Sistema de Gestao Operacional', this.margin + 70, 18);
         
       } catch (error) {
         console.warn('Could not load Claro logo, using text fallback:', error);
         // Fallback to text-only header
-        this.pdf.setTextColor(255, 255, 255);
+        this.pdf.setTextColor(232, 17, 35); // Red text
         this.pdf.setFontSize(18);
         this.pdf.setFont('helvetica', 'bold');
         this.pdf.text('CLARO EMPRESAS', this.margin, 18);
         
-        // Subtitle in white on red background
+        // Subtitle in red on white background
         this.pdf.setFontSize(10);
         this.pdf.setFont('helvetica', 'normal');
         this.pdf.text('Checklist Virtual - Sistema de Gestao Operacional', this.margin, 25);
       }
       
       // Reset position after header
-      this.currentY = 55;
+      this.currentY = 40;
     } catch (headerError) {
       console.error('Error in header creation:', headerError);
       this.currentY = 50;
