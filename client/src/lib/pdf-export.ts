@@ -236,7 +236,7 @@ export class PDFExporter {
     // Subtitle in smaller text
     this.pdf.setFontSize(12);
     this.pdf.setFont('helvetica', 'normal');
-    this.pdf.text('Checklist Virtual - Sistema de Gestão Operacional', this.margin, 30);
+    this.pdf.text('Checklist Virtual - Sistema de Gestao Operacional', this.margin, 30);
     
     // Reset position after header
     this.currentY = 45;
@@ -278,15 +278,15 @@ export class PDFExporter {
     this.currentY += 10;
     
     // First row - Basic info
-    this.addInfoCard('INFORMAÇÕES BÁSICAS', [
-      { label: 'Técnico Responsável', value: data.technicianName },
-      { label: 'Data de Criação', value: new Date(data.createdAt).toLocaleString('pt-BR') },
-      { label: 'Última Modificação', value: data.completedAt ? new Date(data.completedAt).toLocaleString('pt-BR') : 'Em andamento' }
+    this.addInfoCard('INFORMACOES BASICAS', [
+      { label: 'Tecnico Responsavel', value: data.technicianName },
+      { label: 'Data de Criacao', value: new Date(data.createdAt).toLocaleString('pt-BR') },
+      { label: 'Ultima Modificacao', value: data.completedAt ? new Date(data.completedAt).toLocaleString('pt-BR') : 'Em andamento' }
     ]);
     
     // Status badge
     this.currentY += 5;
-    this.pdf.setFillColor(...statusInfo.color);
+    this.pdf.setFillColor(statusInfo.color[0], statusInfo.color[1], statusInfo.color[2]);
     this.pdf.roundedRect(this.margin, this.currentY, 60, 12, 3, 3, 'F');
     this.pdf.setTextColor(255, 255, 255);
     this.pdf.setFontSize(9);
@@ -302,7 +302,7 @@ export class PDFExporter {
     this.currentY += 15;
     
     if (data.approvedAt && data.approvedBy) {
-      this.addInfoCard('INFORMAÇÕES DE APROVAÇÃO', [
+      this.addInfoCard('INFORMACOES DE APROVACAO', [
         { label: 'Aprovado em', value: new Date(data.approvedAt).toLocaleString('pt-BR') },
         { label: 'Aprovado por', value: data.approvedBy }
       ]);
@@ -533,7 +533,7 @@ export class PDFExporter {
       
       this.pdf.setTextColor(150, 150, 150);
       this.pdf.setFont('helvetica', 'italic');
-      this.pdf.text('Não preenchido', this.margin + 12, this.currentY + 4);
+      this.pdf.text('Nao preenchido', this.margin + 12, this.currentY + 4);
       this.pdf.setFont('helvetica', 'normal');
     }
     
@@ -543,7 +543,7 @@ export class PDFExporter {
 
   private renderRadioFieldValue(field: any, response: any): void {
     this.pdf.setFont('helvetica', 'normal');
-    this.pdf.setFontSize(9);
+    this.pdf.setFontSize(10); // Increased font size
     
     if (field.options && Array.isArray(field.options)) {
       // Professional radio option layout
@@ -554,39 +554,39 @@ export class PDFExporter {
         const bgColor = isSelected ? [232, 17, 35] : [250, 250, 250];
         const textColor = isSelected ? [255, 255, 255] : [80, 80, 80];
         
-        this.pdf.setFillColor(...bgColor);
-        this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 80, 8, 2, 2, 'F');
+        this.pdf.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+        this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 90, 10, 2, 2, 'F'); // Increased height
         
         // Option border
         this.pdf.setDrawColor(isSelected ? 232 : 200, isSelected ? 17 : 200, isSelected ? 35 : 200);
         this.pdf.setLineWidth(0.5);
-        this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 80, 8, 2, 2, 'D');
+        this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 90, 10, 2, 2, 'D'); // Increased height
         
         // Radio symbol and text
-        this.pdf.setTextColor(...textColor);
+        this.pdf.setTextColor(textColor[0], textColor[1], textColor[2]);
         this.pdf.setFont('helvetica', isSelected ? 'bold' : 'normal');
         const radioSymbol = isSelected ? '●' : '○';
-        this.pdf.text(`${radioSymbol} ${option}`, this.margin + 15, this.currentY + 3);
+        this.pdf.text(`${radioSymbol} ${option}`, this.margin + 15, this.currentY + 4); // Adjusted position
         
-        this.currentY += 10;
+        this.currentY += 12; // Increased spacing
       });
     } else if (response) {
       // Single selected option
       this.pdf.setFillColor(232, 17, 35);
-      this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 100, 8, 2, 2, 'F');
+      this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 110, 10, 2, 2, 'F'); // Increased size
       this.pdf.setTextColor(255, 255, 255);
       this.pdf.setFont('helvetica', 'bold');
-      this.pdf.text(`● ${response}`, this.margin + 15, this.currentY + 3);
-      this.currentY += 10;
+      this.pdf.text(`● ${response}`, this.margin + 15, this.currentY + 4);
+      this.currentY += 12;
     }
     
     if (!response && (!field.options || field.options.length === 0)) {
       this.pdf.setFillColor(252, 252, 252);
-      this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 120, 8, 2, 2, 'F');
+      this.pdf.roundedRect(this.margin + 12, this.currentY - 2, 140, 10, 2, 2, 'F'); // Increased size
       this.pdf.setTextColor(150, 150, 150);
       this.pdf.setFont('helvetica', 'italic');
-      this.pdf.text('○ Nenhuma opção selecionada', this.margin + 15, this.currentY + 3);
-      this.currentY += 10;
+      this.pdf.text('○ Nenhuma opcao selecionada', this.margin + 15, this.currentY + 4); // Fixed encoding
+      this.currentY += 12;
     }
     
     this.pdf.setTextColor(0, 0, 0);
@@ -616,7 +616,7 @@ export class PDFExporter {
         this.pdf.setFont('helvetica', 'bold');
         this.pdf.setFontSize(9);
         this.pdf.setTextColor(59, 130, 246);
-        this.pdf.text('📷 EVIDÊNCIA FOTOGRÁFICA ANEXADA', this.margin + 12, this.currentY + 4);
+        this.pdf.text('EVIDENCIA FOTOGRAFICA ANEXADA', this.margin + 12, this.currentY + 4);
         this.currentY += 15;
         
         // Add image with border
@@ -667,7 +667,7 @@ export class PDFExporter {
       this.pdf.setFont('helvetica', 'bold');
       this.pdf.setFontSize(9);
       this.pdf.setTextColor(232, 17, 35);
-      this.pdf.text('✍️ ASSINATURA DIGITAL DO TÉCNICO', this.margin + 12, this.currentY + 4);
+      this.pdf.text('ASSINATURA DIGITAL DO TECNICO', this.margin + 12, this.currentY + 4);
       this.currentY += 15;
       
       // Signature border
@@ -693,7 +693,7 @@ export class PDFExporter {
       this.pdf.setFont('helvetica', 'normal');
       this.pdf.setFontSize(8);
       this.pdf.setTextColor(100, 100, 100);
-      this.pdf.text('Assinatura Digital Válida - Checklist Virtual Claro Empresas', this.margin + 15, this.currentY);
+      this.pdf.text('Assinatura Digital Valida - Checklist Virtual Claro Empresas', this.margin + 15, this.currentY);
       
     } else {
       this.renderNoSignatureMessage();
@@ -739,7 +739,7 @@ export class PDFExporter {
     this.pdf.setFont('helvetica', 'italic');
     this.pdf.setFontSize(9);
     this.pdf.setTextColor(239, 68, 68);
-    this.pdf.text('📷 NENHUMA EVIDÊNCIA ANEXADA', this.margin + 12, this.currentY + 4);
+    this.pdf.text('NENHUMA EVIDENCIA ANEXADA', this.margin + 12, this.currentY + 4);
     this.pdf.setTextColor(0, 0, 0);
     this.currentY += 15;
   }
@@ -755,7 +755,7 @@ export class PDFExporter {
     this.pdf.setFont('helvetica', 'italic');
     this.pdf.setFontSize(9);
     this.pdf.setTextColor(239, 68, 68);
-    this.pdf.text('✍️ ASSINATURA NÃO FORNECIDA', this.margin + 12, this.currentY + 4);
+    this.pdf.text('ASSINATURA NAO FORNECIDA', this.margin + 12, this.currentY + 4);
     this.pdf.setTextColor(0, 0, 0);
     this.currentY += 15;
   }
