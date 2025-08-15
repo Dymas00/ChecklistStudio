@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
@@ -9,6 +9,7 @@ interface SimplePhotoUploadProps {
   required?: boolean;
   className?: string;
   label?: string;
+  initialValue?: File | string; // Can be a File or URL string for existing photos
 }
 
 export default function SimplePhotoUpload({ 
@@ -16,11 +17,30 @@ export default function SimplePhotoUpload({
   fieldId,
   required = false, 
   className = '',
-  label = 'Adicionar Foto'
+  label = 'Adicionar Foto',
+  initialValue
 }: SimplePhotoUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [hasExistingPhoto, setHasExistingPhoto] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Effect to handle initial value (existing photo)
+  useEffect(() => {
+    if (initialValue) {
+      if (initialValue instanceof File) {
+        setSelectedFile(initialValue);
+        const url = URL.createObjectURL(initialValue);
+        setPreviewUrl(url);
+        setHasExistingPhoto(false);
+      } else if (typeof initialValue === 'string') {
+        // For existing photos stored as file paths/URLs
+        setPreviewUrl(`/uploads/${initialValue}`);
+        setHasExistingPhoto(true);
+        setSelectedFile(undefined);
+      }
+    }
+  }, [initialValue]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -39,13 +59,14 @@ export default function SimplePhotoUpload({
   const handleRemoveFile = () => {
     setSelectedFile(undefined);
     setPreviewUrl('');
+    setHasExistingPhoto(false);
     onFileSelect(undefined);
     
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
     
-    if (previewUrl) {
+    if (previewUrl && !hasExistingPhoto) {
       URL.revokeObjectURL(previewUrl);
     }
   };
@@ -65,7 +86,7 @@ export default function SimplePhotoUpload({
         required={required}
       />
       
-      {!selectedFile ? (
+      {!selectedFile && !hasExistingPhoto ? (
         <Card className="border-2 border-dashed border-gray-300 hover:border-primary/50 transition-colors">
           <CardContent className="p-6 text-center cursor-pointer" onClick={triggerFileSelect}>
             <div className="w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">
@@ -98,7 +119,7 @@ export default function SimplePhotoUpload({
               <div className="flex items-center">
                 <ImageIcon className="w-4 h-4 text-gray-400 mr-2" />
                 <span className="text-sm font-medium text-gray-700">
-                  {selectedFile.name}
+                  {selectedFile ? selectedFile.name : hasExistingPhoto ? 'Foto existente' : ''}
                 </span>
               </div>
               <Button
@@ -122,9 +143,11 @@ export default function SimplePhotoUpload({
               </div>
             )}
             
-            <div className="mt-3 text-xs text-gray-500">
-              Tamanho: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-            </div>
+            {selectedFile && (
+              <div className="mt-3 text-xs text-gray-500">
+                Tamanho: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+              </div>
+            )}
             
             <div className="mt-3">
               <Button
@@ -135,7 +158,7 @@ export default function SimplePhotoUpload({
                 type="button"
               >
                 <Upload className="w-4 h-4 mr-2" />
-                Alterar Foto
+                {hasExistingPhoto && !selectedFile ? 'Alterar Foto' : 'Alterar Foto'}
               </Button>
             </div>
           </CardContent>

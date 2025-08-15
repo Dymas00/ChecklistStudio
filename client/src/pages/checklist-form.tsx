@@ -308,6 +308,7 @@ export default function ChecklistForm() {
             fieldId={field.id}
             required={field.required}
             label={field.label}
+            initialValue={value}
           />
         );
 
